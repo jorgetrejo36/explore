@@ -1,0 +1,2 @@
+This is just a placeholder file so git recognizes this folder. This folder
+will have all the widgets for the application.
