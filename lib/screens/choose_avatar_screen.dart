@@ -18,15 +18,97 @@ class ChooseAvatarScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("Choose new avatar"),
-            ElevatedButton(
+            Container(
+              height:50,
+              width: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blue,
+              ),
+              margin: const EdgeInsets.all(10.0),
+              child: Image.asset('assets/avatar.jpg'
+              ),
+            ),
+            Container(
+              height:50,
+              width: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blue,
+              ),
+              margin: const EdgeInsets.all(10.0),
+              child: Image.asset('assets/avatar.jpg'
+              ),
+            ), Container(
+              height:50,
+              width: 50,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.blue,
+      ),
+              margin: const EdgeInsets.all(10.0),
+              child: Image.asset('assets/avatar.jpg'
+              ),
+            ), Container(
+              height:50,
+              width: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blue,
+              ),
+              margin: const EdgeInsets.all(10.0),
+              child: Image.asset('assets/avatar.jpg'
+              ),
+            ), Container(
+              height:50,
+              width: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blue,
+              ),
+              margin: const EdgeInsets.all(10.0),
+              child: Image.asset('assets/avatar.jpg'
+              ),
+            ), Container(
+              height:50,
+              width: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blue,
+              ),
+              margin: const EdgeInsets.all(10.0),
+              child: Image.asset('assets/avatar.jpg'
+              ),
+            ), Container(
+              height:50,
+              width: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blue,
+              ),
+              margin: const EdgeInsets.all(10.0),
+              child: Image.asset('assets/avatar.jpg'
+              ),
+            ), Container(
+              height:50,
+              width: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blue,
+              ),
+              margin: const EdgeInsets.all(10.0),
+              child: Image.asset('assets/avatar.jpg'
+              ),
+            ),
+
+            IconButton(
+              icon: const Icon(Icons.check),
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const CreateNameScreen(),
                 ),
               ),
-              child: const Text("Choose Avatar"),
             ),
           ],
         ),

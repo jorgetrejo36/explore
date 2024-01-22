@@ -6,6 +6,7 @@ class ChooseRocketScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool rocketSelected = false;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -18,17 +19,68 @@ class ChooseRocketScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("Choose rocket for new avatar"),
-            ElevatedButton(
+            GestureDetector(
+            onTap: () {
+              rocketSelected = true;
+      },
+            child: Container(
+              height:100,
+              width: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: rocketSelected ? Colors.grey: Colors.blue,
+              ),
+              margin: const EdgeInsets.all(10.0),
+              child: Image.asset('assets/rocketImage1.jpg'
+              ),
+            ),
+            ),
+            Container(
+              height:100,
+              width: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blue,
+              ),
+              margin: const EdgeInsets.all(10.0),
+              child: Image.asset('assets/rocketImage2.jpg'
+              ), // Image.asset
+            ),
+            Container(
+              height:100,
+              width: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blue,
+              ),
+              margin: const EdgeInsets.all(10.0),
+              child: Image.asset('assets/rocketImage3.jpg'
+              ), // Image.asset
+            ),
+            Container(
+              height:100,
+              width: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blue,
+              ),
+              margin: const EdgeInsets.all(10.0),
+              child: Image.asset('assets/rocketImage4.jpg'
+              ), // Image.asset
+            ),
+
+            IconButton(
+              icon: const Icon(Icons.check),
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const ChooseAvatarScreen(),
                 ),
               ),
-              child: const Text("Choose Rocket"),
+
             ),
-          ],
+      ],
+
         ),
       ),
     );

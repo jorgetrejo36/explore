@@ -49,12 +49,17 @@ class CreateNameScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "Type name for new avatar. \n\n When the button below is clicked it will create a user in the DB.",
+
+            TextFormField(
+              decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                //labelText: 'Enter your username',
+              ),
             ),
-            ElevatedButton(
+            IconButton(
+              icon: const Icon(Icons.check),
               onPressed: () => createNewUser(context: context),
-              child: const Text("Create new avatar"),
+
             ),
           ],
         ),
