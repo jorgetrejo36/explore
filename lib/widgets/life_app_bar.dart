@@ -1,0 +1,72 @@
+import 'package:explore/screens/game_result_screen.dart';
+import 'package:explore/screens/game_screen.dart';
+import 'package:explore/widgets/item_counter.dart';
+import 'package:flutter/material.dart';
+
+class LifeAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const LifeAppBar({
+    Key? key,
+    this.title = "",
+    this.leading,
+    this.titleWidget,
+    this.showItemCounter = true,
+    required this.counter,
+  }) : super(key: key);
+
+  final String title;
+  final Widget? leading;
+  final Widget? titleWidget;
+  final bool showItemCounter;
+  final int counter;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25 / 2.5),
+        child: Stack(children: [
+          Positioned.fill(
+              child: Center(
+            child: titleWidget,
+          )),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              leading ??
+                  Transform.translate(
+                      offset: const Offset(-10, 0),
+                      child: IconButton(
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.grey,
+                          iconSize: 50,
+                        ),
+                        icon: const Icon(
+                          Icons.arrow_left_rounded,
+                        ),
+                        // Navigate back when the back button is pressed
+                        onPressed: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const GameScreen(),
+                          ),
+                        ),
+                      )),
+              if (showItemCounter)
+                Transform.translate(
+                  offset: const Offset(10, 0),
+                  child: ItemCounterStateful(counter: counter),
+                )
+            ],
+          )
+        ]),
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size(
+        double.maxFinite,
+        80,
+      );
+}
