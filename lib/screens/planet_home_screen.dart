@@ -45,11 +45,13 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         leading: Container(
           margin: EdgeInsets.all(7),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(50),
             shape: BoxShape.rectangle,
             color: const Color(0xFF9443DC),
           ),
@@ -63,39 +65,107 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
           ),
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Text(
-              "Planet Home Screen (choose one of the four planets).\n\nBelow is a list of all the created users just to showcase the ability to read from the DB.",
-            ),
-            users.isEmpty
-                ? const Center(
-                    child: Text('No data available'),
-                  )
-                : Expanded(
-                    child: ListView.builder(
-                      itemCount: users.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text('ID: ${users[index].id}'),
-                        );
-                      },
-                    ),
-                  ),
-            ElevatedButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PlanetMapScreen(),
-                ),
-              ),
-              child: const Text("Choose Planet"),
-            ),
-          ],
-        ),
+      body: Stack(
+        children: [
+          Image.asset(
+            'assets/images/StarsBackground.png',
+            fit: BoxFit.cover,
+            height: double.infinity,
+            width: double.infinity,
+          ),
+          UserInfo(),
+        ],
       ),
     );
   }
 }
+
+class UserInfo extends StatelessWidget {
+  const UserInfo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: MediaQuery.of(context).size.height * 0.2,
+      left: 0,
+      right: 0,
+      height: MediaQuery.of(context).size.height * 0.3,
+      child: Column(
+        children: [
+          // First Row: Circle with Image
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width * 0.2,
+                height: MediaQuery.of(context).size.width * 0.2,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: AssetImage(
+                      "assets/images/TestMonster.png",
+                    ),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+          // Second Row: Text
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Slevin',
+                style: TextStyle(
+                    fontSize: 30, color: Colors.white, fontFamily: "Fredoka"),
+              ),
+            ],
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+          // Third Row: Rectangular Chip
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.purple,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    // Text on the left end
+                    Text(
+                      'Chip Text',
+                      style: TextStyle(color: Colors.white),
+                    ),
+
+                    // Icon on the right end
+                    Icon(
+                      Icons.star,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// this is the code to move the page to the next screen
+// ElevatedButton(
+//               onPressed: () => Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                   builder: (context) => const PlanetMapScreen(),
+//                 ),
+//               ),
+//               child: const Text("Choose Planet"),
+//             ),
