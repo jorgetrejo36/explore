@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:explore/app_colors.dart';
 
 class LeaderboardScreen extends StatelessWidget {
   const LeaderboardScreen({super.key});
