@@ -46,10 +46,21 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          // Navigate back when the back button is pressed
-          onPressed: () => Navigator.pop(context),
+        leading: Container(
+          margin: EdgeInsets.all(7),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            shape: BoxShape.rectangle,
+            color: const Color(0xFF9443DC),
+          ),
+          child: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+            // Navigate back when the back button is pressed
+            onPressed: () => Navigator.pop(context),
+          ),
         ),
       ),
       body: Center(
