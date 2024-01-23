@@ -3,6 +3,7 @@ import 'package:explore/widgets/life_app_bar.dart';
 import 'package:explore/widgets/life_counter.dart';
 import 'package:explore/widgets/retry_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class GeyserGameStateful extends StatefulWidget {
   const GeyserGameStateful({super.key});
@@ -62,6 +63,12 @@ class _GeyserGameState extends State<GeyserGameStateful> {
               correctAnswers: 3,
               questions: 5,
               gameWidget: GeyserGameStateful(),
+            ),
+            SvgPicture.asset(
+              'assets/images/compass.svg',
+              semanticsLabel: 'My SVG Image',
+              height: 50,
+              width: 50,
             ),
           ],
         ),

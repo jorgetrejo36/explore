@@ -17,7 +17,13 @@ class RetryWidget extends StatelessWidget {
       onPressed: () => showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-          title: Center(child: Text('$correctAnswers / $questions')),
+          title: Center(
+              child: Text(
+            '$correctAnswers / $questions',
+            style: TextStyle(
+              fontFamily: 'Fredoka',
+            ),
+          )),
           actions: <Widget>[
             Center(
               child: IconButton(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ItemCounterStateful extends StatefulWidget {
   const ItemCounterStateful({
@@ -26,7 +27,12 @@ class _ItemCounterStatefulState extends State<ItemCounterStateful> {
             '${widget.counter}',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          Icon(Icons.water_drop)
+          SvgPicture.asset(
+            'assets/images/compass.svg',
+            semanticsLabel: 'My SVG Image',
+            height: 50,
+            width: 50,
+          )
         ],
       ),
     );
