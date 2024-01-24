@@ -1,6 +1,8 @@
 import 'package:explore/schemas.dart';
 import 'package:explore/screens/planet_map_screen.dart';
+import 'package:explore/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:realm/realm.dart';
 
 class PlanetHomeScreen extends StatefulWidget {
@@ -49,7 +51,7 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: Container(
-          margin: EdgeInsets.all(7),
+          margin: const EdgeInsets.all(7),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(50),
             shape: BoxShape.rectangle,
@@ -73,7 +75,23 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
             height: double.infinity,
             width: double.infinity,
           ),
-          UserInfo(),
+          Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.1,
+                ),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  child: UserInfo(),
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.35,
+                child: IconGridWidget(),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -85,79 +103,109 @@ class UserInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: MediaQuery.of(context).size.height * 0.2,
-      left: 0,
-      right: 0,
-      height: MediaQuery.of(context).size.height * 0.3,
-      child: Column(
-        children: [
-          // First Row: Circle with Image
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.2,
-                height: MediaQuery.of(context).size.width * 0.2,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: AssetImage(
-                      "assets/images/TestMonster.png",
-                    ),
-                    fit: BoxFit.cover,
+    return Column(
+      children: [
+        // First Row: Circle with Image
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.2,
+              height: MediaQuery.of(context).size.width * 0.2,
+              decoration: BoxDecoration(
+                color: Color(0xFF9443DC),
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  image: AssetImage(
+                    "assets/images/TestMonster.png",
                   ),
+                  fit: BoxFit.cover,
                 ),
               ),
-            ],
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-          // Second Row: Text
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Slevin',
-                style: TextStyle(
-                    fontSize: 30, color: Colors.white, fontFamily: "Fredoka"),
+            ),
+          ],
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+        // Second Row: Text
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Slevin',
+              style: TextStyle(
+                  fontSize: 40, color: Colors.white, fontFamily: "Fredoka"),
+            ),
+          ],
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+        // Third Row: Rectangular Chip
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: Color(0xFF9443DC),
+                borderRadius: BorderRadius.circular(30),
               ),
-            ],
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-          // Third Row: Rectangular Chip
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.purple,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  children: [
-                    // Text on the left end
-                    Text(
-                      'Chip Text',
-                      style: TextStyle(color: Colors.white),
-                    ),
-
-                    // Icon on the right end
-                    Icon(
-                      Icons.star,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Text on the left end
+                  Text(
+                    '117',
+                    style: TextStyle(
                       color: Colors.white,
+                      fontFamily: "Fredoka",
+                      fontSize: 20,
                     ),
-                  ],
-                ),
+                  ),
+
+                  // Icon on the right end
+                  Padding(
+                    padding: const EdgeInsets.only(left: 2.0),
+                    child: Icon(
+                      Icons.star,
+                      color: Colors.yellow,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
+
+class IconGridWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+      ),
+      itemCount: 8,
+      itemBuilder: (context, index) {
+        // Define a list of indices to place icons in
+        // each one will have a different image associated with it
+        List<int> blueIconIndices = [1, 3, 4, 6];
+
+        // Check if the current index is in the list of blue icon indices
+        bool isBlueIconIndex = blueIconIndices.contains(index);
+
+        return Container(
+          child: isBlueIconIndex
+              ? Image.asset("assets/images/TestMonster.png")
+              : null, // Display null for cells without an icon
+          alignment: Alignment.center,
+        );
+      },
+    );
+  }
+}
+
 
 // this is the code to move the page to the next screen
 // ElevatedButton(
