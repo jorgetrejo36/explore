@@ -1,8 +1,8 @@
 import 'package:explore/schemas.dart';
+import 'package:explore/screens/leaderboard_screen.dart';
 import 'package:explore/screens/planet_map_screen.dart';
-import 'package:explore/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:realm/realm.dart';
 
 class PlanetHomeScreen extends StatefulWidget {
@@ -81,14 +81,20 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
                 padding: EdgeInsets.only(
                   top: MediaQuery.of(context).size.height * 0.1,
                 ),
-                child: Container(
+                child: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.25,
-                  child: UserInfo(),
+                  child: const UserInfo(),
                 ),
               ),
-              Container(
+              SizedBox(
                 height: MediaQuery.of(context).size.height * 0.35,
-                child: IconGridWidget(),
+                child: const IconGridWidget(
+                  numPlanets: 4,
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.30,
+                child: const LeaderboardIconWidget(),
               ),
             ],
           ),
@@ -109,31 +115,39 @@ class UserInfo extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.2,
-              height: MediaQuery.of(context).size.width * 0.2,
-              decoration: BoxDecoration(
-                color: Color(0xFF9443DC),
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: AssetImage(
-                    "assets/images/TestMonster.png",
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xFF9443DC),
                   ),
-                  fit: BoxFit.cover,
                 ),
-              ),
+                Center(
+                  child: SvgPicture.asset(
+                    'assets/images/alien.svg',
+                    width: 70,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         // Second Row: Text
-        Row(
+        const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               'Slevin',
               style: TextStyle(
-                  fontSize: 40, color: Colors.white, fontFamily: "Fredoka"),
+                fontSize: 40,
+                color: Colors.white,
+                fontFamily: "Fredoka",
+              ),
             ),
           ],
         ),
@@ -143,12 +157,12 @@ class UserInfo extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: Color(0xFF9443DC),
+                color: const Color(0xFF9443DC),
                 borderRadius: BorderRadius.circular(30),
               ),
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // Text on the left end
@@ -163,7 +177,7 @@ class UserInfo extends StatelessWidget {
 
                   // Icon on the right end
                   Padding(
-                    padding: const EdgeInsets.only(left: 2.0),
+                    padding: EdgeInsets.only(left: 2.0),
                     child: Icon(
                       Icons.star,
                       color: Colors.yellow,
@@ -180,28 +194,84 @@ class UserInfo extends StatelessWidget {
 }
 
 class IconGridWidget extends StatelessWidget {
+  final int numPlanets;
+  const IconGridWidget({super.key, required this.numPlanets});
+
+  // calculate the indices that need to have a planet in them
+  // the calculation is based off if the numPlanets is odd or even
+  // it will always place the planets in two rows. The planets will start in
+  // the bottom left corner and then zig zag up/down to the right until all of
+  // them are iterated through
+  List<int> calculatePlanetIndices() {
+    List<int> planetIndices = [];
+
+    // even numbers
+    if (numPlanets % 2 == 0) {
+      for (int i = 1; i < numPlanets; i += 2) {
+        planetIndices.add(i);
+      }
+      for (int i = numPlanets; i < numPlanets * 2; i += 2) {
+        planetIndices.add(i);
+      }
+      // odd numbers
+    } else {
+      for (int i = 1; i < numPlanets * 2; i += 2) {
+        planetIndices.add(i);
+      }
+    }
+
+    return planetIndices;
+  }
+
+  // organize the planets from the DB (which should be stored in proper order)
+  // into the order which the grid will read
+  List<String> reorganizePlanetPaths() {
+    // FIXME: these paths will eventually be from the DB
+    List<String> planetPaths = [
+      "assets/images/earth.svg",
+      "assets/images/mars.svg",
+      "assets/images/saturn.svg",
+      "assets/images/neptune.svg",
+    ];
+    List<String> newPlanetPaths = List<String>.filled(numPlanets, "");
+
+    int indexForEvenIndices = numPlanets ~/ 2;
+    int indexForOddIndices = 0;
+
+    for (int i = 0; i < planetPaths.length; i++) {
+      if (i % 2 == 0) {
+        newPlanetPaths[indexForEvenIndices++] = planetPaths[i];
+      } else {
+        newPlanetPaths[indexForOddIndices++] = planetPaths[i];
+      }
+    }
+
+    return newPlanetPaths;
+  }
+
   @override
   Widget build(BuildContext context) {
+    List<int> planetIndices = calculatePlanetIndices();
+    List<String> planetPaths = reorganizePlanetPaths();
+    int planetPathsIndex = 0;
+
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
+        crossAxisCount: numPlanets,
       ),
-      itemCount: 8,
+      itemCount: numPlanets * 2,
       itemBuilder: (context, index) {
-        // Define a list of indices to place icons in
-        // each one will have a different image associated with it
-        List<int> blueIconIndices = [1, 3, 4, 6];
-
-        // Check if the current index is in the list of blue icon indices
-        bool isBlueIconIndex = blueIconIndices.contains(index);
+        // Check if the current index is in the list of planet indices
+        bool isPlanetIndex = planetIndices.contains(index);
 
         return Container(
-          child: isBlueIconIndex
+          alignment: Alignment.center,
+          child: isPlanetIndex
               ? PlanetWidget(
                   completionStatus: CompletionStatus.complete,
+                  planetPath: planetPaths[planetPathsIndex++],
                 )
-              : null, // Display null for cells without an icon
-          alignment: Alignment.center,
+              : null, // Display null for cells without a planet
         );
       },
     );
@@ -212,71 +282,120 @@ enum CompletionStatus { complete, current, locked }
 
 class PlanetWidget extends StatelessWidget {
   final CompletionStatus completionStatus;
+  final String planetPath;
 
-  PlanetWidget({super.key, required this.completionStatus});
+  const PlanetWidget({
+    super.key,
+    required this.completionStatus,
+    required this.planetPath,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Image.asset(
-          "assets/images/TestMonster.png",
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const PlanetMapScreen(),
         ),
-        // show green check mark if the planet is complete
-        completionStatus == CompletionStatus.complete
-            ? Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.check, color: Colors.white, size: 15),
-                ),
-              )
-            // show the rocket if this is the current level
-            : completionStatus == CompletionStatus.current
-                ? Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(Icons.lock, color: Colors.grey, size: 30),
+      ),
+      child: Stack(
+        children: [
+          SvgPicture.asset(
+            planetPath,
+            semanticsLabel: "A planet",
+            width: 80,
+          ),
+          // show green check mark if the planet is complete
+          completionStatus == CompletionStatus.complete
+              ? Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    width: 25,
+                    height: 25,
+                    decoration: const BoxDecoration(
+                      color: Colors.green,
+                      shape: BoxShape.circle,
                     ),
-                  )
-                // show a lock symbol if the level is locked
-                : Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(Icons.rocket, color: Colors.white, size: 40),
-                    ),
+                    child:
+                        const Icon(Icons.check, color: Colors.white, size: 15),
                   ),
-      ],
+                )
+              // show the rocket if this is the current level
+              : completionStatus == CompletionStatus.current
+                  ? Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.rocket,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                      ),
+                    )
+                  // show a lock symbol if the level is locked
+                  : Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.lock,
+                          color: Colors.grey,
+                          size: 30,
+                        ),
+                      ),
+                    ),
+        ],
+      ),
     );
   }
 }
 
+class LeaderboardIconWidget extends StatelessWidget {
+  const LeaderboardIconWidget({super.key});
 
-// this is the code to move the page to the next screen
-// ElevatedButton(
-//               onPressed: () => Navigator.push(
-//                 context,
-//                 MaterialPageRoute(
-//                   builder: (context) => const PlanetMapScreen(),
-//                 ),
-//               ),
-//               child: const Text("Choose Planet"),
-//             ),
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LeaderboardScreen(),
+          ),
+        ),
+        child: Container(
+          width: 150,
+          height: 150,
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(144, 135, 135, 135), // Box color
+            borderRadius: BorderRadius.circular(20.0), // Rounded edges
+          ),
+          child: const Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(
+                Icons.emoji_events, // Trophy icon
+                size: 100,
+                color: Colors.yellow, // Trophy color
+              ),
+              // You can add more widgets on top of the trophy if needed
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
