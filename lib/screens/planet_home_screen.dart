@@ -197,11 +197,74 @@ class IconGridWidget extends StatelessWidget {
 
         return Container(
           child: isBlueIconIndex
-              ? Image.asset("assets/images/TestMonster.png")
+              ? PlanetWidget(
+                  completionStatus: CompletionStatus.complete,
+                )
               : null, // Display null for cells without an icon
           alignment: Alignment.center,
         );
       },
+    );
+  }
+}
+
+enum CompletionStatus { complete, current, locked }
+
+class PlanetWidget extends StatelessWidget {
+  final CompletionStatus completionStatus;
+
+  PlanetWidget({super.key, required this.completionStatus});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Image.asset(
+          "assets/images/TestMonster.png",
+        ),
+        // show green check mark if the planet is complete
+        completionStatus == CompletionStatus.complete
+            ? Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.check, color: Colors.white, size: 15),
+                ),
+              )
+            // show the rocket if this is the current level
+            : completionStatus == CompletionStatus.current
+                ? Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.lock, color: Colors.grey, size: 30),
+                    ),
+                  )
+                // show a lock symbol if the level is locked
+                : Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.rocket, color: Colors.white, size: 40),
+                    ),
+                  ),
+      ],
     );
   }
 }
