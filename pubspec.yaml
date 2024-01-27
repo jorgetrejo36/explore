@@ -71,6 +71,14 @@ flutter:
     - assets/images/TestMonster2.png
     - assets/images/TestMonster3.png
     - assets/images/compass.svg
+    - assets/images/mars-bg.svg
+    - assets/images/reload.svg
+    - assets/images/life.svg
+    - assets/images/ruby.svg
+    - assets/images/geyser-off.svg
+    - assets/images/alien.svg
+    - assets/images/smoke.svg
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

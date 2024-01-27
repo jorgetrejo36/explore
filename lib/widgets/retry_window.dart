@@ -1,5 +1,6 @@
 import 'package:explore/widgets/geyser_game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class RetryWidget extends StatelessWidget {
   const RetryWidget(
@@ -27,7 +28,13 @@ class RetryWidget extends StatelessWidget {
           actions: <Widget>[
             Center(
               child: IconButton(
-                icon: const Icon(Icons.redo),
+                icon: SvgPicture.asset(
+                  'assets/images/reload.svg',
+                  colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                  semanticsLabel: "arrow pointing in circle",
+                  height: 50,
+                  width: 50,
+                ),
                 // Navigate back when the back button is pressed
                 onPressed: () => Navigator.pushReplacement(
                   context,
