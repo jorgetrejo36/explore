@@ -3,12 +3,13 @@ import 'package:explore/screens/planet_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:realm/realm.dart';
 import 'package:explore/app_colors.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CreateNameScreen extends StatelessWidget {
-  final String selectedImage = 'assets/images/TestMonster2.png';
+  final String selectedImage; //= 'assets/images/TestMonster2.png';
 
-  //const CreateNameScreen({Key? key, required this.selectedImage}) : super(key: key);
-  const CreateNameScreen({Key? key,}) : super(key: key);
+  const CreateNameScreen({Key? key, required this.selectedImage}) : super(key: key);
+  //onst CreateNameScreen({Key? key,}) : super(key: key);
 
   void createNewUser({required BuildContext context}) async {
     // create the new avatar in the DB
@@ -82,10 +83,10 @@ class CreateNameScreen extends StatelessWidget {
                 height: imageSize + 20, // Adjust as needed
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.darkBlue, // Change the color as needed
+                  color: AppColors.lightGrey, // Change the color as needed
                 ),
                 child: Center(
-                  child: Image.asset(
+                  child: SvgPicture.asset(
                     selectedImage,
                     width: imageSize,
                     height: imageSize,

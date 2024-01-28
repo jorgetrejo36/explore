@@ -1,6 +1,7 @@
 import 'package:explore/app_colors.dart';
 import 'package:explore/screens/create_name_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ChooseAvatarScreen extends StatefulWidget {
   const ChooseAvatarScreen({Key? key}) : super(key: key);
@@ -50,36 +51,44 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildAvatarIconButton(context, avatarSize, Icons.person),
+                  buildAvatarIconButton(
+                      context, avatarSize, 'assets/images/alien.svg'),
                   SizedBox(width: spacing),
-                  buildAvatarIconButton(context, avatarSize, Icons.accessibility),
+                  buildAvatarIconButton(
+                      context, avatarSize, 'assets/images/alien2.svg'),
                 ],
               ),
               SizedBox(height: spacing),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildAvatarIconButton(context, avatarSize, Icons.face),
+                  buildAvatarIconButton(
+                      context, avatarSize, 'assets/images/alien3.svg'),
                   SizedBox(width: spacing),
-                  buildAvatarIconButton(context, avatarSize, Icons.pets),
+                  buildAvatarIconButton(
+                      context, avatarSize, 'assets/images/alien.svg'),
                 ],
               ),
               SizedBox(height: spacing),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildAvatarIconButton(context, avatarSize, Icons.star),
+                  buildAvatarIconButton(
+                      context, avatarSize, 'assets/images/alien2.svg'),
                   SizedBox(width: spacing),
-                  buildAvatarIconButton(context, avatarSize, Icons.favorite),
+                  buildAvatarIconButton(
+                      context, avatarSize, 'assets/images/alien3.svg'),
                 ],
               ),
               SizedBox(height: spacing),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildAvatarIconButton(context, avatarSize, Icons.music_note),
+                  buildAvatarIconButton(
+                      context, avatarSize, 'assets/images/alien.svg'),
                   SizedBox(width: spacing),
-                  buildAvatarIconButton(context, avatarSize, Icons.camera),
+                  buildAvatarIconButton(
+                      context, avatarSize, 'assets/images/alien.svg'),
                 ],
               ),
             ],
@@ -89,7 +98,8 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
     );
   }
 
-  Widget buildAvatarIconButton(BuildContext context, double size, IconData icon) {
+  Widget buildAvatarIconButton(
+      BuildContext context, double size, String svgPath) {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -99,11 +109,15 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
       height: size,
       margin: const EdgeInsets.all(10.0),
       child: IconButton(
-        icon: Icon(icon),
+        icon: SvgPicture.asset(
+          svgPath,
+          width: size,
+          height: size,
+        ),
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const CreateNameScreen(),
+            builder: (context) => CreateNameScreen(selectedImage: svgPath),
           ),
         ),
       ),
