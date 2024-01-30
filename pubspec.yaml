@@ -75,6 +75,9 @@ flutter:
     - assets/images/saturn.svg
     - assets/images/neptune.svg
     - assets/images/alien.svg
+    - assets/images/car.svg
+    - assets/images/diamond.svg
+    - assets/images/star.svg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
