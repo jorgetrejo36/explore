@@ -256,6 +256,7 @@ class IconGridWidget extends StatelessWidget {
     int planetPathsIndex = 0;
 
     return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(), // disable scrolling
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: numPlanets,
       ),

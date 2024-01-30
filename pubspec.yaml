@@ -96,7 +96,9 @@ flutter:
     - assets/images/geyser-off.svg
     - assets/images/alien.svg
     - assets/images/smoke.svg
-
+    - assets/images/car.svg
+    - assets/images/diamond.svg
+    - assets/images/star.svg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
