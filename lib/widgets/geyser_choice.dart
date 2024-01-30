@@ -86,13 +86,32 @@ class GeyserChoice extends StatelessWidget {
             ),
           ]);
         } else {
-          return ([]);
+          return ([
+            Align(
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                'assets/images/ruby.svg',
+                width: double.infinity,
+                height: 75,
+                fit: BoxFit.fill,
+              ),
+            ),
+          ]);
         }
         // User picks correctly
       } else {
         // If alien is on the correct answer, add alien svg
         if (choice == answer) {
           return ([
+            Align(
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                'assets/images/ruby.svg',
+                width: double.infinity,
+                height: 75,
+                fit: BoxFit.fill,
+              ),
+            ),
             Align(
               alignment: Alignment.bottomLeft,
               child: SvgPicture.asset(

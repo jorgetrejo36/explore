@@ -22,6 +22,8 @@ class _GeyserGameState extends State<GeyserGameStateful> {
   int choiceOne = 5;
   int choiceTwo = 10;
   int choiceThree = 25;
+  int questions = 5;
+  int questionsRight = 0;
 
   void increment() {
     setState(() {
@@ -43,6 +45,17 @@ class _GeyserGameState extends State<GeyserGameStateful> {
   }
 
   void answerQuestion(choice) {
+    setState(() {
+      if (choice == correctAnswer) {
+        increment();
+      } else {
+        loseLife();
+      }
+      answeredQuestion = !answeredQuestion;
+    });
+  }
+
+  void nextQuestion() {
     setState(() {
       answeredQuestion = !answeredQuestion;
     });
@@ -81,10 +94,15 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                         fontSize: 60,
                         color: Colors.white),
                   ),
-                  ElevatedButton(
-                    onPressed: () => {answerQuestion(answer)},
-                    child: const Text("Answer"),
-                  ),
+                  !answeredQuestion
+                      ? ElevatedButton(
+                          onPressed: () => {answerQuestion(answer)},
+                          child: const Text("Answer"),
+                        )
+                      : ElevatedButton(
+                          onPressed: () => {nextQuestion()},
+                          child: const Text("Continue"),
+                        ),
                   ElevatedButton(
                     onPressed: () => Navigator.pushReplacement(
                       context,
