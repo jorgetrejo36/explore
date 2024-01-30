@@ -1,5 +1,6 @@
 import 'package:explore/screens/game_result_screen.dart';
 import 'package:explore/widgets/geyser_game.dart';
+import 'package:explore/widgets/mining_game.dart';
 import 'package:flutter/material.dart';
 
 class GameScreen extends StatelessWidget {
@@ -32,6 +33,15 @@ class GameScreen extends StatelessWidget {
                 ),
               ),
               child: const Text("Geyser Game"),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MiningGame(),
+                ),
+              ),
+              child: const Text("Mining Game"),
             ),
           ],
         ),

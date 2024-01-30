@@ -75,6 +75,10 @@ flutter:
     - assets/images/saturn.svg
     - assets/images/neptune.svg
     - assets/images/alien.svg
+    - assets/images/NeptuneMining.png
+    - assets/images/EarthMining.png
+    - assets/images/bubbles.svg
+    - assets/images/pearl.svg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
