@@ -46,7 +46,8 @@ class LeaderboardScreen extends StatelessWidget {
                     children: [
                       Container(
                         margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.075),
+                          top: MediaQuery.of(context).size.height * 0.075,
+                        ),
                         child: const TopPlayer(
                           outlineColor: Color.fromARGB(255, 201, 201, 201),
                           name: "Devin",
