@@ -2,6 +2,11 @@
 import 'dart:math';
 
 const int maxDifficulty = 12;
+// const Map<int, Function> methodMap = {
+//   1: Level1().getMaxValue(),
+//   2: method2,
+//   3: method3,
+// };
 
 class ProblemGenerator {
   int _difficultyLevel = -1;
@@ -16,7 +21,9 @@ class ProblemGenerator {
         );
 
   ProblemGenerator.withRange(
-      this._minDifficultyLevel, this._maxDifficultyLevel);
+    this._minDifficultyLevel,
+    this._maxDifficultyLevel,
+  );
 
   GeneratedProblem generateProblem() {
     // there are three possible cases
@@ -86,7 +93,7 @@ abstract class Level {
     int difference;
     Problem problem;
 
-    // order matters with subtraction so this ensure the greater operand
+    // order matters with subtraction so this ensures the greater operand
     // is put first
     if (operand1 > operand2) {
       difference = operand1 - operand2;
@@ -173,8 +180,8 @@ class GeneratedProblem {
 
   @override
   String toString() {
-    return 'AnswerChoices: ${answerChoices.getCorrectAnswer()}, ${answerChoices.getWrongAnswer1()}, ${answerChoices.getWrongAnswer2()}\n'
-        'Problem: ${problem._x} ${problem._operator} ${problem._y} = ${answerChoices.getCorrectAnswer()}';
+    return '$answerChoices\n'
+        'Problem: $problem = ${answerChoices.getAnswers()[0]}';
   }
 }
 
@@ -182,8 +189,8 @@ class AnswerChoices {
   final int _minValue;
   final int _maxValue;
   final int _correctAnswer;
-  late int _wrongAnswer1;
-  late int _wrongAnswer2;
+  // array order: [correct_answer, wrong_answer1, wrong_answer2]
+  final List<int> _answers = [];
 
   // this will generate the answer choices
   AnswerChoices(
@@ -201,20 +208,18 @@ class AnswerChoices {
 
     possibleAnswerChoices.shuffle();
 
-    _wrongAnswer1 = possibleAnswerChoices[0];
-    _wrongAnswer2 = possibleAnswerChoices[1];
+    _answers.addAll(
+      [_correctAnswer, possibleAnswerChoices[0], possibleAnswerChoices[1]],
+    );
   }
 
-  int getCorrectAnswer() {
-    return _correctAnswer;
+  List<int> getAnswers() {
+    return _answers;
   }
 
-  int getWrongAnswer1() {
-    return _wrongAnswer1;
-  }
-
-  int getWrongAnswer2() {
-    return _wrongAnswer2;
+  @override
+  String toString() {
+    return 'Answer Choices: $_answers';
   }
 }
 
@@ -222,22 +227,22 @@ class Problem {
   final int _x;
   final String _operator;
   final int _y;
+  late String _problemString;
 
   Problem(
     this._x,
     this._operator,
     this._y,
-  );
-
-  int getX() {
-    return _x;
+  ) {
+    _problemString = '$_x $_operator $_y';
   }
 
-  int getY() {
-    return _y;
+  String getProblemString() {
+    return _problemString;
   }
 
-  String getOperator() {
-    return _operator;
+  @override
+  String toString() {
+    return 'Problem: $_problemString';
   }
 }
