@@ -1,11 +1,14 @@
 import 'dart:math';
 
+import 'package:explore/widgets/mining_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:explore/widgets/mining_themes.dart';
 
 class MiningGame extends StatefulWidget {
-  const MiningGame({super.key});
+  final String planet;
+  const MiningGame({super.key, required this.planet});
 
   @override
   State<MiningGame> createState() => _MiningGameState();
@@ -13,9 +16,7 @@ class MiningGame extends StatefulWidget {
 
 class _MiningGameState extends State<MiningGame> {
   // Theme Variables
-  String miningBackground = "NeptuneMining";
-  String miningSurface = "bubbles";
-  String miningCurrency = "pearl";
+  late MiningTheme theme = MiningTheme(widget.planet);
 
   // Problem Variables
   int term1 = 0;
@@ -45,9 +46,9 @@ class _MiningGameState extends State<MiningGame> {
         elevation: 0,
       ),
       body: DecoratedBox(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/NeptuneMining.png"),
+            image: AssetImage("assets/images/${theme.background}.png"),
             fit: BoxFit.cover,
           ),
         ),
@@ -80,11 +81,11 @@ class _MiningGameState extends State<MiningGame> {
                   ),
                   child: Column(
                     children: [
-                      MiningRow(),
-                      MiningRow(),
-                      MiningRow(),
-                      MiningRow(),
-                      MiningRow(),
+                      MiningRow(theme: this.theme),
+                      MiningRow(theme: this.theme),
+                      MiningRow(theme: this.theme),
+                      MiningRow(theme: this.theme),
+                      MiningRow(theme: this.theme),
                     ],
                   ),
                 ),
@@ -98,21 +99,19 @@ class _MiningGameState extends State<MiningGame> {
 }
 
 class MiningRow extends StatefulWidget {
-  const MiningRow({
-    super.key,
-  });
+  final MiningTheme theme;
+  const MiningRow({super.key, required this.theme});
 
   @override
   State<MiningRow> createState() => _MiningRowState();
 }
 
 class _MiningRowState extends State<MiningRow> {
-  List<String> rowChoices = ["bubbles", "bubbles", "bubbles"];
-  RowData row = RowData();
+  late RowData row = RowData(widget.theme, ["1", "2", "3"], "3");
 
   void selectAnswer(int rowNumber) {
     setState(() {
-      row.rowImages[rowNumber] = "pearl";
+      row.rowImages[rowNumber] = row.currentTheme.miningCurrency;
       row.rowRotation[rowNumber] = 0;
     });
   }
@@ -188,13 +187,29 @@ class _MiningRowState extends State<MiningRow> {
   }
 }
 
+// Manages image and answer choices of row
 class RowData {
   static double randomSeed = Random().nextDouble() * 360;
-  List<String> rowImages = ["bubbles", "bubbles", "bubbles"];
-  List<String> rowSolutions = ["25", "10", "0"];
   List<double> rowRotation = [
     0 + randomSeed,
     90 + randomSeed,
     180 + randomSeed
   ];
+  late String reward;
+  late String solution;
+  late List<String> rowImages;
+  late List<String> rowChoices;
+  late MiningTheme currentTheme;
+
+  RowData(theme, choices, answer) {
+    currentTheme = theme;
+    rowImages = [
+      "${currentTheme.miningSurface}",
+      "${currentTheme.miningSurface}",
+      "${currentTheme.miningSurface}"
+    ];
+    rowChoices = choices;
+    reward = "${currentTheme.miningCurrency}";
+    solution = answer;
+  }
 }

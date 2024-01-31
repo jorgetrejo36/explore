@@ -38,7 +38,7 @@ class GameScreen extends StatelessWidget {
               onPressed: () => Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const MiningGame(),
+                  builder: (context) => const MiningGame(planet: "saturn"),
                 ),
               ),
               child: const Text("Mining Game"),
