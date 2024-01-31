@@ -38,7 +38,7 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
 
       // Close the Realm instance when done
       // Error: code not working when realm is closed
-      //realm.close();
+      realm.close();
     } catch (e) {
       print('Error loading data: $e');
     }
@@ -83,7 +83,7 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
                 ),
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.25,
-                  child: const UserInfo(),
+                  child: UserInfo(users: users),
                 ),
               ),
               SizedBox(
@@ -105,91 +105,94 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
 }
 
 class UserInfo extends StatelessWidget {
-  const UserInfo({super.key});
+  final List<ExploreUser> users;
+
+  const UserInfo({Key? key, required this.users}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // First Row: Circle with Image
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  width: 100,
-                  height: 100,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xFF9443DC),
-                  ),
-                ),
-                Center(
-                  child: SvgPicture.asset(
-                    'assets/images/alien.svg',
-                    width: 70,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-        // Second Row: Text
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Slevin',
-              style: TextStyle(
-                fontSize: 40,
-                color: Colors.white,
-                fontFamily: "Fredoka",
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-        // Third Row: Rectangular Chip
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: const Color(0xFF9443DC),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    // Check if there is at least one user in the list
+    if (users.isNotEmpty) {
+      final ExploreUser user = users.first;
+
+      return Column(
+        children: [
+          // First Row: Circle with Image
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Stack(
+                alignment: Alignment.center,
                 children: [
-                  // Text on the left end
-                  Text(
-                    '117',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "Fredoka",
-                      fontSize: 20,
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0xFF9443DC),
                     ),
                   ),
-
-                  // Icon on the right end
-                  Padding(
-                    padding: EdgeInsets.only(left: 2.0),
-                    child: Icon(
-                      Icons.star,
-                      color: Colors.yellow,
+                  Center(
+                    //db pull the svg
+                    child: SvgPicture.asset(
+                      'assets/images/alien.svg',
+                      width: 70,
                     ),
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+          // Third Row: Rectangular Chip
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF9443DC),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Text on the left end
+                    //db pull score
+                    Text(
+                      '117',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: "Fredoka",
+                        fontSize: 20,
+                      ),
+                    ),
+
+                    // Icon on the right end
+                    Padding(
+                      padding: EdgeInsets.only(left: 2.0),
+                      child: Icon(
+                        Icons.star,
+                        color: Colors.yellow,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    } else {
+      return Center(
+        child: Text(
+          'No user data available',
+          style: TextStyle(color: Colors.white),
         ),
-      ],
-    );
+      );
+    }
   }
 }
 

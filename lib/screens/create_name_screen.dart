@@ -6,19 +6,18 @@ import 'package:explore/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CreateNameScreen extends StatelessWidget {
-  final String selectedImage; //= 'assets/images/TestMonster2.png';
+  final String selectedImage;
 
   const CreateNameScreen({Key? key, required this.selectedImage}) : super(key: key);
-  //onst CreateNameScreen({Key? key,}) : super(key: key);
 
-  void createNewUser({required BuildContext context}) async {
+  void createNewUser({required BuildContext context, required String userName}) async {
     // create the new avatar in the DB
     // open local realm instance
     final realm = Realm(
       Configuration.local([ExploreUser.schema, Planet.schema, Level.schema]),
     );
 
-    final user = ExploreUser(ObjectId(), "User1", "Avatar1", 1, 200, 3, 0);
+    final user = ExploreUser(ObjectId(), userName, selectedImage, 1, 0, 0, 1);
     realm.write(() {
       realm.add(user);
     });
@@ -46,6 +45,8 @@ class CreateNameScreen extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
     double imageSize = screenWidth * 0.4; // 40% of the screen width
     double textFieldWidth = screenWidth * 0.8; // 80% of the screen width
+
+    TextEditingController _nameController = TextEditingController();
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -106,6 +107,7 @@ class CreateNameScreen extends StatelessWidget {
                   ),
                 ),
                 child: TextFormField(
+                  controller: _nameController,
                   style: TextStyle(color: Colors.black), // Text color
                   decoration: const InputDecoration(
                       filled: true,
@@ -123,7 +125,7 @@ class CreateNameScreen extends StatelessWidget {
                 child: IconButton(
                   icon: const Icon(Icons.check),
                   color: AppColors.white,
-                  onPressed: () => createNewUser(context: context),
+                  onPressed: () => createNewUser(context: context, userName: _nameController.text),
                 ),
               ),
             ],
