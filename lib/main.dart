@@ -12,7 +12,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ProblemGenerator problemGenerator = ProblemGenerator(2, true);
-    GeneratedProblem generatedProblem = problemGenerator.generateProblem();
     print(problemGenerator.generateProblem());
 
     return const MaterialApp(

@@ -21,17 +21,16 @@ class PinWidget extends StatelessWidget {
   final CompletionStatus status;
 
   // Constructor. All pins must have an accompanying planet.
-  const PinWidget(
-      {Key? key,
-        required this.planet,
-        required this.name,
-        required this.status,
-        // Potentially add this.game to attach games to levels?
-      }) : super(key: key);
+  const PinWidget({
+    Key? key,
+    required this.planet,
+    required this.name,
+    required this.status,
+    // Potentially add this.game to attach games to levels?
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     // Stores the path of the correct pin color based on the planet.
     String pinPath;
 
@@ -45,8 +44,7 @@ class PinWidget extends StatelessWidget {
     // We will want to obviously do something different for release.
     // An enum GameType.(shooting, mining, etc.) would be helpful.
     // Note: This function is called from loadGame() below.
-    Widget getGame(String levelName)
-    {
+    Widget getGame(String levelName) {
       switch (levelName) {
         case "1-1":
           // First pin will temp. be the Geyser game. Skeleton added.
@@ -71,16 +69,16 @@ class PinWidget extends StatelessWidget {
     // Called to load a game from a level. Import the pin to load this
     // function OR move this to a better file?
     // This does not determine the game currently; getGame() does this.
-    void loadGame(String levelName, CompletionStatus levelStatus,
-        /*GameType gameType? not nec. if we choose to attach to pins */)
-    {
-
+    void loadGame(
+      String levelName,
+      CompletionStatus levelStatus,
+      /*GameType gameType? not nec. if we choose to attach to pins */
+    ) {
       // Notify which level is selected. Can remove when no longer nec.
       print("Loading level $name. Status: $status.");
 
       // If the level is locked, do not load a game.
-      if (status == CompletionStatus.locked)
-      {
+      if (status == CompletionStatus.locked) {
         print("Status is locked. Load cancelled.");
         return;
       }
@@ -100,8 +98,7 @@ class PinWidget extends StatelessWidget {
 
     // Assign the path based on what planet we're pasting pins on
     // so we know what colors to set the pins.
-    switch (planet)
-    {
+    switch (planet) {
       case 1:
         pinPath = planet1;
         break;
@@ -125,16 +122,14 @@ class PinWidget extends StatelessWidget {
         loadGame(name, status); // Add , game? Or add games to pins.
       },
 
-        // Use a Stack to display the correct pin and icon beside it.
+      // Use a Stack to display the correct pin and icon beside it.
       child: Stack(
         children: [
-
           // Display a locked pin level if the status is locked.
           Visibility(
             visible: status == CompletionStatus.locked,
             child: Stack(
               children: [
-
                 // Display the pin icon, but grayed-out.
                 // Use planet4 as it looks best grayed-out.
                 SizedBox(
@@ -146,10 +141,26 @@ class PinWidget extends StatelessWidget {
                     // Applies a grayscale color filter. Sourced
                     // from online to skip entire library import.
                     colorFilter: const ColorFilter.matrix(<double>[
-                      0.2126,0.7152,0.0722,0,0,
-                      0.2126,0.7152,0.0722,0,0,
-                      0.2126,0.7152,0.0722,0,0,
-                      0,0,0,1,0,
+                      0.2126,
+                      0.7152,
+                      0.0722,
+                      0,
+                      0,
+                      0.2126,
+                      0.7152,
+                      0.0722,
+                      0,
+                      0,
+                      0.2126,
+                      0.7152,
+                      0.0722,
+                      0,
+                      0,
+                      0,
+                      0,
+                      0,
+                      1,
+                      0,
                     ]),
                   ),
                 ),
@@ -166,7 +177,6 @@ class PinWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -176,12 +186,14 @@ class PinWidget extends StatelessWidget {
             visible: status == CompletionStatus.complete,
             child: Stack(
               children: [
-
                 // Display the pin icon in its normal color.
                 SizedBox(
                   width: 34,
                   height: 34,
-                  child: SvgPicture.asset(pinPath, fit: BoxFit.fill,),
+                  child: SvgPicture.asset(
+                    pinPath,
+                    fit: BoxFit.fill,
+                  ),
                 ),
 
                 // Display a checkmark close to the pin with padding.
@@ -195,7 +207,6 @@ class PinWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -206,16 +217,17 @@ class PinWidget extends StatelessWidget {
           Visibility(
             visible: status == CompletionStatus.current,
             child: Stack(
-
               // Set clipBehavior so the rocket/avatar shows properly.
               clipBehavior: Clip.none,
               children: [
-
                 // Display the pin icon in its normal color.
                 SizedBox(
                   width: 34,
                   height: 34,
-                  child: SvgPicture.asset(pinPath, fit: BoxFit.fill,),
+                  child: SvgPicture.asset(
+                    pinPath,
+                    fit: BoxFit.fill,
+                  ),
                 ),
 
                 // Display the rocket close to the pin (its own widget).
@@ -225,7 +237,6 @@ class PinWidget extends StatelessWidget {
                   child: PMSRocketWidget(),
                 ),
               ],
-
             ),
           ),
 

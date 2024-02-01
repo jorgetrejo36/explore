@@ -1,10 +1,12 @@
 import 'package:explore/screens/game_result_screen.dart';
 import 'package:explore/widgets/geyser_choice.dart';
+import 'package:explore/widgets/geyser_data_repo.dart';
 import 'package:explore/widgets/life_app_bar.dart';
 import 'package:explore/widgets/life_counter.dart';
 import 'package:explore/widgets/retry_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:explore/utils/problem_generator.dart';
 
 class GeyserGameStateful extends StatefulWidget {
   const GeyserGameStateful({super.key});
@@ -22,13 +24,28 @@ class _GeyserGameState extends State<GeyserGameStateful> {
   int choiceOne = 5;
   int choiceTwo = 10;
   int choiceThree = 25;
+  late List<dynamic> choices = [choiceOne, choiceTwo, choiceThree];
+
   int questions = 5;
   int questionsRight = 0;
 
   void increment() {
     setState(() {
+      print(choices);
       counter++;
       print(counter);
+      ProblemGenerator problemGenerator = ProblemGenerator(2, true);
+      GeneratedProblem generatedProblem = problemGenerator.generateProblem();
+
+      print(generatedProblem.problem.getX());
+      print(generatedProblem.problem.getOperator());
+      print(generatedProblem.problem.getY());
+
+      print("Hello");
+
+      print(generatedProblem.answerChoices.getWrongAnswer1());
+      print(generatedProblem.answerChoices.getWrongAnswer2());
+      print(generatedProblem.answerChoices.getCorrectAnswer());
     });
   }
 
@@ -63,6 +80,9 @@ class _GeyserGameState extends State<GeyserGameStateful> {
 
   @override
   Widget build(BuildContext context) {
+    GeyserRepo geyserRepo = new GeyserRepo();
+    Map<String, String> skins = geyserRepo.getVariant('mars');
+    print(skins);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: LifeAppBar(
@@ -75,7 +95,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
         fit: StackFit.expand,
         children: [
           SvgPicture.asset(
-            'assets/images/mars-bg.svg',
+            skins['background']!,
             alignment: Alignment.center,
             fit: BoxFit.cover,
           ),
@@ -137,7 +157,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                   children: [
                     GeyserChoice(
                       handleState: handleState,
-                      choice: choiceOne,
+                      choice: choices[0],
                       answer: answer,
                       correctAnswer: correctAnswer,
                       answeredQuestion: answeredQuestion,
@@ -162,7 +182,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                   children: [
                     GeyserChoice(
                       handleState: handleState,
-                      choice: choiceTwo,
+                      choice: choices[1],
                       answer: answer,
                       correctAnswer: correctAnswer,
                       answeredQuestion: answeredQuestion,
@@ -187,7 +207,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                   children: [
                     GeyserChoice(
                       handleState: handleState,
-                      choice: choiceThree,
+                      choice: choices[2],
                       answer: answer,
                       correctAnswer: correctAnswer,
                       answeredQuestion: answeredQuestion,
