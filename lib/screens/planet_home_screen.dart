@@ -15,6 +15,7 @@ class PlanetHomeScreen extends StatefulWidget {
 
 class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
   ExploreUser? currentUser;
+  String? userAvatarPath;
 
   @override
   void initState() {
@@ -36,11 +37,12 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
       // Store the retrieved instances in the list
       setState(() {
         currentUser = user;
+        userAvatarPath = user!.avatar;
       });
 
       // Close the Realm instance when done
       // Error: code not working when realm is closed
-      //realm.close();
+      realm.close();
     } catch (e) {
       print('Error loading data: $e');
     }
@@ -85,7 +87,7 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
                 ),
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.25,
-                  child: UserInfo(user: currentUser),
+                  child: UserInfo(currentUser: currentUser, userAvatarPath: userAvatarPath),
                 ),
               ),
               SizedBox(
@@ -107,15 +109,16 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
 }
 
 class UserInfo extends StatelessWidget {
-  final ExploreUser? user;
+  final ExploreUser? currentUser;
+  String? userAvatarPath;
 
-  const UserInfo({Key? key, required this.user}) : super(key: key);
+  UserInfo({Key? key, required this.currentUser, required this.userAvatarPath}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Check if there is at least one user in the list
     // Check if there is a user
-    if (user != null) {
+    if (currentUser != null) {
 
       return Column(
         children: [
@@ -137,7 +140,7 @@ class UserInfo extends StatelessWidget {
                   Center(
                     //db pull the svg
                     child: SvgPicture.asset(
-                      user!.avatar,
+                      userAvatarPath.toString(),
                       width: 70,
                     ),
                   ),
