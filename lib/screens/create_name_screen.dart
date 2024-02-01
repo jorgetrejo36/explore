@@ -3,21 +3,30 @@ import 'package:explore/screens/planet_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:realm/realm.dart';
 import 'package:explore/app_colors.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CreateNameScreen extends StatelessWidget {
-  final String selectedImage = 'assets/images/TestMonster2.png';
+  final String selectedImage;
+  final int selectedRocket;
 
-  //const CreateNameScreen({Key? key, required this.selectedImage}) : super(key: key);
-  const CreateNameScreen({Key? key,}) : super(key: key);
 
-  void createNewUser({required BuildContext context}) async {
+
+  const CreateNameScreen({
+    Key? key,
+    required this.selectedImage,
+    required this.selectedRocket,
+  }) : super(key: key);
+
+  void createNewUser({required BuildContext context, required String userName}) async {
     // create the new avatar in the DB
     // open local realm instance
+    ObjectId userId = ObjectId();
+
     final realm = Realm(
       Configuration.local([ExploreUser.schema, Planet.schema, Level.schema]),
     );
 
-    final user = ExploreUser(ObjectId(), "User1", "Avatar1", 1, 200, 3, 0);
+    final user = ExploreUser(userId, userName, selectedImage, selectedRocket, 0, 0, 1);
     realm.write(() {
       realm.add(user);
     });
@@ -34,7 +43,7 @@ class CreateNameScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const PlanetHomeScreen(),
+        builder: (context) => PlanetHomeScreen(userId: userId),
       ),
     );
   }
@@ -45,6 +54,8 @@ class CreateNameScreen extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
     double imageSize = screenWidth * 0.4; // 40% of the screen width
     double textFieldWidth = screenWidth * 0.8; // 80% of the screen width
+
+    TextEditingController _nameController = TextEditingController();
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -82,10 +93,10 @@ class CreateNameScreen extends StatelessWidget {
                 height: imageSize + 20, // Adjust as needed
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.darkBlue, // Change the color as needed
+                  color: AppColors.lightGrey, // Change the color as needed
                 ),
                 child: Center(
-                  child: Image.asset(
+                  child: SvgPicture.asset(
                     selectedImage,
                     width: imageSize,
                     height: imageSize,
@@ -105,6 +116,7 @@ class CreateNameScreen extends StatelessWidget {
                   ),
                 ),
                 child: TextFormField(
+                  controller: _nameController,
                   style: TextStyle(color: Colors.black), // Text color
                   decoration: const InputDecoration(
                       filled: true,
@@ -122,7 +134,7 @@ class CreateNameScreen extends StatelessWidget {
                 child: IconButton(
                   icon: const Icon(Icons.check),
                   color: AppColors.white,
-                  onPressed: () => createNewUser(context: context),
+                  onPressed: () => createNewUser(context: context, userName: _nameController.text),
                 ),
               ),
             ],
