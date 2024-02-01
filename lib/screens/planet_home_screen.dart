@@ -6,14 +6,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:realm/realm.dart';
 
 class PlanetHomeScreen extends StatefulWidget {
-  const PlanetHomeScreen({super.key});
+  final ObjectId userId;
+  const PlanetHomeScreen({Key? key, required this.userId}) : super(key: key);
 
   @override
   State<PlanetHomeScreen> createState() => _PlanetHomeScreenState();
 }
 
 class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
-  List<ExploreUser> users = [];
+  ExploreUser? currentUser;
 
   @override
   void initState() {
@@ -29,16 +30,17 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
       );
 
       // Read all instances of the Person model
-      final exploreUsers = realm.all<ExploreUser>();
+      // Read the user with the provided userId
+      final user = realm.all<ExploreUser>().where((user) => user.id == widget.userId).firstOrNull;
 
       // Store the retrieved instances in the list
       setState(() {
-        users = List.from(exploreUsers);
+        currentUser = user;
       });
 
       // Close the Realm instance when done
       // Error: code not working when realm is closed
-      realm.close();
+      //realm.close();
     } catch (e) {
       print('Error loading data: $e');
     }
@@ -83,7 +85,7 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
                 ),
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.25,
-                  child: UserInfo(users: users),
+                  child: UserInfo(user: currentUser),
                 ),
               ),
               SizedBox(
@@ -105,15 +107,15 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
 }
 
 class UserInfo extends StatelessWidget {
-  final List<ExploreUser> users;
+  final ExploreUser? user;
 
-  const UserInfo({Key? key, required this.users}) : super(key: key);
+  const UserInfo({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Check if there is at least one user in the list
-    if (users.isNotEmpty) {
-      final ExploreUser user = users.first;
+    // Check if there is a user
+    if (user != null) {
 
       return Column(
         children: [
@@ -135,7 +137,7 @@ class UserInfo extends StatelessWidget {
                   Center(
                     //db pull the svg
                     child: SvgPicture.asset(
-                      'assets/images/alien.svg',
+                      user!.avatar,
                       width: 70,
                     ),
                   ),

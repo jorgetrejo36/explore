@@ -3,17 +3,57 @@ import 'package:explore/screens/leaderboard_screen.dart';
 import 'package:explore/screens/planet_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
+import 'package:realm/realm.dart';
+import 'package:explore/schemas.dart';
 
 
 
-class AvatarHomeScreen extends StatelessWidget {
+class AvatarHomeScreen extends StatefulWidget {
   const AvatarHomeScreen({Key? key});
+
+  @override
+  _AvatarHomeScreenState createState() => _AvatarHomeScreenState();
+}
+
+class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
+
+  List<ExploreUser> users = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      // Open a Realm instance
+      final realm = Realm(
+        Configuration.local([ExploreUser.schema, Planet.schema, Level.schema]),
+      );
+
+      // Read all instances of the ExploreUser model
+      final exploreUsers = realm.all<ExploreUser>();
+
+      // Convert RealmResults to a Dart List and take the first 8 elements
+      final limitedUsers = exploreUsers.toList().take(8).toList();
+
+      // Store the retrieved instances in the list
+      setState(() {
+        users = limitedUsers;
+      });
+      // Close the Realm instance when done
+      realm.close();
+    } catch (e) {
+      print('Error loading data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double avatarSize = screenWidth * 0.25; 
-    double spacing = screenWidth * 0.06; 
+    double avatarSize = screenWidth * 0.25;
+    double spacing = screenWidth * 0.06;
 
     // Image path for the circle buttons
     String buttonImage = "assets/images/Vector.png";
@@ -41,7 +81,7 @@ class AvatarHomeScreen extends StatelessWidget {
           ),
         ),
 
-    
+
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: spacing),
           child: Center(

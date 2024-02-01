@@ -7,17 +7,26 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class CreateNameScreen extends StatelessWidget {
   final String selectedImage;
+  final int selectedRocket;
 
-  const CreateNameScreen({Key? key, required this.selectedImage}) : super(key: key);
+
+
+  const CreateNameScreen({
+    Key? key,
+    required this.selectedImage,
+    required this.selectedRocket,
+  }) : super(key: key);
 
   void createNewUser({required BuildContext context, required String userName}) async {
     // create the new avatar in the DB
     // open local realm instance
+    ObjectId userId = ObjectId();
+
     final realm = Realm(
       Configuration.local([ExploreUser.schema, Planet.schema, Level.schema]),
     );
 
-    final user = ExploreUser(ObjectId(), userName, selectedImage, 1, 0, 0, 1);
+    final user = ExploreUser(userId, userName, selectedImage, selectedRocket, 0, 0, 1);
     realm.write(() {
       realm.add(user);
     });
@@ -34,7 +43,7 @@ class CreateNameScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const PlanetHomeScreen(),
+        builder: (context) => PlanetHomeScreen(userId: userId),
       ),
     );
   }
