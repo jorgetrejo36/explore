@@ -9,6 +9,28 @@ class ProblemGenerator {
   int _maxDifficultyLevel = -1;
   bool _restricted = false;
 
+  // this map is used in case 2 and 3 below for getting max values in the ranges
+  final Map<int, Function> levelMaxValues = {
+    1: Level1().getMaxValue,
+    2: Level2().getMaxValue,
+    3: Level3().getMaxValue,
+    4: Level4().getMaxValue,
+    5: Level5().getMaxValue,
+    6: Level6().getMaxValue,
+    7: Level7().getMaxValue,
+  };
+
+  // this map is used in case 3 for getting min values in the ranges
+  final Map<int, Function> levelMinValues = {
+    1: Level1().getMinValue,
+    2: Level2().getMinValue,
+    3: Level3().getMinValue,
+    4: Level4().getMinValue,
+    5: Level5().getMinValue,
+    6: Level6().getMinValue,
+    7: Level7().getMinValue,
+  };
+
   ProblemGenerator(this._difficultyLevel, this._restricted)
       : assert(
           _difficultyLevel >= 1 && _difficultyLevel <= maxDifficulty,
@@ -16,7 +38,9 @@ class ProblemGenerator {
         );
 
   ProblemGenerator.withRange(
-      this._minDifficultyLevel, this._maxDifficultyLevel);
+    this._minDifficultyLevel,
+    this._maxDifficultyLevel,
+  );
 
   GeneratedProblem generateProblem() {
     // there are three possible cases
@@ -34,11 +58,50 @@ class ProblemGenerator {
           return Level1().getProblem();
         case 2:
           return Level2().getProblem();
+        case 3:
+          return Level3().getProblem();
+        case 4:
+          return Level4().getProblem();
+        case 5:
+          return Level5().getProblem();
+        case 6:
+          return Level6().getProblem();
+        case 7:
+          return Level7().getProblem();
       }
       // case 2
     } else if (_difficultyLevel != -1) {
-      //return LevelRange(Level1().getMinValue(), ).getProblem();
-    } else {}
+      // to produce an equal ditribution of the level of problem given out
+      // the 2nd parameter for the LevelRange() constructor will be a random
+      // level between 1 and _difficulty level
+      //
+      // If this were not done there would be a bias towards harder levels since
+      // the harder levels have a wider range of values
+
+      int randomLevel = Random().nextInt(_difficultyLevel) + 1;
+
+      return LevelRange(
+        Level1().getMinValue(),
+        levelMaxValues[randomLevel]!(),
+      ).getProblem();
+      // case 3
+    } else {
+      // to produce an equal ditribution of the level of problem given out
+      // the 2nd parameter for the LevelRange() constructor will be a random
+      // level between _minDifficultyLevel and _maxDifficultyLevel
+      //
+      // If this were not done there would be a bias towards harder levels since
+      // the harder levels have a wider range of values
+
+      int randomLevel =
+          Random().nextInt(_maxDifficultyLevel - _minDifficultyLevel + 1) +
+              _minDifficultyLevel;
+
+      return LevelRange(
+        levelMinValues[_minDifficultyLevel]!(),
+        levelMaxValues[randomLevel]!(),
+      ).getProblem();
+    }
 
     return Level1().getProblem();
   }
@@ -86,7 +149,7 @@ abstract class Level {
     int difference;
     Problem problem;
 
-    // order matters with subtraction so this ensure the greater operand
+    // order matters with subtraction so this ensures the greater operand
     // is put first
     if (operand1 > operand2) {
       difference = operand1 - operand2;
@@ -165,6 +228,120 @@ class Level2 extends Level {
   }
 }
 
+// Addition and subtraction with sums and operands, respectively, between 11 to
+// 15, inclusive.
+//  Ex: 10 + 2 = 12
+class Level3 extends Level {
+  static const int _minValue = 11;
+  static const int _maxValue = 15;
+
+  Level3();
+
+  @override
+  GeneratedProblem getProblem() {
+    return super.getProblemForLevel(_minValue, _maxValue);
+  }
+
+  int getMinValue() {
+    return _minValue;
+  }
+
+  int getMaxValue() {
+    return _maxValue;
+  }
+}
+
+// Addition and subtraction with sums and operands, respectively, between 16 to
+// 20, inclusive.
+//  Ex: 20 - 3 = 17
+class Level4 extends Level {
+  static const int _minValue = 16;
+  static const int _maxValue = 20;
+
+  Level4();
+
+  @override
+  GeneratedProblem getProblem() {
+    return super.getProblemForLevel(_minValue, _maxValue);
+  }
+
+  int getMinValue() {
+    return _minValue;
+  }
+
+  int getMaxValue() {
+    return _maxValue;
+  }
+}
+
+// Addition and subtraction with sums and operands, respectively, between 21 to 60, inclusive.
+//  Ex: 15 + 32 = 47
+class Level5 extends Level {
+  static const int _minValue = 21;
+  static const int _maxValue = 60;
+
+  Level5();
+
+  @override
+  GeneratedProblem getProblem() {
+    return super.getProblemForLevel(_minValue, _maxValue);
+  }
+
+  int getMinValue() {
+    return _minValue;
+  }
+
+  int getMaxValue() {
+    return _maxValue;
+  }
+}
+
+// Addition and subtraction with sums and operands, respectively, between 61 to
+// 100, inclusive.
+//  Ex: 100 - 33 = 77
+class Level6 extends Level {
+  static const int _minValue = 61;
+  static const int _maxValue = 100;
+
+  Level6();
+
+  @override
+  GeneratedProblem getProblem() {
+    return super.getProblemForLevel(_minValue, _maxValue);
+  }
+
+  int getMinValue() {
+    return _minValue;
+  }
+
+  int getMaxValue() {
+    return _maxValue;
+  }
+}
+
+// Addition and subtraction with sums and operands, respectively, between 101 to
+// 1000, inclusive.
+//  Ex: 244 + 382 = 626
+class Level7 extends Level {
+  static const int _minValue = 101;
+  static const int _maxValue = 1000;
+
+  Level7();
+
+  @override
+  GeneratedProblem getProblem() {
+    return super.getProblemForLevel(_minValue, _maxValue);
+  }
+
+  int getMinValue() {
+    return _minValue;
+  }
+
+  int getMaxValue() {
+    return _maxValue;
+  }
+}
+
 class GeneratedProblem {
   final AnswerChoices answerChoices;
   final Problem problem;
@@ -173,8 +350,8 @@ class GeneratedProblem {
 
   @override
   String toString() {
-    return 'AnswerChoices: ${answerChoices.getCorrectAnswer()}, ${answerChoices.getWrongAnswer1()}, ${answerChoices.getWrongAnswer2()}\n'
-        'Problem: ${problem._x} ${problem._operator} ${problem._y} = ${answerChoices.getCorrectAnswer()}';
+    return '$answerChoices\n'
+        'Problem: $problem = ${answerChoices.getAnswers()[0]}';
   }
 }
 
@@ -182,8 +359,8 @@ class AnswerChoices {
   final int _minValue;
   final int _maxValue;
   final int _correctAnswer;
-  late int _wrongAnswer1;
-  late int _wrongAnswer2;
+  // array order: [correct_answer, wrong_answer1, wrong_answer2]
+  final List<int> _answers = [];
 
   // this will generate the answer choices
   AnswerChoices(
@@ -201,20 +378,19 @@ class AnswerChoices {
 
     possibleAnswerChoices.shuffle();
 
-    _wrongAnswer1 = possibleAnswerChoices[0];
-    _wrongAnswer2 = possibleAnswerChoices[1];
+    _answers.addAll(
+      [_correctAnswer, possibleAnswerChoices[0], possibleAnswerChoices[1]],
+    );
   }
 
-  int getCorrectAnswer() {
-    return _correctAnswer;
+  /// List order: [correct_answer, wrong_answer_1, wrong_answer_2]
+  List<int> getAnswers() {
+    return _answers;
   }
 
-  int getWrongAnswer1() {
-    return _wrongAnswer1;
-  }
-
-  int getWrongAnswer2() {
-    return _wrongAnswer2;
+  @override
+  String toString() {
+    return 'Answer Choices: $_answers';
   }
 }
 
@@ -222,22 +398,22 @@ class Problem {
   final int _x;
   final String _operator;
   final int _y;
+  late String _problemString;
 
   Problem(
     this._x,
     this._operator,
     this._y,
-  );
-
-  int getX() {
-    return _x;
+  ) {
+    _problemString = '$_x $_operator $_y';
   }
 
-  int getY() {
-    return _y;
+  String getProblemString() {
+    return _problemString;
   }
 
-  String getOperator() {
-    return _operator;
+  @override
+  String toString() {
+    return 'Problem: $_problemString';
   }
 }
