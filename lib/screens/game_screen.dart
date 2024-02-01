@@ -1,4 +1,5 @@
 import 'package:explore/screens/game_result_screen.dart';
+import 'package:explore/utils/problem_generator.dart';
 import 'package:explore/widgets/geyser_game.dart';
 import 'package:explore/widgets/mining_game.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,10 @@ class GameScreen extends StatelessWidget {
               onPressed: () => Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const MiningGame(planet: "saturn"),
+                  builder: (context) => MiningGame(
+                    planet: "neptune",
+                    miningProblem: ProblemGenerator(1, true),
+                  ),
                 ),
               ),
               child: const Text("Mining Game"),
