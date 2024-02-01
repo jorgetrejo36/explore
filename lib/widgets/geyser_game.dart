@@ -9,7 +9,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:explore/utils/problem_generator.dart';
 
 class GeyserGameStateful extends StatefulWidget {
-  const GeyserGameStateful({super.key});
+  const GeyserGameStateful(
+      {super.key, required this.planet, required this.geyserProblem});
+
+  final String planet;
+  final ProblemGenerator geyserProblem;
 
   @override
   State<GeyserGameStateful> createState() => _GeyserGameState();
@@ -20,32 +24,17 @@ class _GeyserGameState extends State<GeyserGameStateful> {
   int lives = 3;
   int answer = 0;
   bool answeredQuestion = false;
-  int correctAnswer = 25;
-  int choiceOne = 5;
-  int choiceTwo = 10;
-  int choiceThree = 25;
-  late List<dynamic> choices = [choiceOne, choiceTwo, choiceThree];
+
+  late GeneratedProblem problem = widget.geyserProblem.generateProblem();
+  late int correctAnswer = problem.answerChoices.getAnswers()[0];
+  late List<dynamic> choices = problem.answerChoices.getAnswers();
 
   int questions = 5;
-  int questionsRight = 0;
+  int questionsAnswered = 0;
 
   void increment() {
     setState(() {
-      print(choices);
       counter++;
-      print(counter);
-      ProblemGenerator problemGenerator = ProblemGenerator(2, true);
-      GeneratedProblem generatedProblem = problemGenerator.generateProblem();
-
-      print(generatedProblem.problem.getX());
-      print(generatedProblem.problem.getOperator());
-      print(generatedProblem.problem.getY());
-
-      print("Hello");
-
-      print(generatedProblem.answerChoices.getWrongAnswer1());
-      print(generatedProblem.answerChoices.getWrongAnswer2());
-      print(generatedProblem.answerChoices.getCorrectAnswer());
     });
   }
 
@@ -68,21 +57,28 @@ class _GeyserGameState extends State<GeyserGameStateful> {
       } else {
         loseLife();
       }
+      questionsAnswered++;
       answeredQuestion = !answeredQuestion;
     });
   }
 
   void nextQuestion() {
     setState(() {
+      problem = widget.geyserProblem.generateProblem();
+      choices = problem.answerChoices.getAnswers();
+      correctAnswer = problem.answerChoices.getAnswers()[0];
+      choices.shuffle();
       answeredQuestion = !answeredQuestion;
     });
   }
+
+  void checkLives() {}
 
   @override
   Widget build(BuildContext context) {
     GeyserRepo geyserRepo = new GeyserRepo();
     Map<String, String> skins = geyserRepo.getVariant('mars');
-    print(skins);
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: LifeAppBar(
@@ -108,7 +104,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "5 x 2",
+                    problem.problem.getProblemString(),
                     style: TextStyle(
                         fontFamily: 'Fredoka',
                         fontSize: 60,
@@ -136,11 +132,15 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                     onPressed: () => {loseLife()},
                     child: const Text("lose a life"),
                   ),
-                  RetryWidget(
-                    correctAnswers: 3,
-                    questions: 5,
-                    gameWidget: GeyserGameStateful(),
-                  ),
+                  if (lives == 0)
+                    RetryWidget(
+                      correctAnswers: 3,
+                      questions: 5,
+                      gameWidget: GeyserGameStateful(
+                        planet: widget.planet,
+                        geyserProblem: widget.geyserProblem,
+                      ),
+                    )
                 ],
               ),
             ),

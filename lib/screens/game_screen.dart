@@ -31,7 +31,8 @@ class GameScreen extends StatelessWidget {
               onPressed: () => Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const GeyserGameStateful(),
+                  builder: (context) => GeyserGameStateful(
+                      planet: "mars", geyserProblem: ProblemGenerator(1, true)),
                 ),
               ),
               child: const Text("Geyser Game"),

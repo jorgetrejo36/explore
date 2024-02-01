@@ -48,18 +48,18 @@ class PinWidget extends StatelessWidget {
       switch (levelName) {
         case "1-1":
           // First pin will temp. be the Geyser game. Skeleton added.
-          return const GeyserGameStateful();
+          return const ShootingGameStateful();
         case "1-2":
           // Second pin will temp. be the Shooting game. Skeleton added.
           return const ShootingGameStateful();
         case "1-3":
           // Third pin will temp. be the Mining game.
           // Not added! Defaulting to Geyser.
-          return const GeyserGameStateful();
+          return const ShootingGameStateful();
         case "1-4":
           // Fourth pin will temp. be the Racing game.
           // Not added! Defaulting to Geyser.
-          return const GeyserGameStateful();
+          return const ShootingGameStateful();
         default:
           // Remaining pins will temp. take you to the main game screen.
           return const GameScreen(); // Default case
