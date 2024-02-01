@@ -1,4 +1,5 @@
 import 'package:explore/screens/startup_screen.dart';
+import 'package:explore/utils/problem_generator.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,6 +11,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ProblemGenerator problemGenerator = ProblemGenerator(2, true);
+    GeneratedProblem generatedProblem = problemGenerator.generateProblem();
+    print(problemGenerator.generateProblem());
+
     return const MaterialApp(
       title: "Explore",
       home: StartupScreen(),
