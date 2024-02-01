@@ -11,6 +11,7 @@ class LifeAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.titleWidget,
     this.showItemCounter = true,
     required this.counter,
+    required this.item,
   }) : super(key: key);
 
   final String title;
@@ -18,6 +19,7 @@ class LifeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? titleWidget;
   final bool showItemCounter;
   final int counter;
+  final String item;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class LifeAppBar extends StatelessWidget implements PreferredSizeWidget {
                       offset: const Offset(-10, 0),
                       child: IconButton(
                         style: IconButton.styleFrom(
-                          backgroundColor: Colors.grey,
+                          backgroundColor: Colors.white,
                           iconSize: 50,
                         ),
                         icon: const Icon(
@@ -55,7 +57,10 @@ class LifeAppBar extends StatelessWidget implements PreferredSizeWidget {
               if (showItemCounter)
                 Transform.translate(
                   offset: const Offset(10, 0),
-                  child: ItemCounterStateful(counter: counter),
+                  child: ItemCounterStateful(
+                    counter: counter,
+                    item: item,
+                  ),
                 )
             ],
           )

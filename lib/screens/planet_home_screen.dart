@@ -302,7 +302,10 @@ class PlanetWidget extends StatelessWidget {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const PlanetMapScreen(),
+          // FIXME Pass in 0-3 when clicking Earth-Neptune to scroll to that planet.
+          // Currently, this line makes all planets scroll to 0 (Earth).
+          // Scroll is implemented but needs a dynamic parameter here.
+          builder: (context) => const PlanetMapScreen(selectedPlanet: 0),
         ),
       ),
       child: Stack(

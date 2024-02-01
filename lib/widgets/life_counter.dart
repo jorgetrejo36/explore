@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class LifeCounterStateful extends StatefulWidget {
   const LifeCounterStateful({super.key, required this.lives});
@@ -23,8 +24,12 @@ class _LifeCounterStatefulState extends State<LifeCounterStateful> {
           for (int life = 0; life < widget.lives; life++)
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 5),
-              child: Image.network(
-                  'https://cdn-icons-png.flaticon.com/256/3599/3599696.png'),
+              child: SvgPicture.asset(
+                'assets/images/life.svg',
+                semanticsLabel: 'heart',
+                height: 50,
+                width: 50,
+              ),
             )
         ],
       ),
