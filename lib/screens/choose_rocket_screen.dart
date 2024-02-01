@@ -10,7 +10,8 @@ class ChooseRocketScreen extends StatefulWidget {
 }
 
 class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
-  String selectedRocket = "";
+  String stringRocket = "";
+  int selectedRocket = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -51,19 +52,19 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildRocketAvatar(Icons.rocket_launch_outlined, rocketSize),
+                  buildRocketAvatar(Icons.rocket_launch_outlined, rocketSize, 1),
                   SizedBox(width: spacing),
 
-                  buildRocketAvatar(Icons.rocket_outlined, rocketSize),
+                  buildRocketAvatar(Icons.rocket_outlined, rocketSize, 2),
                 ],
               ),
               SizedBox(height: spacing),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildRocketAvatar(Icons.rocket_launch, rocketSize),
+                  buildRocketAvatar(Icons.rocket_launch, rocketSize, 3),
                   SizedBox(width: spacing),
-                  buildRocketAvatar(Icons.rocket, rocketSize),
+                  buildRocketAvatar(Icons.rocket, rocketSize, 4),
                 ],
               ),
             ],
@@ -73,20 +74,20 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
     );
   }
 
-  Widget buildRocketAvatar(IconData icon, double size) {
+  Widget buildRocketAvatar(IconData icon, double size, int id) {
     return Container(
       height: size,
       width: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: selectedRocket == icon.toString() ? AppColors.lightGrey : AppColors.darkBlue,
+        color: stringRocket == icon.toString() ? AppColors.lightGrey : AppColors.darkBlue,
       ),
       margin: const EdgeInsets.all(10.0),
       child: IconButton(
         icon: Icon(icon),
         onPressed: () {
           selectRocket(icon.toString());
-          navigateToChooseAvatarScreen();
+          navigateToChooseAvatarScreen(id);
         },
       ),
     );
@@ -94,15 +95,15 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
 
   void selectRocket(String rocket) {
     setState(() {
-      selectedRocket = rocket;
+      stringRocket = rocket;
     });
   }
 
-  void navigateToChooseAvatarScreen() {
+  void navigateToChooseAvatarScreen(int selectedRocket) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const ChooseAvatarScreen(),
+        builder: (context) => ChooseAvatarScreen(selectedRocket: selectedRocket),
       ),
     );
   }
