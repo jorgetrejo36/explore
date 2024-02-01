@@ -5,6 +5,7 @@ import 'package:explore/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stroke_text/stroke_text.dart';
 import 'package:explore/utils/problem_generator.dart';
+import 'package:explore/screens/game_result_screen.dart';
 
 class MiningGame extends StatefulWidget {
   final String planet;
@@ -45,7 +46,13 @@ class _MiningGameState extends State<MiningGame> {
   int score = 0;
   bool correct = true;
 
-  void gameFinish() {}
+  void gameFinish() {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const GameResultScreen(),
+        ));
+  }
 
   void newQuestion(int problemNum) {
     setState(() {
