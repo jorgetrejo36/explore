@@ -11,10 +11,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // this will give you problems from levels 1 - 7
-    ProblemGenerator problemGenerator = ProblemGenerator(7, false);
-    GeneratedProblem generatedProblem = problemGenerator.generateProblem();
-    print(generatedProblem);
+    ProblemGenerator problemGenerator = ProblemGenerator(2, true);
+    print(problemGenerator.generateProblem());
 
     return const MaterialApp(
       title: "Explore",
