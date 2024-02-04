@@ -1,4 +1,5 @@
 import 'package:explore/screens/game_result_screen.dart';
+import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/utils/problem_generator.dart';
 import 'package:explore/widgets/geyser_game.dart';
 import 'package:explore/widgets/shooting_game.dart';
@@ -48,6 +49,17 @@ class GameScreen extends StatelessWidget {
                 ),
               ),
               child: const Text("Mining Game"),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ShootingGameStateful(
+                    planet: GameTheme.earth,
+                  ),
+                ),
+              ),
+              child: const Text("Shooting Game"),
             ),
           ],
         ),

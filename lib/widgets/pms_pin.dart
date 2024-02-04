@@ -4,6 +4,8 @@ import 'package:explore/screens/game_screen.dart';
 import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/widgets/geyser_game.dart';
 import 'package:explore/widgets/shooting_game.dart';
+import '../utils/problem_generator.dart';
+import 'mining_game.dart';
 import '../screens/planet_home_screen.dart';
 import 'pms_rocket.dart';
 
@@ -72,22 +74,35 @@ class PinWidget extends StatelessWidget {
       // Identify which game to load and apply theme information.
       Widget gameToLoad;
 
-      // FIXME Update game state calls & theme parameters.
+      // FIXME Update planet for your game to be GameTheme enum.
+      // Identify which game to load based on the GameType.
       // To add more game types, add to this switch statement.
       switch (game) {
+
         case GameType.geyser:
-          // Add this.theme after merge.
-          gameToLoad = const GeyserGameStateful();
+          gameToLoad = GeyserGameStateful(
+            planet: 'mars',
+            geyserProblem: ProblemGenerator(1, true),
+          );
+
         case GameType.shooting:
-          // Add this.theme after merge.
-          gameToLoad = const ShootingGameStateful();
+          gameToLoad = ShootingGameStateful(
+            planet: theme,
+          );
+
         case GameType.mining:
-          // Add mining game with this.theme after merge.
-          gameToLoad = const GameScreen();
+          // Add mining game with theme
+          gameToLoad = MiningGame(
+              planet: 'neptune',
+              miningProblem: ProblemGenerator(1, true)
+          );
+
         case GameType.racing:
-          // Add racing game w/ this.theme after merge.
-          gameToLoad = const GameScreen();
+          // Add racing game w/ theme. Temp GameScreen until it's made.
+          gameToLoad = GameScreen();
+
         // Add GameType.scrolling if we make a fifth game.
+
         // Add more GameTypes here, as desired.
         default:
           // default should never occur, always set a valid game type.
