@@ -14,17 +14,23 @@ class RetryWidget extends StatelessWidget {
   final int questions;
   @override
   Widget build(BuildContext context) {
-    return TextButton(
+    return IconButton(
+      style: IconButton.styleFrom(
+        backgroundColor: Colors.white,
+        iconSize: 50,
+      ),
+      icon: const Icon(Icons.arrow_right_rounded),
       onPressed: () => showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: Center(
-              child: Text(
-            '$correctAnswers / $questions',
-            style: TextStyle(
-              fontFamily: 'Fredoka',
+            child: Text(
+              '$correctAnswers / $questions',
+              style: const TextStyle(
+                fontFamily: 'Fredoka',
+              ),
             ),
-          )),
+          ),
           actions: <Widget>[
             Center(
               child: IconButton(
@@ -47,7 +53,6 @@ class RetryWidget extends StatelessWidget {
           ],
         ),
       ),
-      child: const Text('Retry'),
     );
   }
 }

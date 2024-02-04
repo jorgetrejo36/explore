@@ -52,23 +52,71 @@ class _GeyserGameState extends State<GeyserGameStateful> {
 
   void answerQuestion(choice) {
     setState(() {
+      questionsAnswered++;
       if (choice == correctAnswer) {
         increment();
       } else {
         loseLife();
       }
-      questionsAnswered++;
+      if ((questionsAnswered == questions) || (lives == 0)) {
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: Center(
+              child: Text(
+                '$counter / $questions',
+                style: const TextStyle(
+                  fontFamily: 'Fredoka',
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              Center(
+                child: counter / questions < 0.8
+                    ? IconButton(
+                        icon: SvgPicture.asset(
+                          'assets/images/reload.svg',
+                          colorFilter:
+                              ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                          semanticsLabel: "arrow pointing in circle",
+                          height: 50,
+                          width: 50,
+                        ),
+                        // Navigate back when the back button is pressed
+                        onPressed: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GeyserGameStateful(
+                                planet: widget.planet,
+                                geyserProblem: widget.geyserProblem),
+                          ),
+                        ),
+                      )
+                    : ElevatedButton(
+                        onPressed: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const GameResultScreen(),
+                          ),
+                        ),
+                        child: const Text("Game Complete"),
+                      ),
+              )
+            ],
+          ),
+        );
+      }
       answeredQuestion = !answeredQuestion;
     });
   }
 
-  void nextQuestion() {
+  void nextQuestion(bool newAnsweredQuestion) {
     setState(() {
       problem = widget.geyserProblem.generateProblem();
       choices = problem.answerChoices.getAnswers();
       correctAnswer = problem.answerChoices.getAnswers()[0];
       choices.shuffle();
-      answeredQuestion = !answeredQuestion;
+      answeredQuestion = newAnsweredQuestion;
     });
   }
 
@@ -77,12 +125,12 @@ class _GeyserGameState extends State<GeyserGameStateful> {
   @override
   Widget build(BuildContext context) {
     GeyserRepo geyserRepo = new GeyserRepo();
-    Map<String, String> skins = geyserRepo.getVariant('mars');
+    Map<String, String> skins = geyserRepo.getVariant(widget.planet);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: LifeAppBar(
-        item: 'assets/images/ruby.svg',
+        item: skins['item']!,
         title: "App Bar",
         counter: counter,
         titleWidget: LifeCounterStateful(lives: lives),
@@ -111,36 +159,30 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                         color: Colors.white),
                   ),
                   !answeredQuestion
-                      ? ElevatedButton(
+                      ? IconButton(
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            iconSize: 50,
+                          ),
+                          icon: const Icon(Icons.arrow_right_rounded),
                           onPressed: () => {answerQuestion(answer)},
-                          child: const Text("Answer"),
                         )
-                      : ElevatedButton(
-                          onPressed: () => {nextQuestion()},
-                          child: const Text("Continue"),
-                        ),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const GameResultScreen(),
-                      ),
-                    ),
-                    child: const Text("Game Complete"),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => {loseLife()},
-                    child: const Text("lose a life"),
-                  ),
-                  if (lives == 0)
-                    RetryWidget(
-                      correctAnswers: 3,
-                      questions: 5,
-                      gameWidget: GeyserGameStateful(
-                        planet: widget.planet,
-                        geyserProblem: widget.geyserProblem,
-                      ),
-                    )
+                      : Column(
+                          children: [
+                            SvgPicture.asset(
+                              correctAnswer == answer
+                                  ? 'assets/images/right.svg'
+                                  : 'assets/images/wrong.svg',
+                              width: 70,
+                              height: 70,
+                            ),
+                            ElevatedButton(
+                              onPressed: () =>
+                                  {nextQuestion(!answeredQuestion)},
+                              child: const Text("Continue"),
+                            ),
+                          ],
+                        )
                 ],
               ),
             ),
@@ -161,11 +203,13 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                       answer: answer,
                       correctAnswer: correctAnswer,
                       answeredQuestion: answeredQuestion,
+                      item: skins['item']!,
+                      top: skins['top']!,
                     ),
                     Align(
                       alignment: Alignment.bottomLeft,
                       child: SvgPicture.asset(
-                        'assets/images/geyser-off.svg',
+                        skins['ground']!,
                         width: double.infinity,
                         height: 150,
                         fit: BoxFit.fill,
@@ -186,11 +230,13 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                       answer: answer,
                       correctAnswer: correctAnswer,
                       answeredQuestion: answeredQuestion,
+                      item: skins['item']!,
+                      top: skins['top']!,
                     ),
                     Align(
                       alignment: Alignment.bottomLeft,
                       child: SvgPicture.asset(
-                        'assets/images/geyser-off.svg',
+                        skins['ground']!,
                         width: double.infinity,
                         height: 250,
                         fit: BoxFit.fill,
@@ -211,11 +257,13 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                       answer: answer,
                       correctAnswer: correctAnswer,
                       answeredQuestion: answeredQuestion,
+                      item: skins['item']!,
+                      top: skins['top']!,
                     ),
                     Align(
                       alignment: Alignment.bottomLeft,
                       child: SvgPicture.asset(
-                        'assets/images/geyser-off.svg',
+                        skins['ground']!,
                         width: double.infinity,
                         height: 150,
                         fit: BoxFit.fill,
