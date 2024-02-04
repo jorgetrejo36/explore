@@ -6,7 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 class ChooseAvatarScreen extends StatefulWidget {
   final int selectedRocket;
 
-  const ChooseAvatarScreen({Key? key, required this.selectedRocket}) : super(key: key);
+  const ChooseAvatarScreen({Key? key, required this.selectedRocket})
+      : super(key: key);
 
   @override
   _ChooseAvatarScreenState createState() => _ChooseAvatarScreenState();
@@ -54,7 +55,10 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buildAvatarIconButton(
-                      context, avatarSize, 'assets/images/alien.svg'),
+                    context,
+                    avatarSize,
+                    'assets/images/alien.svg',
+                  ),
                   SizedBox(width: spacing),
                   buildAvatarIconButton(
                       context, avatarSize, 'assets/images/alien2.svg'),
@@ -119,7 +123,8 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CreateNameScreen(selectedImage: svgPath, selectedRocket: widget.selectedRocket),
+            builder: (context) => CreateNameScreen(
+                selectedImage: svgPath, selectedRocket: widget.selectedRocket),
           ),
         ),
       ),

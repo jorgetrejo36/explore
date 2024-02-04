@@ -17,6 +17,7 @@ class PMSAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
 
       // Size the AppBar, color, and center its content.
+      // Change color based on theme player selects, or no?
       backgroundColor: const Color(0xB2A149F0),
       toolbarHeight: 60.0,
       automaticallyImplyLeading: false,
@@ -80,6 +81,7 @@ class PMSAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
                 Center(
+                  // FIXME Load user avatar from DB.
                   child: SvgPicture.asset(
                     'assets/images/alien.svg',
                     width: 48,
