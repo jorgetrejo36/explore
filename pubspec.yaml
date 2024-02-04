@@ -90,6 +90,7 @@ flutter:
     - assets/images/shooting_earth_ground_art.png
     - assets/images/shooting_earth_sky_art.png
     - assets/images/shooting_player.png
+    - assets/images/rocket_temp.svg
     - assets/images/mars-bg.svg
     - assets/images/reload.svg
     - assets/images/life.svg
