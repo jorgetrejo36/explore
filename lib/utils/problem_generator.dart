@@ -2,6 +2,7 @@
 import 'dart:math';
 
 const int maxDifficulty = 12;
+const List<String> operators = ['+', '-', '*'];
 
 class ProblemGenerator {
   int _difficultyLevel = -1;
@@ -111,7 +112,8 @@ abstract class Level {
   GeneratedProblem getProblem();
 
   GeneratedProblem getProblemForLevel(int minValue, int maxValue) {
-    String operator = Random().nextInt(2) == 0 ? '+' : '-';
+    // choose a random operator from the const operators
+    String operator = operators[Random().nextInt(operators.length)];
 
     switch (operator) {
       // addition
@@ -120,6 +122,9 @@ abstract class Level {
       // subtraction
       case '-':
         return getSubtractionProblem(minValue, maxValue);
+      // multiplication
+      case '*':
+        break;
     }
 
     throw Exception("This will never happen");
@@ -181,6 +186,9 @@ class LevelRange extends Level {
     return super.getProblemForLevel(_minValue, _maxValue);
   }
 }
+
+// There are classes for each level in case there is further development later
+// on that wants to change more specific things between the levels
 
 // Addition and subtraction with sums and operands, respectively, between 0 to
 // 5, inclusive.
@@ -339,6 +347,15 @@ class Level7 extends Level {
 
   int getMaxValue() {
     return _maxValue;
+  }
+}
+
+class Level8 extends Level {
+  Level8();
+
+  @override
+  GeneratedProblem getProblem() {
+    return super.getProblemForLevel(0, 10);
   }
 }
 
