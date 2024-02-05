@@ -135,153 +135,156 @@ class _GeyserGameState extends State<GeyserGameStateful> {
         counter: counter,
         titleWidget: LifeCounterStateful(lives: lives),
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          SvgPicture.asset(
-            skins['background']!,
-            alignment: Alignment.center,
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(skins['background']!),
             fit: BoxFit.cover,
           ),
-          Positioned(
-            top: MediaQuery.of(context).size.height * 0.1,
-            right: MediaQuery.of(context).size.width / 3,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    problem.problem.getProblemString(),
-                    style: TextStyle(
-                        fontFamily: 'Fredoka',
-                        fontSize: 60,
-                        color: Colors.white),
-                  ),
-                  !answeredQuestion
-                      ? IconButton(
-                          style: IconButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            iconSize: 50,
-                          ),
-                          icon: const Icon(Icons.arrow_right_rounded),
-                          onPressed: () => {answerQuestion(answer)},
-                        )
-                      : Column(
-                          children: [
-                            SvgPicture.asset(
-                              correctAnswer == answer
-                                  ? 'assets/images/right.svg'
-                                  : 'assets/images/wrong.svg',
-                              width: 70,
-                              height: 70,
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned(
+              top: MediaQuery.of(context).size.height * 0.1,
+              right: MediaQuery.of(context).size.width / 3,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      problem.problem.getProblemString(),
+                      style: TextStyle(
+                          fontFamily: 'Fredoka',
+                          fontSize: 60,
+                          color: Colors.white),
+                    ),
+                    !answeredQuestion
+                        ? IconButton(
+                            style: IconButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              iconSize: 50,
                             ),
-                            Padding(
-                              padding: EdgeInsets.all(20),
-                              child: IconButton(
-                                style: IconButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  iconSize: 50,
-                                ),
-                                icon: Icon(Icons.arrow_right_rounded),
-                                onPressed: () =>
-                                    {nextQuestion(!answeredQuestion)},
+                            icon: const Icon(Icons.arrow_right_rounded),
+                            onPressed: () => {answerQuestion(answer)},
+                          )
+                        : Column(
+                            children: [
+                              SvgPicture.asset(
+                                correctAnswer == answer
+                                    ? 'assets/images/right.svg'
+                                    : 'assets/images/wrong.svg',
+                                width: 70,
+                                height: 70,
                               ),
-                            )
-                          ],
-                        )
-                ],
+                              Padding(
+                                padding: EdgeInsets.all(20),
+                                child: IconButton(
+                                  style: IconButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    iconSize: 50,
+                                  ),
+                                  icon: Icon(Icons.arrow_right_rounded),
+                                  onPressed: () =>
+                                      {nextQuestion(!answeredQuestion)},
+                                ),
+                              )
+                            ],
+                          )
+                  ],
+                ),
               ),
             ),
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    GeyserChoice(
-                      handleState: handleState,
-                      choice: choices[0],
-                      answer: answer,
-                      correctAnswer: correctAnswer,
-                      answeredQuestion: answeredQuestion,
-                      item: skins['item']!,
-                      top: skins['top']!,
-                    ),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: SvgPicture.asset(
-                        skins['ground']!,
-                        width: double.infinity,
-                        height: 150,
-                        fit: BoxFit.fill,
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GeyserChoice(
+                        handleState: handleState,
+                        choice: choices[0],
+                        answer: answer,
+                        correctAnswer: correctAnswer,
+                        answeredQuestion: answeredQuestion,
+                        item: skins['item']!,
+                        top: skins['top']!,
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    GeyserChoice(
-                      handleState: handleState,
-                      choice: choices[1],
-                      answer: answer,
-                      correctAnswer: correctAnswer,
-                      answeredQuestion: answeredQuestion,
-                      item: skins['item']!,
-                      top: skins['top']!,
-                    ),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: SvgPicture.asset(
-                        skins['ground']!,
-                        width: double.infinity,
-                        height: 250,
-                        fit: BoxFit.fill,
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: SvgPicture.asset(
+                          skins['ground']!,
+                          width: double.infinity,
+                          height: 150,
+                          fit: BoxFit.fill,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    GeyserChoice(
-                      handleState: handleState,
-                      choice: choices[2],
-                      answer: answer,
-                      correctAnswer: correctAnswer,
-                      answeredQuestion: answeredQuestion,
-                      item: skins['item']!,
-                      top: skins['top']!,
-                    ),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: SvgPicture.asset(
-                        skins['ground']!,
-                        width: double.infinity,
-                        height: 150,
-                        fit: BoxFit.fill,
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GeyserChoice(
+                        handleState: handleState,
+                        choice: choices[1],
+                        answer: answer,
+                        correctAnswer: correctAnswer,
+                        answeredQuestion: answeredQuestion,
+                        item: skins['item']!,
+                        top: skins['top']!,
                       ),
-                    ),
-                  ],
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: SvgPicture.asset(
+                          skins['ground']!,
+                          width: double.infinity,
+                          height: 250,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GeyserChoice(
+                        handleState: handleState,
+                        choice: choices[2],
+                        answer: answer,
+                        correctAnswer: correctAnswer,
+                        answeredQuestion: answeredQuestion,
+                        item: skins['item']!,
+                        top: skins['top']!,
+                      ),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: SvgPicture.asset(
+                          skins['ground']!,
+                          width: double.infinity,
+                          height: 150,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

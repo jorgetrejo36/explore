@@ -5,7 +5,7 @@ class GeyserRepo {
     switch (variant) {
       case 'mars':
         skins = {
-          "background": 'assets/images/mars-bg.svg',
+          "background": 'assets/images/MarsGeyser.png',
           "ground": 'assets/images/geyser-off.svg',
           "top": 'assets/images/smoke.svg',
           "item": 'assets/images/ruby.svg',
@@ -13,10 +13,10 @@ class GeyserRepo {
 
       case 'earth':
         skins = {
-          "background": 'assets/images/mars-bg.svg',
-          "ground": 'assets/images/geyser-off.svg',
+          "background": 'assets/images/EarthGeyser.png',
+          "ground": 'assets/images/GeyserGround.svg',
           "top": 'assets/images/smoke.svg',
-          "item": 'assets/images/ruby.svg',
+          "item": 'assets/images/diamond.svg',
         };
 
       case 'saturn':
@@ -29,15 +29,15 @@ class GeyserRepo {
 
       case 'neptune':
         skins = {
-          "background": 'assets/images/neptune-bg.svg',
+          "background": 'assets/images/NeptuneMining.png',
           "ground": 'assets/images/neptune-geyser.svg',
-          "top": 'assets/images/smoke.svg',
+          "top": 'assets/images/GeyserBubbles.svg',
           "item": 'assets/images/pearl.svg',
         };
 
       default:
         skins = {
-          "background": 'assets/images/mars-bg.svg',
+          "background": 'assets/images/MarsGeyser.png',
           "ground": 'assets/images/geyser-off.svg',
           "top": 'assets/images/smoke.svg',
           "item": 'assets/images/ruby.svg',
