@@ -176,11 +176,18 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                               width: 70,
                               height: 70,
                             ),
-                            ElevatedButton(
-                              onPressed: () =>
-                                  {nextQuestion(!answeredQuestion)},
-                              child: const Text("Continue"),
-                            ),
+                            Padding(
+                              padding: EdgeInsets.all(20),
+                              child: IconButton(
+                                style: IconButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  iconSize: 50,
+                                ),
+                                icon: Icon(Icons.arrow_right_rounded),
+                                onPressed: () =>
+                                    {nextQuestion(!answeredQuestion)},
+                              ),
+                            )
                           ],
                         )
                 ],
