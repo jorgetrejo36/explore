@@ -1,2 +1,0 @@
-This folder is where all the utility functions for the application will go. This file
-can be deleted.

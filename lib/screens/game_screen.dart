@@ -1,4 +1,9 @@
 import 'package:explore/screens/game_result_screen.dart';
+import 'package:explore/screens/planet_map_screen.dart';
+import 'package:explore/utils/problem_generator.dart';
+import 'package:explore/widgets/geyser_game.dart';
+import 'package:explore/widgets/shooting_game.dart';
+import 'package:explore/widgets/mining_game.dart';
 import 'package:flutter/material.dart';
 
 class GameScreen extends StatelessWidget {
@@ -22,6 +27,39 @@ class GameScreen extends StatelessWidget {
                 ),
               ),
               child: const Text("Game Complete"),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => GeyserGameStateful(
+                      planet: "mars", geyserProblem: ProblemGenerator(1, true)),
+                ),
+              ),
+              child: const Text("Geyser Game"),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MiningGame(
+                    planet: "neptune",
+                    miningProblem: ProblemGenerator(1, true),
+                  ),
+                ),
+              ),
+              child: const Text("Mining Game"),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ShootingGameStateful(
+                    planet: GameTheme.earth,
+                  ),
+                ),
+              ),
+              child: const Text("Shooting Game"),
             ),
           ],
         ),
