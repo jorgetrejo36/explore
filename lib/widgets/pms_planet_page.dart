@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'dart:math';
 import 'package:explore/screens/planet_home_screen.dart';
+import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/widgets/pms_pin.dart';
 
 // Loads a single "page" for the Planet Map Screen.
@@ -10,7 +11,16 @@ import 'package:explore/widgets/pms_pin.dart';
 // planets. Planets are currently manually added with 4 added in total,
 // but dynamically loaded once added to this file.
 
+// Remember: to add more planets, update numPlanets in
+// planet_map_screen.dart and the code from the start of building
+// the widget below to before we return a Stack in this file.
+// Then, update pms_pin.dart with more paths to pin colors if desired.
+
+
+
+/// A single planet with its level pins & background for the map screen.
 class PlanetPage extends StatelessWidget {
+
   // Index of the current planet we're building onto the map screen.
   // Starts at 1 due to level naming scheme (1-1, 1-2, 1-3, 2-1, 2-2...).
   final int index;
@@ -18,21 +28,63 @@ class PlanetPage extends StatelessWidget {
   // Constructor (requires planet index parameter).
   const PlanetPage({Key? key, required this.index}) : super(key: key);
 
+  // Function used to generate a list of games for a planet in a random
+  // order, based on the number of game types and levels per planet.
+  // All planets receive the same number of levels.
+  List<GameType> getRandomGamesList(int gameListSeed) {
+
+    // Determine the number of times each game should appear;
+    // using truncated division in case it does not evenly divide.
+    int gamesPerType = levelsPerPlanet ~/ numGameTypes;
+
+    // In case it does not divide evenly, calculate the remaining games.
+    int remainingGames = levelsPerPlanet % numGameTypes;
+
+    // First, make a list with as even a distribution of games possible.
+    List<GameType> allGameTypes = List.generate(
+      numGameTypes, (index) => GameType.values[index],
+    );
+
+    // Shuffle this list of games.
+    allGameTypes.shuffle(Random(gameListSeed));
+
+    // Fill any remaining spaces with an uneven amount of remaining
+    // game types (this is done so if we have a case like 5 game types
+    // and 9 levels, it will generate an even amount and fill the
+    // remaining spaces with random extra games differently per planet.
+    List<GameType> games = List.generate(
+      numGameTypes, (index) => List.filled(
+        gamesPerType + (index < remainingGames ? 1 : 0),
+        allGameTypes[index],
+      ),
+    ).expand((list) => list).toList();
+
+    // Shuffle this again so that the first and last game change
+    // between planets. Not shuffling twice caused this.
+    games.shuffle(Random(gameListSeed));
+
+    // To view the games for each level, enable debugView in
+    // the planet_map_screen.dart page.
+
+    return games;
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
 
-    // Manually add planets and change the number of levels
-    // per planet here. When adding a new SVG, update pubspec.yaml.
-
-    // I recommended cycling the seed per each planet below after
-    // updating levels, so the pins always look nicely placed.
-    int levelsPerPlanet = 8;
+    // Planets can be manually added within this block of code.
+    // To add more, add cases and variables where necessary until
+    // we return the Stack below.
+    // Remember to add new SVGs to pubspec.yaml.
 
     // FIXME Access paths from DB.
     String planet1 = "assets/images/pms_earth.svg";
     String planet2 = "assets/images/pms_mars.svg";
     String planet3 = "assets/images/pms_saturn.svg";
     String planet4 = "assets/images/pms_neptune.svg";
+    // Add more planets here as desired.
 
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -49,24 +101,18 @@ class PlanetPage extends StatelessWidget {
     String planetIndex = index.toString();
     String planetPath;
 
-    // TODO Load from DB if planet is locked or not.
-    // Currently, this is temporarily set only on planet 4 below
-    // in the switch statement to demo the locking ability.
-    // Levels lock independently from planets.
-    bool isPlanetLocked = false;
-
     // Seed to be used to randomly place the pins on a planet.
     int seed;
 
-    // Set the planet image path. Currently, this needs to be updated
-    // manually if adding more planets.
-    // !!! Note: We also set the seed for pin placements here.
-    // Don't like how the pins are for a specific planet? Keep
-    // re-rolling the seed.
-    // !!! Note: Also temporarily setting the planet locked state here
-    // to check if it works. This needs to be loaded from the DB.
+    // Levels lock independently from planets. Loaded from DB.
+    // TODO Load from DB if planet is locked or not.
+    bool isPlanetLocked = false;
+
+    // Set the planet image path/seed. Add more planet cases as desired.
+    // Update the seed here if you do not like the pin placement.
     switch (planetIndex)
     {
+      // Change to "isPlanetLocked = getPlanetLockedFromDB(planetIndex)
       case "1":
         planetPath = planet1;
         seed = 11;
@@ -87,6 +133,7 @@ class PlanetPage extends StatelessWidget {
         seed = 404;
         isPlanetLocked = true;
         break;
+      // Add more cases here if adding more planets, with correct path.
       default:
         // Default to the superior planet in case of error (Earth).
         planetPath = planet1;
@@ -95,12 +142,51 @@ class PlanetPage extends StatelessWidget {
         break;
     }
 
+    // You have reached the point of code that needs to be changed
+    // if adding new planets. The below code refers only to the pin
+    // generation for the planet.
+
+
+
+
+
+    // Generate a list of games that will correlate with the pins on
+    // this planet. We generate the list and then randomize the order;
+    // this currently uses the same seed as above, which is unique per
+    // planet. Works with any number of levels/game types.
+    List<GameType> planetGames = getRandomGamesList(seed);
+
     // Generate a list of pins to place on this planet, naming
     // them properly and placing them on the correct locations.
+    // Note: No need to update this list gen if adding new planets.
     List<Widget> pinWidgets = List.generate(levelsPerPlanet, (pinIndex) {
 
       // Name the pin as "planet-level", i.e. "1-1, 1-2, 2-4", etc.
       String pinName = '$index-${pinIndex + 1}';
+
+      // Define a variable to store the level's theme temporarily.
+      GameTheme gameTheme;
+
+      // Identify the theme of the game based on the planet.
+      switch (index)
+      {
+        case 1:
+          gameTheme = GameTheme.earth;
+          break;
+        case 2:
+          gameTheme = GameTheme.mars;
+          break;
+        case 3:
+          gameTheme = GameTheme.saturn;
+          break;
+        case 4:
+          gameTheme = GameTheme.neptune;
+          break;
+        default:
+          // Space levels not yet implemented.
+          gameTheme = GameTheme.space;
+          break;
+      }
 
       // Use a random variable with a seed (preset above for each planet)
       // to achieve random pin placement that is always the same.
@@ -125,20 +211,21 @@ class PlanetPage extends StatelessWidget {
 
         // Place a pin. Assign its name, the planet it belongs to,
         // and load whether it's complete, locked, or the current level.
-        // TODO Load pin completion status/assign game to each pin?
+        // TODO Load pin completion status from DB
         // Temporarily defaulting to all pins being complete.
         child: PinWidget(
-            name: pinName,
-            planet: index,
-            status: CompletionStatus.complete,
-            // Optionally add a game enum: GameType.anyGame???
-
+          name: pinName,
+          pinColor: index,
+          status: CompletionStatus.complete, // Load from DB
+          game: planetGames.removeLast(),
+          theme: gameTheme,
         ),
       );
       },
     );
 
     // Return a stack of this planet page's images and content.
+    // Again, no need to update this code if adding new planets.
     return Stack(
       children: [
 

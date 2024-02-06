@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../screens/planet_map_screen.dart';
+
 // The Shooting Game's contents are included here.
 // Currently a skeleton of the base game (some elements/art).
 // Adding most basic functionality this week (lives, points,
 // game end/win and widgets).
 
 class ShootingGameStateful extends StatefulWidget {
-  const ShootingGameStateful({super.key});
+  final GameTheme planet;
+  const ShootingGameStateful({super.key, required this.planet});
 
   @override
   State<ShootingGameStateful> createState() => _ShootingGameState();
