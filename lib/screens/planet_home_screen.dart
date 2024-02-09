@@ -1,6 +1,7 @@
 import 'package:explore/schemas.dart';
 import 'package:explore/screens/leaderboard_screen.dart';
 import 'package:explore/screens/planet_map_screen.dart';
+import 'package:explore/utils/realm_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:realm/realm.dart';
@@ -25,13 +26,14 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
   Future<void> _loadData() async {
     try {
       // Open a Realm instance
-      final realm = Realm(
-        Configuration.local([ExploreUser.schema, Planet.schema, Level.schema]),
-      );
+      final realm = Realm(config);
 
       // Read all instances of the Person model
       // Read the user with the provided userId
-      final user = realm.all<ExploreUser>().where((user) => user.id == widget.userId).firstOrNull;
+      final user = realm
+          .all<ExploreUser>()
+          .where((user) => user.id == widget.userId)
+          .firstOrNull;
 
       // Store the retrieved instances in the list
       setState(() {
@@ -116,7 +118,6 @@ class UserInfo extends StatelessWidget {
     // Check if there is at least one user in the list
     // Check if there is a user
     if (user != null) {
-
       return Column(
         children: [
           // First Row: Circle with Image

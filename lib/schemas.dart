@@ -19,22 +19,18 @@ class _ExploreUser {
 @RealmModel()
 class _Planet {
   @PrimaryKey()
-  late final int id;
-
-  late String image;
+  late final ObjectId id;
   late String name;
-  late bool status;
-  late int collectedItems;
+  late int status; // enum
   late int totalItems;
+  late int collectedItems;
   late List<_Level> levels;
 }
 
 @RealmModel()
 class _Level {
   @PrimaryKey()
-  late final int id;
-
-  late int difficulty;
+  late final ObjectId id;
   late int questionAmount;
   late bool status;
   late double timeTaken;

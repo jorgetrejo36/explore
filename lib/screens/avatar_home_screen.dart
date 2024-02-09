@@ -1,12 +1,11 @@
 import 'package:explore/screens/choose_rocket_screen.dart';
 import 'package:explore/screens/leaderboard_screen.dart';
 import 'package:explore/screens/planet_home_screen.dart';
+import 'package:explore/utils/realm_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
 import 'package:realm/realm.dart';
 import 'package:explore/schemas.dart';
-
-
 
 class AvatarHomeScreen extends StatefulWidget {
   const AvatarHomeScreen({Key? key});
@@ -16,7 +15,6 @@ class AvatarHomeScreen extends StatefulWidget {
 }
 
 class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
-
   List<ExploreUser> users = [];
 
   @override
@@ -28,9 +26,7 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
   Future<void> _loadUserData() async {
     try {
       // Open a Realm instance
-      final realm = Realm(
-        Configuration.local([ExploreUser.schema, Planet.schema, Level.schema]),
-      );
+      final realm = Realm(config);
 
       // Read all instances of the ExploreUser model
       final exploreUsers = realm.all<ExploreUser>();
@@ -59,7 +55,7 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
     String buttonImage = "assets/images/Vector.png";
     String trophyImage = "assets/images/trophy.png"; // Path to additional image
 
-     // Define a map to assign colors to specific button indices
+    // Define a map to assign colors to specific button indices
     Map<int, Color> buttonColors = {
       1: Color(0xFF9443DC),
       2: Color(0xFF2AB2D7),
@@ -80,14 +76,11 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
             fit: BoxFit.cover,
           ),
         ),
-
-
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: spacing),
           child: Center(
             child: Column(
               children: [
-
                 Padding(
                   padding: const EdgeInsets.fromLTRB(290, 0, 0, 0),
                   child: ElevatedButton(
@@ -107,18 +100,22 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                   ),
                 ),
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.8, // Adjust width as needed
-                  height: MediaQuery.of(context).size.height * 0.7, // Adjust height as needed
+                  width: MediaQuery.of(context).size.width *
+                      0.8, // Adjust width as needed
+                  height: MediaQuery.of(context).size.height *
+                      0.7, // Adjust height as needed
                   decoration: BoxDecoration(
                     color: Color(0xFFBFCDDB), // BFCDDB color
-                    borderRadius: BorderRadius.circular(20.0), // Set border radius
+                    borderRadius:
+                        BorderRadius.circular(20.0), // Set border radius
                   ),
                   padding: EdgeInsets.symmetric(vertical: spacing),
                   child: GridView.count(
                     crossAxisCount: 2,
                     mainAxisSpacing: 30, // Adjust the spacing between rows
                     crossAxisSpacing: 10, // Adjust the spacing between columns
-                    childAspectRatio: 1.3, // Adjust the aspect ratio of each grid item
+                    childAspectRatio:
+                        1.3, // Adjust the aspect ratio of each grid item
                     children: List.generate(
                       8,
                       (index) => ElevatedButton(
@@ -133,7 +130,8 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                         },
                         style: ElevatedButton.styleFrom(
                           shape: const CircleBorder(),
-                          primary: buttonColors[index + 1], // Assign button color from the map
+                          primary: buttonColors[
+                              index + 1], // Assign button color from the map
                         ),
                         child: Image.asset(
                           buttonImage,
@@ -150,17 +148,19 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LeaderboardScreen()
-                      ),
+                          builder: (context) => const LeaderboardScreen()),
                     );
                   },
                   child: Container(
-                    width: MediaQuery.of(context).size.width * 0.8, // Adjust width as needed
-                    height: MediaQuery.of(context).size.height * 0.2, // Adjust height as needed
+                    width: MediaQuery.of(context).size.width *
+                        0.8, // Adjust width as needed
+                    height: MediaQuery.of(context).size.height *
+                        0.2, // Adjust height as needed
                     decoration: BoxDecoration(
-                    color: Color(0xFFBFCDDB), // BFCDDB color
-                    borderRadius: BorderRadius.circular(20.0), // Set border radius
-                  ),
+                      color: Color(0xFFBFCDDB), // BFCDDB color
+                      borderRadius:
+                          BorderRadius.circular(20.0), // Set border radius
+                    ),
                     alignment: Alignment.center,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

@@ -1,5 +1,6 @@
 import 'package:explore/schemas.dart';
 import 'package:explore/screens/planet_home_screen.dart';
+import 'package:explore/utils/realm_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:realm/realm.dart';
 import 'package:explore/app_colors.dart';
@@ -7,26 +8,33 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class CreateNameScreen extends StatelessWidget {
   final String selectedImage;
-  final int selectedRocket;
-
-
+  final RocketColor selectedRocketColor;
 
   const CreateNameScreen({
     Key? key,
     required this.selectedImage,
-    required this.selectedRocket,
+    required this.selectedRocketColor,
   }) : super(key: key);
 
-  void createNewUser({required BuildContext context, required String userName}) async {
+  void createNewUser({
+    required BuildContext context,
+    required String userName,
+  }) async {
     // create the new avatar in the DB
     // open local realm instance
     ObjectId userId = ObjectId();
 
-    final realm = Realm(
-      Configuration.local([ExploreUser.schema, Planet.schema, Level.schema]),
-    );
+    final realm = Realm(config);
 
-    final user = ExploreUser(userId, userName, selectedImage, selectedRocket, 0, 0, 1);
+    final user = ExploreUser(
+      userId,
+      userName,
+      selectedImage,
+      selectedRocketColor.index,
+      0,
+      0,
+      1,
+    );
     realm.write(() {
       realm.add(user);
     });
@@ -103,7 +111,9 @@ class CreateNameScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: screenHeight * 0.03), // 3% of the screen height spacing
+              SizedBox(
+                  height:
+                      screenHeight * 0.03), // 3% of the screen height spacing
               Container(
                 width: textFieldWidth,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -120,12 +130,14 @@ class CreateNameScreen extends StatelessWidget {
                   style: TextStyle(color: Colors.black), // Text color
                   decoration: const InputDecoration(
                       filled: true,
-                      fillColor: AppColors.lightGrey, // Light gray background color
-                      border: InputBorder.none
-                  ),
+                      fillColor:
+                          AppColors.lightGrey, // Light gray background color
+                      border: InputBorder.none),
                 ),
               ),
-              SizedBox(height: screenHeight * 0.03), // 3% of the screen height spacing
+              SizedBox(
+                  height:
+                      screenHeight * 0.03), // 3% of the screen height spacing
               Container(
                 decoration: BoxDecoration(
                   color: AppColors.darkPurple,
@@ -134,7 +146,8 @@ class CreateNameScreen extends StatelessWidget {
                 child: IconButton(
                   icon: const Icon(Icons.check),
                   color: AppColors.white,
-                  onPressed: () => createNewUser(context: context, userName: _nameController.text),
+                  onPressed: () => createNewUser(
+                      context: context, userName: _nameController.text),
                 ),
               ),
             ],
