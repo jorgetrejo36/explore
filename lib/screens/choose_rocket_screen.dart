@@ -52,19 +52,22 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildRocketAvatar(Icons.rocket_launch_outlined, rocketSize, 1),
+                  buildRocketAvatar(Icons.rocket_launch_outlined, rocketSize,
+                      RocketColor.blue),
                   SizedBox(width: spacing),
-
-                  buildRocketAvatar(Icons.rocket_outlined, rocketSize, 2),
+                  buildRocketAvatar(
+                      Icons.rocket_outlined, rocketSize, RocketColor.aqua),
                 ],
               ),
               SizedBox(height: spacing),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildRocketAvatar(Icons.rocket_launch, rocketSize, 3),
+                  buildRocketAvatar(
+                      Icons.rocket_launch, rocketSize, RocketColor.lightPurple),
                   SizedBox(width: spacing),
-                  buildRocketAvatar(Icons.rocket, rocketSize, 4),
+                  buildRocketAvatar(
+                      Icons.rocket, rocketSize, RocketColor.darkPurple),
                 ],
               ),
             ],
@@ -74,20 +77,23 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
     );
   }
 
-  Widget buildRocketAvatar(IconData icon, double size, int id) {
+  Widget buildRocketAvatar(
+      IconData icon, double size, RocketColor rocketColor) {
     return Container(
       height: size,
       width: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: stringRocket == icon.toString() ? AppColors.lightGrey : AppColors.darkBlue,
+        color: stringRocket == icon.toString()
+            ? AppColors.lightGrey
+            : AppColors.darkBlue,
       ),
       margin: const EdgeInsets.all(10.0),
       child: IconButton(
         icon: Icon(icon),
         onPressed: () {
           selectRocket(icon.toString());
-          navigateToChooseAvatarScreen(id);
+          navigateToChooseAvatarScreen(rocketColor);
         },
       ),
     );
@@ -99,11 +105,12 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
     });
   }
 
-  void navigateToChooseAvatarScreen(int selectedRocket) {
+  void navigateToChooseAvatarScreen(RocketColor selectedRocketColor) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ChooseAvatarScreen(selectedRocket: selectedRocket),
+        builder: (context) =>
+            ChooseAvatarScreen(selectedRocketColor: selectedRocketColor),
       ),
     );
   }

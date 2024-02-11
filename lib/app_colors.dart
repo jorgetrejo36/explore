@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// system-wide colors and enums
+
 class AppColors {
   // UI Colors
   static const Color darkPurple = Color(0xffA149F0);
@@ -40,3 +42,5 @@ class AppColors {
   static const Color stormSky = Color(0xffA09FC9);
   static const Color oceanFloor = Color(0xffD9CDAD);
 }
+
+enum RocketColor { blue, aqua, lightPurple, darkPurple }
