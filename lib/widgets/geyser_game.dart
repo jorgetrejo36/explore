@@ -1,4 +1,5 @@
 import 'package:explore/screens/game_result_screen.dart';
+import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/widgets/geyser_choice.dart';
 import 'package:explore/widgets/geyser_data_repo.dart';
 import 'package:explore/widgets/life_app_bar.dart';
@@ -12,7 +13,7 @@ class GeyserGameStateful extends StatefulWidget {
   const GeyserGameStateful(
       {super.key, required this.planet, required this.geyserProblem});
 
-  final String planet;
+  final GameTheme planet;
   final ProblemGenerator geyserProblem;
 
   @override
@@ -206,7 +207,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      GeyserChoice(
+                      GeyserChoiceStateful(
                         handleState: handleState,
                         choice: choices[0],
                         answer: answer,
@@ -233,7 +234,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      GeyserChoice(
+                      GeyserChoiceStateful(
                         handleState: handleState,
                         choice: choices[1],
                         answer: answer,
@@ -260,7 +261,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      GeyserChoice(
+                      GeyserChoiceStateful(
                         handleState: handleState,
                         choice: choices[2],
                         answer: answer,

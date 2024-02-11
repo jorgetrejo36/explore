@@ -1,9 +1,11 @@
+import 'package:explore/screens/planet_map_screen.dart';
+
 class GeyserRepo {
   Map<String, String> getVariant(variant) {
     Map<String, String> skins;
 
     switch (variant) {
-      case 'mars':
+      case GameTheme.mars:
         skins = {
           "background": 'assets/images/MarsGeyser.png',
           "ground": 'assets/images/geyser-off.svg',
@@ -11,23 +13,23 @@ class GeyserRepo {
           "item": 'assets/images/ruby.svg',
         };
 
-      case 'earth':
+      case GameTheme.earth:
         skins = {
           "background": 'assets/images/EarthGeyser.png',
           "ground": 'assets/images/GeyserGround.svg',
-          "top": 'assets/images/smoke.svg',
+          "top": 'assets/images/ufo.svg',
           "item": 'assets/images/diamond.svg',
         };
 
-      case 'saturn':
+      case GameTheme.saturn:
         skins = {
-          "background": 'assets/images/mars-bg.svg',
-          "ground": 'assets/images/geyser-off.svg',
-          "top": 'assets/images/smoke.svg',
-          "item": 'assets/images/ruby.svg',
+          "background": 'assets/images/SaturnGeyser.png',
+          "ground": 'assets/images/asteroids.svg',
+          "top": 'assets/images/ufo.svg',
+          "item": 'assets/images/gem.svg',
         };
 
-      case 'neptune':
+      case GameTheme.neptune:
         skins = {
           "background": 'assets/images/NeptuneMining.png',
           "ground": 'assets/images/neptune-geyser.svg',
