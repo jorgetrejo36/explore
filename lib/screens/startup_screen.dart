@@ -1,8 +1,21 @@
 import 'package:explore/screens/avatar_home_screen.dart';
+import 'package:explore/utils/user_controller.dart';
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-class StartupScreen extends StatelessWidget {
+class StartupScreen extends StatefulWidget {
   const StartupScreen({super.key});
+
+  @override
+  State<StartupScreen> createState() => _StartupScreenState();
+}
+
+class _StartupScreenState extends State<StartupScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Get.put(UserController());
+  }
 
   @override
   Widget build(BuildContext context) {
