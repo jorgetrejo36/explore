@@ -120,6 +120,11 @@ flutter:
     - assets/images/ruby.svg
     - assets/images/gem.svg
     - assets/images/crystals.svg
+    - assets/images/rocket1.svg
+    - assets/images/rocket2.svg
+    - assets/images/rocket3.svg
+    - assets/images/rocket4.svg
+    - assets/images/rocketFlame.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
