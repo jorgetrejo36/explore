@@ -125,6 +125,24 @@ flutter:
     - assets/images/rocket3.svg
     - assets/images/rocket4.svg
     - assets/images/rocketFlame.svg
+    - assets/images/neptune-bg.svg
+    - assets/images/neptune-geyser.svg
+    - assets/images/GeyserBubbles.svg
+    - assets/images/GeyserGround.svg
+    - assets/images/EarthGeyser.png
+    - assets/images/ufo.svg
+    - assets/images/SaturnGeyser.png
+    - assets/images/MarsGeyser.png
+    - assets/images/asteroids.svg
+    - assets/images/astronaut.svg
+    - assets/images/astronaut2.svg
+    - assets/images/astronaut3.svg
+    - assets/images/astronaut4.svg
+    - assets/images/alien4.svg
+
+
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
