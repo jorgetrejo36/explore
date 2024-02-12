@@ -7,6 +7,7 @@ import 'package:stroke_text/stroke_text.dart';
 import 'package:explore/utils/problem_generator.dart';
 import 'package:explore/screens/game_result_screen.dart';
 
+/// Creates instance of mining game given a specified theme and problem generator
 class MiningGame extends StatefulWidget {
   final String planet;
   final ProblemGenerator miningProblem;
@@ -17,17 +18,19 @@ class MiningGame extends StatefulWidget {
   State<MiningGame> createState() => _MiningGameState();
 }
 
-class _MiningGameState extends State<MiningGame> {
+class _MiningGameState extends State<MiningGame>
+    with SingleTickerProviderStateMixin {
   // Theme Variables
   late MiningTheme theme = MiningTheme(widget.planet);
 
-  // Problem Variables
+  // Problem Variable Initialization
   late GeneratedProblem problem1 = widget.miningProblem.generateProblem();
   late GeneratedProblem problem2 = widget.miningProblem.generateProblem();
   late GeneratedProblem problem3 = widget.miningProblem.generateProblem();
   late GeneratedProblem problem4 = widget.miningProblem.generateProblem();
   late GeneratedProblem problem5 = widget.miningProblem.generateProblem();
 
+  // List of problem objects to reference
   late List<GeneratedProblem> problemList = [
     problem1,
     problem2,
@@ -44,8 +47,10 @@ class _MiningGameState extends State<MiningGame> {
 
   // Player variables
   int score = 0;
-  bool correct = true;
+  bool correct = false;
 
+  // Pushes game results screen to user
+  // Todo: Send game data to second screen
   void gameFinish() {
     Navigator.pushReplacement(
         context,
@@ -54,6 +59,7 @@ class _MiningGameState extends State<MiningGame> {
         ));
   }
 
+  // Displays the problem in the list to the game
   void newQuestion(int problemNum) {
     setState(() {
       miningRowList.add(MiningRow(
@@ -63,7 +69,15 @@ class _MiningGameState extends State<MiningGame> {
     });
   }
 
+  // Iterates problem list by one, then deicdes to either end game or update the question
   _updateQuestion(int level) {
+    if (level == 0) {
+      correct = false;
+      repeatOnce();
+    } else if (level == 1) {
+      correct = true;
+      repeatOnce();
+    }
     setState(() {
       currentProblem = currentProblem + level;
       score++;
@@ -73,6 +87,35 @@ class _MiningGameState extends State<MiningGame> {
         gameFinish();
       }
     });
+  }
+
+  // Correctness Animations
+  double startingOpacity = 0;
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 1000),
+    vsync: this,
+  );
+
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeIn,
+  );
+  @override
+  void initState() {
+    super.initState();
+    //repeatOnce();
+  }
+
+  void repeatOnce() async {
+    await _controller.forward();
+    await _controller.reverse();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -102,7 +145,7 @@ class _MiningGameState extends State<MiningGame> {
         child: Center(
           child: Container(
             margin: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height * 0.055,
+              top: MediaQuery.of(context).size.height * 0.0445,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -110,7 +153,7 @@ class _MiningGameState extends State<MiningGame> {
                 if (currentProblem < 5)
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.15,
+                    height: MediaQuery.of(context).size.height * 0.14,
                     child: Text(
                       problemList[currentProblem].problem.getProblemString(),
                       textAlign: TextAlign.center,
@@ -133,17 +176,43 @@ class _MiningGameState extends State<MiningGame> {
                           fontSize: 102),
                     ),
                   ),
+                Stack(
+                  children: [
+                    if (correct == true)
+                      FadeTransition(
+                        opacity: _animation,
+                        child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height * 0.085,
+                            margin: EdgeInsets.only(
+                                top:
+                                    MediaQuery.of(context).size.height * 0.005),
+                            child: SvgPicture.asset('assets/images/right.svg')),
+                      ),
+                    if (correct == false)
+                      FadeTransition(
+                        opacity: _animation,
+                        child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height * 0.085,
+                            margin: EdgeInsets.only(
+                                top:
+                                    MediaQuery.of(context).size.height * 0.005),
+                            child: SvgPicture.asset('assets/images/wrong.svg')),
+                      ),
+                  ],
+                ),
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.73,
+                  height: MediaQuery.of(context).size.height * 0.725,
                   //decoration: BoxDecoration(color: Colors.blue),
-                  margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.065,
-                  ),
+                  // margin: EdgeInsets.only(
+                  //   top: MediaQuery.of(context).size.height * 0.01,
+                  // ),
                   child: Column(
                     children: <Widget>[
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.73,
+                        height: MediaQuery.of(context).size.height * 0.725,
                         child: ListView.builder(
                             physics: new NeverScrollableScrollPhysics(),
                             itemCount: miningRowList.length,
@@ -163,7 +232,7 @@ class _MiningGameState extends State<MiningGame> {
   }
 }
 
-///Builds a clickable row of mining objects with given problem data
+/// Builds a clickable row of mining objects with given problem data
 class MiningRow extends StatefulWidget {
   final MiningTheme theme;
   final GeneratedProblem problem;
@@ -199,6 +268,8 @@ class _MiningRowState extends State<MiningRow> {
         row.showNumber[2] = false;
 
         widget.update(1);
+      } else {
+        widget.update(0);
       }
     });
   }
@@ -340,7 +411,7 @@ class _MiningRowState extends State<MiningRow> {
 class RowData {
   static double randomSeed = Random().nextDouble() * 360;
   List<double> rowRotation = [
-    0 + randomSeed,
+    270 + randomSeed,
     90 + randomSeed,
     180 + randomSeed
   ];
