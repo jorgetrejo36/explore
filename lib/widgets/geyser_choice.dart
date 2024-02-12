@@ -27,7 +27,6 @@ class GeyserChoiceStateful extends StatefulWidget {
 class _GeyserChoiceState extends State<GeyserChoiceStateful>
     with SingleTickerProviderStateMixin {
   AnimationController? _animationController;
-  Animation<double>? _animation;
 
   @override
   void initState() {
@@ -35,10 +34,6 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
     _animationController = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
-    );
-    _animation = Tween<double>(begin: 0, end: 250).animate(
-      CurvedAnimation(
-          parent: _animationController!, curve: Curves.fastOutSlowIn),
     );
   }
 
@@ -63,7 +58,11 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
   }
 
   Widget _buildAlienSvg() {
-    return Align(
+    final rotationAnimation =
+        Tween(begin: 0.0, end: 1.0).animate(_animationController!);
+
+    return RotationTransition(
+      turns: rotationAnimation,
       alignment: Alignment.bottomLeft,
       child: SvgPicture.asset(
         'assets/images/alien.svg',
@@ -145,7 +144,6 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
 
   @override
   Widget build(BuildContext context) {
-    print("build");
     return SafeArea(
       child: Column(children: correctWidget()),
     );
