@@ -104,6 +104,7 @@ class ExploreUser extends _ExploreUser
 class Planet extends _Planet with RealmEntity, RealmObjectBase, RealmObject {
   Planet(
     ObjectId id,
+    int identifyingEnum,
     String name,
     int status,
     int totalItems,
@@ -111,6 +112,7 @@ class Planet extends _Planet with RealmEntity, RealmObjectBase, RealmObject {
     Iterable<Level> levels = const [],
   }) {
     RealmObjectBase.set(this, 'id', id);
+    RealmObjectBase.set(this, 'identifyingEnum', identifyingEnum);
     RealmObjectBase.set(this, 'name', name);
     RealmObjectBase.set(this, 'status', status);
     RealmObjectBase.set(this, 'totalItems', totalItems);
@@ -125,6 +127,13 @@ class Planet extends _Planet with RealmEntity, RealmObjectBase, RealmObject {
   ObjectId get id => RealmObjectBase.get<ObjectId>(this, 'id') as ObjectId;
   @override
   set id(ObjectId value) => throw RealmUnsupportedSetError();
+
+  @override
+  int get identifyingEnum =>
+      RealmObjectBase.get<int>(this, 'identifyingEnum') as int;
+  @override
+  set identifyingEnum(int value) =>
+      RealmObjectBase.set(this, 'identifyingEnum', value);
 
   @override
   String get name => RealmObjectBase.get<String>(this, 'name') as String;
@@ -168,6 +177,7 @@ class Planet extends _Planet with RealmEntity, RealmObjectBase, RealmObject {
     RealmObjectBase.registerFactory(Planet._);
     return const SchemaObject(ObjectType.realmObject, Planet, 'Planet', [
       SchemaProperty('id', RealmPropertyType.objectid, primaryKey: true),
+      SchemaProperty('identifyingEnum', RealmPropertyType.int),
       SchemaProperty('name', RealmPropertyType.string),
       SchemaProperty('status', RealmPropertyType.int),
       SchemaProperty('totalItems', RealmPropertyType.int),

@@ -38,6 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   realm: ^1.6.1
   path_provider: ^2.1.2
+  get: ^4.6.6
 
 dev_dependencies:
   flutter_test:
@@ -119,6 +120,11 @@ flutter:
     - assets/images/ruby.svg
     - assets/images/gem.svg
     - assets/images/crystals.svg
+    - assets/images/rocket1.svg
+    - assets/images/rocket2.svg
+    - assets/images/rocket3.svg
+    - assets/images/rocket4.svg
+    - assets/images/rocketFlame.svg
     - assets/images/neptune-bg.svg
     - assets/images/neptune-geyser.svg
     - assets/images/GeyserBubbles.svg

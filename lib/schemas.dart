@@ -20,6 +20,7 @@ class _ExploreUser {
 class _Planet {
   @PrimaryKey()
   late final ObjectId id;
+  late int identifyingEnum; // enum
   late String name;
   late int status; // enum
   late int totalItems;

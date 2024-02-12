@@ -15,21 +15,20 @@ int numPlanets = 4;
 // Update both variables when adding or removing a game & hot restart.
 // Want to add more game types? Update these two variables and
 // the loadGame() function found in pms_pin.dart.
-enum GameType {geyser, shooting, mining, racing}
+enum GameType { geyser, shooting, mining, racing }
+
 int numGameTypes = 4;
 
 // Possible themes for games.
-enum GameTheme {earth, mars, saturn, neptune, space}
+// The order of this enum does matter and should remain: [earth, mars, saturn, neptune, space]
+enum GameTheme { earth, mars, saturn, neptune, space }
 
 // Test changing the seed per each planet below after updating
 // levels per planet so the pins always look nicely placed.
-int levelsPerPlanet = 8;
-
-
+int levelsPerPlanet = 5;
 
 /// Screen that dynamically builds a scrollable list of planet pages.
 class PlanetMapScreen extends StatelessWidget {
-
   // Used to scroll to the planet we selected on the previous page.
   final int selectedPlanet;
 
@@ -44,7 +43,6 @@ class PlanetMapScreen extends StatelessWidget {
       appBar: const PMSAppBarWidget(),
       body: Stack(
         children: [
-
           // Use a scroll view to store the planet pages.
           SingleChildScrollView(
             physics: const ClampingScrollPhysics(),
@@ -52,9 +50,8 @@ class PlanetMapScreen extends StatelessWidget {
             controller: ScrollController(
               // Calculate which page height to scroll to.
               initialScrollOffset:
-              (selectedPlanet) * MediaQuery.of(context).size.height,
+                  (selectedPlanet) * MediaQuery.of(context).size.height,
             ),
-
             child: Column(
               // Generate the planet pages in reverse order so
               // they grow in indices from bottom to top.
@@ -62,7 +59,6 @@ class PlanetMapScreen extends StatelessWidget {
                 return PlanetPage(index: index + 1);
               }).reversed.toList(),
             ),
-
           ),
         ],
       ),

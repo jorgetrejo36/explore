@@ -1,7 +1,8 @@
-import 'package:explore/schemas.dart';
 import 'package:explore/screens/planet_home_screen.dart';
 import 'package:explore/utils/realm_utils.dart';
+import 'package:explore/utils/user_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:realm/realm.dart';
 import 'package:explore/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -22,19 +23,18 @@ class CreateNameScreen extends StatelessWidget {
   }) async {
     // create the new avatar in the DB
     // open local realm instance
-    ObjectId userId = ObjectId();
-
     final realm = Realm(config);
 
-    final user = ExploreUser(
-      userId,
-      userName,
-      selectedImage,
-      selectedRocketColor.index,
-      0,
-      0,
-      1,
-    );
+    final user = RealmUtils()
+        .createNewUser(userName, selectedImage, selectedRocketColor.index);
+
+    // get the user controller
+    final UserController loggedInUser = Get.find();
+
+    // take the id of the user that was just created and assign it to the user
+    // controller
+    loggedInUser.updateId(user.id);
+
     realm.write(() {
       realm.add(user);
     });
@@ -51,7 +51,7 @@ class CreateNameScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PlanetHomeScreen(userId: userId),
+        builder: (context) => const PlanetHomeScreen(),
       ),
     );
   }
