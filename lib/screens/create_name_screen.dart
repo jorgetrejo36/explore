@@ -21,26 +21,9 @@ class CreateNameScreen extends StatelessWidget {
     required BuildContext context,
     required String userName,
   }) async {
-    // create the new avatar in the DB
-    // open local realm instance
-    final realm = Realm(config);
-
-    final user = RealmUtils()
+    // create new user
+    RealmUtils()
         .createNewUser(userName, selectedImage, selectedRocketColor.index);
-
-    // get the user controller
-    final UserController loggedInUser = Get.find();
-
-    // take the id of the user that was just created and assign it to the user
-    // controller
-    loggedInUser.updateId(user.id);
-
-    realm.write(() {
-      realm.add(user);
-    });
-
-    realm.close();
-    // finish DB operations
 
     // pop the last 3 screens in the create avatar sequence
     // ChooseRocketScreen, ChooseAvatarScreen, and CreateNameScreen (which is this screen)
@@ -147,7 +130,9 @@ class CreateNameScreen extends StatelessWidget {
                   icon: const Icon(Icons.check),
                   color: AppColors.white,
                   onPressed: () => createNewUser(
-                      context: context, userName: _nameController.text),
+                    context: context,
+                    userName: _nameController.text,
+                  ),
                 ),
               ),
             ],

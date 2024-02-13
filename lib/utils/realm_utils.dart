@@ -1,10 +1,13 @@
 import 'package:explore/schemas.dart';
 import 'package:explore/screens/planet_home_screen.dart';
 import 'package:explore/screens/planet_map_screen.dart';
+import 'package:explore/utils/user_controller.dart';
+import 'package:get/get.dart';
 import 'package:realm/realm.dart';
 
 final Configuration config = Configuration.local(
   [ExploreUser.schema, Planet.schema, Level.schema],
+  shouldDeleteIfMigrationNeeded: true,
 );
 
 const Map<GameTheme, String> gameThemeToName = {
@@ -24,7 +27,13 @@ class RealmUtils {
   // necessary planets and levels for this user to be able to properly save
   // their data
   ExploreUser createNewUser(
-      String username, String avatarImagePath, int rocketColor) {
+    String username,
+    String avatarImagePath,
+    int rocketColor,
+  ) {
+    // open local realm instance
+    final realm = Realm(config);
+
     // the user
     final ObjectId userId = ObjectId();
 
@@ -34,10 +43,11 @@ class RealmUtils {
     for (int i = 0; i < numPlanets; i++) {
       final List<Level> levels = [];
       // create all the levels that will be within the planet
-      for (int i = 0; i < levelsPerPlanet; i++) {
+      for (int j = 0; j < levelsPerPlanet; j++) {
         final ObjectId levelId = ObjectId();
         levels.add(
-          Level(levelId, questionsPerLevel, false, double.maxFinite, 0, 0),
+          Level(levelId, j + 1, questionsPerLevel,
+              i == 0 && j == 0 ? true : false, double.maxFinite, 0, 0),
         );
       }
 
@@ -67,6 +77,19 @@ class RealmUtils {
       1, // all users start at level 1
       planets: planets,
     );
+
+    // get the user controller
+    final UserController loggedInUser = Get.find();
+
+    // take the id of the user that was just created and assign it to the user
+    // controller
+    loggedInUser.updateId(user.id);
+
+    realm.write(() {
+      realm.add(user);
+    });
+
+    realm.close();
 
     return user;
   }
