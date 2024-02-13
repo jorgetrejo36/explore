@@ -72,7 +72,7 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
                       context, avatarSize, 'assets/images/alien3.svg'),
                   SizedBox(width: spacing),
                   buildAvatarIconButton(
-                      context, avatarSize, 'assets/images/alien.svg'),
+                      context, avatarSize, 'assets/images/alien4.svg'),
                 ],
               ),
               SizedBox(height: spacing),
@@ -80,10 +80,10 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buildAvatarIconButton(
-                      context, avatarSize, 'assets/images/alien2.svg'),
+                      context, avatarSize, 'assets/images/astronaut.svg'),
                   SizedBox(width: spacing),
                   buildAvatarIconButton(
-                      context, avatarSize, 'assets/images/alien3.svg'),
+                      context, avatarSize, 'assets/images/astronaut2.svg'),
                 ],
               ),
               SizedBox(height: spacing),
@@ -91,10 +91,10 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buildAvatarIconButton(
-                      context, avatarSize, 'assets/images/alien.svg'),
+                      context, avatarSize, 'assets/images/astronaut3.svg'),
                   SizedBox(width: spacing),
                   buildAvatarIconButton(
-                      context, avatarSize, 'assets/images/alien.svg'),
+                      context, avatarSize, 'assets/images/astronaut4.svg'),
                 ],
               ),
             ],
