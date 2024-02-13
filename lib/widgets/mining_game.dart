@@ -43,6 +43,7 @@ class _MiningGameState extends State<MiningGame>
     MiningRow(theme: this.theme, problem: problem1, update: _updateQuestion)
   ];
 
+  List<bool> problemVisibility = [false, false, false, false, false];
   int currentProblem = 0;
 
   // Player variables
@@ -72,21 +73,34 @@ class _MiningGameState extends State<MiningGame>
   // Iterates problem list by one, then deicdes to either end game or update the question
   _updateQuestion(int level) {
     if (level == 0) {
-      correct = false;
-      repeatOnce();
+      displayIncorrect();
     } else if (level == 1) {
-      correct = true;
-      repeatOnce();
+      displayCorrect();
+      setState(() {
+        currentProblem = currentProblem + level;
+        score++;
+        //correct = false;
+        if (currentProblem < 5) {
+          newQuestion(currentProblem);
+        } else {
+          gameFinish();
+        }
+      });
     }
+  }
+
+  displayCorrect() {
     setState(() {
-      currentProblem = currentProblem + level;
-      score++;
-      if (currentProblem < 5) {
-        newQuestion(currentProblem);
-      } else {
-        gameFinish();
-      }
+      correct = true;
     });
+    repeatOnce();
+  }
+
+  displayIncorrect() {
+    setState(() {
+      correct = false;
+    });
+    repeatOnce();
   }
 
   // Correctness Animations
@@ -205,10 +219,6 @@ class _MiningGameState extends State<MiningGame>
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.725,
-                  //decoration: BoxDecoration(color: Colors.blue),
-                  // margin: EdgeInsets.only(
-                  //   top: MediaQuery.of(context).size.height * 0.01,
-                  // ),
                   child: Column(
                     children: <Widget>[
                       SizedBox(
@@ -258,9 +268,10 @@ class _MiningRowState extends State<MiningRow> {
   void selectAnswer(int rowNumber) {
     setState(() {
       row.showNumber[rowNumber] = false;
+      row.selected[rowNumber] = true;
 
       if (row.rowChoices[rowNumber] == row.solution) {
-        row.rowImages[rowNumber] = row.currentTheme.miningCurrency;
+        //row.rowImages[rowNumber] = row.currentTheme.miningCurrency;
         row.rowRotation[rowNumber] = 0;
 
         row.showNumber[0] = false;
@@ -283,14 +294,76 @@ class _MiningRowState extends State<MiningRow> {
         children: [
           GestureDetector(
             onTap: () {
-              selectAnswer(0);
+              if (row.showNumber[0] == true) {
+                selectAnswer(0);
+              }
             },
             child: Container(
               margin: EdgeInsets.only(top: 15),
-              child: Stack(
+              child: AnimatedCrossFade(
+                firstChild: Stack(
+                  children: [
+                    Transform.rotate(
+                      angle: row.rowRotation[0],
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.33,
+                        child: Center(
+                          child: SvgPicture.asset(
+                            'assets/images/${row.rowImages[0]}.svg',
+                            height: 80,
+                            width: 25,
+                            semanticsLabel: "bubble",
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (row.showNumber[0])
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.33,
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        //decoration: BoxDecoration(color: Colors.red),
+                        child: Center(
+                          child: StrokeText(
+                            text: " ${row.rowChoices[0]} ",
+                            textStyle: TextStyle(
+                                color: AppColors.white,
+                                fontFamily: 'Fredoka',
+                                fontSize: 42),
+                            strokeColor: AppColors.darkGrey,
+                            strokeWidth: 6.5,
+                          ),
+                        ),
+                      )
+                  ],
+                ),
+                secondChild: Container(
+                  width: MediaQuery.of(context).size.width * 0.33,
+                  child: SvgPicture.asset(
+                    'assets/images/${row.currentTheme.miningCurrency}.svg',
+                    height: 80,
+                    width: 25,
+                    semanticsLabel: "bubble",
+                  ),
+                ),
+                crossFadeState:
+                    !(row.selected[0] && (row.rowChoices[0] == row.solution))
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                duration: Duration(milliseconds: 500),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              if (row.showNumber[1] == true) {
+                selectAnswer(1);
+              }
+            },
+            child: AnimatedCrossFade(
+              firstChild: Stack(
                 children: [
                   Transform.rotate(
-                    angle: row.rowRotation[0],
+                    angle: row.rowRotation[1],
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.33,
                       child: SvgPicture.asset(
@@ -301,14 +374,14 @@ class _MiningRowState extends State<MiningRow> {
                       ),
                     ),
                   ),
-                  if (row.showNumber[0])
+                  if (row.showNumber[1])
                     Container(
                       width: MediaQuery.of(context).size.width * 0.33,
                       height: MediaQuery.of(context).size.height * 0.1,
                       //decoration: BoxDecoration(color: Colors.red),
                       child: Center(
                         child: StrokeText(
-                          text: " ${row.rowChoices[0]} ",
+                          text: " ${row.rowChoices[1]} ",
                           textStyle: TextStyle(
                               color: AppColors.white,
                               fontFamily: 'Fredoka',
@@ -320,84 +393,78 @@ class _MiningRowState extends State<MiningRow> {
                     )
                 ],
               ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              selectAnswer(1);
-            },
-            child: Stack(
-              children: [
-                Transform.rotate(
-                  angle: row.rowRotation[1],
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.33,
-                    child: SvgPicture.asset(
-                      'assets/images/${row.rowImages[1]}.svg',
-                      height: 80,
-                      width: 25,
-                      semanticsLabel: "bubble",
-                    ),
-                  ),
+              secondChild: Container(
+                width: MediaQuery.of(context).size.width * 0.33,
+                child: SvgPicture.asset(
+                  'assets/images/${row.currentTheme.miningCurrency}.svg',
+                  height: 80,
+                  width: 25,
+                  semanticsLabel: "bubble",
                 ),
-                if (row.showNumber[1])
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.33,
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    //decoration: BoxDecoration(color: Colors.red),
-                    child: Center(
-                      child: StrokeText(
-                        text: " ${row.rowChoices[1]} ",
-                        textStyle: const TextStyle(
-                            color: AppColors.white,
-                            fontFamily: 'Fredoka',
-                            fontSize: 42),
-                        strokeColor: AppColors.darkGrey,
-                        strokeWidth: 6.5,
-                      ),
-                    ),
-                  )
-              ],
+              ),
+              crossFadeState:
+                  !(row.selected[1] && (row.rowChoices[1] == row.solution))
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+              duration: Duration(milliseconds: 500),
             ),
           ),
           GestureDetector(
             onTap: () {
-              selectAnswer(2);
+              if (row.showNumber[2] == true) {
+                selectAnswer(2);
+              }
             },
             child: Container(
-              margin: EdgeInsets.only(top: 30),
-              child: Stack(
-                children: [
-                  Transform.rotate(
-                    angle: row.rowRotation[2],
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.33,
-                      child: SvgPicture.asset(
-                        'assets/images/${row.rowImages[2]}.svg',
-                        height: 80,
-                        width: 25,
-                        semanticsLabel: "bubble",
-                      ),
-                    ),
-                  ),
-                  if (row.showNumber[2])
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.33,
-                      height: MediaQuery.of(context).size.height * 0.1,
-                      //decoration: BoxDecoration(color: Colors.red),
-                      child: Center(
-                        child: StrokeText(
-                          text: " ${row.rowChoices[2]} ",
-                          textStyle: const TextStyle(
-                              color: AppColors.white,
-                              fontFamily: 'Fredoka',
-                              fontSize: 42),
-                          strokeColor: AppColors.darkGrey,
-                          strokeWidth: 6.5,
+              margin: EdgeInsets.only(top: 25),
+              child: AnimatedCrossFade(
+                firstChild: Stack(
+                  children: [
+                    Transform.rotate(
+                      angle: row.rowRotation[2],
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.33,
+                        child: SvgPicture.asset(
+                          'assets/images/${row.rowImages[2]}.svg',
+                          height: 78,
+                          width: 25,
+                          semanticsLabel: "bubble",
                         ),
                       ),
-                    )
-                ],
+                    ),
+                    if (row.showNumber[2])
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.33,
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        //decoration: BoxDecoration(color: Colors.red),
+                        child: Center(
+                          child: StrokeText(
+                            text: " ${row.rowChoices[2]} ",
+                            textStyle: TextStyle(
+                                color: AppColors.white,
+                                fontFamily: 'Fredoka',
+                                fontSize: 42),
+                            strokeColor: AppColors.darkGrey,
+                            strokeWidth: 6.5,
+                          ),
+                        ),
+                      )
+                  ],
+                ),
+                secondChild: Container(
+                  width: MediaQuery.of(context).size.width * 0.33,
+                  child: SvgPicture.asset(
+                    'assets/images/${row.currentTheme.miningCurrency}.svg',
+                    height: 80,
+                    width: 25,
+                    semanticsLabel: "bubble",
+                  ),
+                ),
+                crossFadeState:
+                    !(row.selected[2] && (row.rowChoices[2] == row.solution))
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                duration: Duration(milliseconds: 500),
               ),
             ),
           ),
@@ -417,7 +484,7 @@ class RowData {
   ];
 
   List<bool> showNumber = [true, true, true];
-
+  List<bool> selected = [false, false, false];
   late String reward;
   late int solution;
   late List<String> rowImages;
