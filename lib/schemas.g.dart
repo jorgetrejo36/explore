@@ -191,6 +191,7 @@ class Planet extends _Planet with RealmEntity, RealmObjectBase, RealmObject {
 class Level extends _Level with RealmEntity, RealmObjectBase, RealmObject {
   Level(
     ObjectId id,
+    int levelNumOnPlanet,
     int questionAmount,
     bool status,
     double timeTaken,
@@ -198,6 +199,7 @@ class Level extends _Level with RealmEntity, RealmObjectBase, RealmObject {
     int highscore,
   ) {
     RealmObjectBase.set(this, 'id', id);
+    RealmObjectBase.set(this, 'levelNumOnPlanet', levelNumOnPlanet);
     RealmObjectBase.set(this, 'questionAmount', questionAmount);
     RealmObjectBase.set(this, 'status', status);
     RealmObjectBase.set(this, 'timeTaken', timeTaken);
@@ -211,6 +213,13 @@ class Level extends _Level with RealmEntity, RealmObjectBase, RealmObject {
   ObjectId get id => RealmObjectBase.get<ObjectId>(this, 'id') as ObjectId;
   @override
   set id(ObjectId value) => throw RealmUnsupportedSetError();
+
+  @override
+  int get levelNumOnPlanet =>
+      RealmObjectBase.get<int>(this, 'levelNumOnPlanet') as int;
+  @override
+  set levelNumOnPlanet(int value) =>
+      RealmObjectBase.set(this, 'levelNumOnPlanet', value);
 
   @override
   int get questionAmount =>
@@ -255,6 +264,7 @@ class Level extends _Level with RealmEntity, RealmObjectBase, RealmObject {
     RealmObjectBase.registerFactory(Level._);
     return const SchemaObject(ObjectType.realmObject, Level, 'Level', [
       SchemaProperty('id', RealmPropertyType.objectid, primaryKey: true),
+      SchemaProperty('levelNumOnPlanet', RealmPropertyType.int),
       SchemaProperty('questionAmount', RealmPropertyType.int),
       SchemaProperty('status', RealmPropertyType.bool),
       SchemaProperty('timeTaken', RealmPropertyType.double),
