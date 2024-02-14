@@ -28,13 +28,18 @@ enum GameTheme { earth, mars, saturn, neptune, space }
 int levelsPerPlanet = 5;
 
 /// Screen that dynamically builds a scrollable list of planet pages.
-class PlanetMapScreen extends StatelessWidget {
+class PlanetMapScreen extends StatefulWidget {
   // Used to scroll to the planet we selected on the previous page.
   final int selectedPlanet;
 
   const PlanetMapScreen({Key? key, required this.selectedPlanet})
       : super(key: key);
 
+  @override
+  State<PlanetMapScreen> createState() => _PlanetMapScreenState();
+}
+
+class _PlanetMapScreenState extends State<PlanetMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +55,7 @@ class PlanetMapScreen extends StatelessWidget {
             controller: ScrollController(
               // Calculate which page height to scroll to.
               initialScrollOffset:
-                  (selectedPlanet) * MediaQuery.of(context).size.height,
+                  (widget.selectedPlanet) * MediaQuery.of(context).size.height,
             ),
             child: Column(
               // Generate the planet pages in reverse order so

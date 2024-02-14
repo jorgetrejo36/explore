@@ -32,6 +32,7 @@ class _Planet {
 class _Level {
   @PrimaryKey()
   late final ObjectId id;
+  late int levelNumOnPlanet;
   late int questionAmount;
   late bool status;
   late double timeTaken;
