@@ -100,7 +100,14 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                             builder: (context) => const GameResultScreen(),
                           ),
                         ),
-                        child: const Text("Game Complete"),
+                        style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                        ),
+                        child: const Icon(
+                          Icons.arrow_right_rounded,
+                          color: Colors.black,
+                          size: 60,
+                        ),
                       ),
               )
             ],

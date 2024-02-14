@@ -35,26 +35,6 @@ class LifeAppBar extends StatelessWidget implements PreferredSizeWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              leading ??
-                  Transform.translate(
-                    offset: const Offset(-10, 0),
-                    child: IconButton(
-                      style: IconButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        iconSize: 50,
-                      ),
-                      icon: const Icon(
-                        Icons.arrow_left_rounded,
-                      ),
-                      // Navigate back when the back button is pressed
-                      onPressed: () => Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const GameScreen(),
-                        ),
-                      ),
-                    ),
-                  ),
               if (showItemCounter)
                 Transform.translate(
                   offset: const Offset(10, 0),

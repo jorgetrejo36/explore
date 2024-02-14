@@ -25,8 +25,9 @@ class GeyserChoiceStateful extends StatefulWidget {
 }
 
 class _GeyserChoiceState extends State<GeyserChoiceStateful>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   AnimationController? _animationController;
+  AnimationController? _animationController2;
 
   @override
   void initState() {
@@ -35,11 +36,16 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
       duration: const Duration(seconds: 1),
       vsync: this,
     );
+    _animationController2 = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
   }
 
   @override
   void dispose() {
     _animationController?.dispose();
+    _animationController2?.dispose(); // Start the smoke animation
     super.dispose();
   }
 
@@ -58,12 +64,11 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
   }
 
   Widget _buildAlienSvg() {
-    final rotationAnimation =
-        Tween(begin: 0.0, end: 1.0).animate(_animationController!);
+    final Tween<double> rotationAnimation = Tween(begin: 0.0, end: 1.0);
 
     return RotationTransition(
-      turns: rotationAnimation,
-      alignment: Alignment.bottomLeft,
+      turns: rotationAnimation.animate(_animationController2!),
+      alignment: Alignment.center,
       child: SvgPicture.asset(
         'assets/images/alien.svg',
         width: double.infinity,
@@ -111,10 +116,11 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
     }
 
     if (widget.correctAnswer != widget.answer) {
-      _animationController?.reset(); // Reset the animation controller
-      _animationController?.forward(); // Start the smoke animation
-
       if (widget.choice != widget.correctAnswer) {
+        _animationController?.reset(); // Reset the animation controller
+        _animationController?.forward(); // Start the smoke animation
+        _animationController2?.forward(); // Start the smoke animation
+
         return widget.choice == widget.answer
             ? [
                 SizedBox(
@@ -134,7 +140,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
       }
     } else {
       _animationController?.reset(); // Reset the animation controller
-      _animationController?.forward(); // Start the smoke animation
+      _animationController?.forward();
     }
 
     return widget.choice == widget.answer
