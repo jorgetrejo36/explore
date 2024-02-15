@@ -1,4 +1,5 @@
 import 'package:explore/schemas.dart';
+import 'package:explore/screens/avatar_home_screen.dart';
 import 'package:explore/screens/leaderboard_screen.dart';
 import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/utils/realm_utils.dart';
@@ -93,14 +94,14 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
                 ),
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.35,
+                height: MediaQuery.of(context).size.height * 0.40,
                 child: IconGridWidget(
                   planets: currentUser.planets,
                   numPlanets: 4,
                 ),
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.30,
+                height: MediaQuery.of(context).size.height * 0.25,
                 child: const LeaderboardIconWidget(),
               ),
             ],
@@ -127,25 +128,20 @@ class UserInfo extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color(0xFF9443DC),
-                    ),
+              Container(
+                width: MediaQuery.of(context).size.height * 0.1,
+                height: MediaQuery.of(context).size.height * 0.1,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xFF9443DC),
+                ),
+                child: Center(
+                  // db pull the svg
+                  child: SvgPicture.asset(
+                    user.avatar,
+                    // width: 70,
                   ),
-                  Center(
-                    //db pull the svg
-                    child: SvgPicture.asset(
-                      user.avatar,
-                      width: 70,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
@@ -191,7 +187,7 @@ class UserInfo extends StatelessWidget {
                     ),
 
                     // Icon on the right end
-                    Padding(
+                    const Padding(
                       padding: EdgeInsets.only(left: 2.0),
                       child: Icon(
                         Icons.star,

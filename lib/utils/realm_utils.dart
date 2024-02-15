@@ -31,7 +31,33 @@ class PlanetLevelLockStatus {
   });
 }
 
+class KeyUserInfo {
+  final ObjectId id;
+  final String name;
+  final String avatar;
+
+  KeyUserInfo({required this.id, required this.name, required this.avatar});
+}
+
 class RealmUtils {
+  List<KeyUserInfo> getAllUsers() {
+    // open local realm instance
+    final realm = Realm(config);
+
+    final users = realm
+        .all<ExploreUser>()
+        .map(
+          (user) =>
+              KeyUserInfo(id: user.id, name: user.name, avatar: user.avatar),
+        )
+        .toList();
+
+    // close realm instance
+    realm.close();
+
+    return users;
+  }
+
   List<PlanetLevelLockStatus> getPlanetLevelLockStatuses() {
     // open local realm instance
     final realm = Realm(config);
@@ -115,18 +141,37 @@ class RealmUtils {
       // create all the levels that will be within the planet
       for (int j = 0; j < levelsPerPlanet; j++) {
         final ObjectId levelId = ObjectId();
+
+        // this is the version that's is for testing only
         levels.add(
           Level(
-              levelId,
-              j + 1,
-              questionsPerLevel,
-              i == 0 && j == 0
-                  ? CompletionStatus.current.index
-                  : CompletionStatus.locked.index,
-              double.maxFinite,
-              0,
-              0),
+            levelId,
+            j + 1,
+            questionsPerLevel,
+            i == 0 && j != 4
+                ? CompletionStatus.complete.index
+                : i == 0 && j == 4
+                    ? CompletionStatus.current.index
+                    : CompletionStatus.locked.index,
+            double.maxFinite,
+            0,
+            0,
+          ),
         );
+        // this is the final version that needs to be implemented
+        // levels.add(
+        //   Level(
+        //     levelId,
+        //     j + 1,
+        //     questionsPerLevel,
+        //     i == 0 && j == 0
+        //         ? CompletionStatus.current.index
+        //         : CompletionStatus.locked.index,
+        //     double.maxFinite,
+        //     0,
+        //     0,
+        //   ),
+        // );
       }
 
       final ObjectId planetId = ObjectId();

@@ -1,3 +1,4 @@
+import 'package:explore/screens/avatar_home_screen.dart';
 import 'package:explore/screens/planet_home_screen.dart';
 import 'package:explore/utils/realm_utils.dart';
 import 'package:explore/utils/user_controller.dart';

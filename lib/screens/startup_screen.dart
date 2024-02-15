@@ -62,7 +62,7 @@ class _StartupScreenState extends State<StartupScreen> {
                     onPressed: () => Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const AvatarHomeScreen(),
+                        builder: (context) => AvatarHomeScreen(),
                       ),
                     ),
                     icon: const Icon(
