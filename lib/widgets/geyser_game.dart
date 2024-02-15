@@ -58,6 +58,54 @@ class _GeyserGameState extends State<GeyserGameStateful> {
         loseLife();
       }
       questionsAnswered++;
+      if ((questionsAnswered == questions) || (lives == 0)) {
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: Center(
+              child: Text(
+                '$counter / $questions',
+                style: const TextStyle(
+                  fontFamily: 'Fredoka',
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              Center(
+                child: counter / questions < 0.8
+                    ? IconButton(
+                        icon: SvgPicture.asset(
+                          'assets/images/reload.svg',
+                          colorFilter:
+                              ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                          semanticsLabel: "arrow pointing in circle",
+                          height: 50,
+                          width: 50,
+                        ),
+                        // Navigate back when the back button is pressed
+                        onPressed: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GeyserGameStateful(
+                                planet: widget.planet,
+                                geyserProblem: widget.geyserProblem),
+                          ),
+                        ),
+                      )
+                    : ElevatedButton(
+                        onPressed: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const GameResultScreen(),
+                          ),
+                        ),
+                        child: const Text("Game Complete"),
+                      ),
+              )
+            ],
+          ),
+        );
+      }
       answeredQuestion = !answeredQuestion;
     });
   }
