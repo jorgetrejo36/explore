@@ -77,7 +77,7 @@ class PinWidget extends StatelessWidget {
       switch (game) {
         case GameType.geyser:
           gameToLoad = GeyserGameStateful(
-            planet: 'mars',
+            planet: theme,
             geyserProblem: problemGenerator,
           );
 
