@@ -18,7 +18,6 @@ import 'pms_rocket.dart';
 
 /// A single pin (level) on a planet, associated with a specific game.
 class PinWidget extends StatelessWidget {
-
   // The level's (pin's) name (1-1, 1-2, 1-3, 2-1, etc.).
   final String name;
   // Determines the color pin to use based on the planet.
@@ -30,21 +29,23 @@ class PinWidget extends StatelessWidget {
   // What is the theme of this pin? Assigned based on levelName
   // currently, so there are no space themes yet.
   final GameTheme theme;
+  // problem generator object
+  final ProblemGenerator problemGenerator;
 
   // Constructor.
   // Refer to "name" (i.e. "1-4") to determine the theme type.
-  const PinWidget(
-      {Key? key,
-        required this.pinColor,
-        required this.name,
-        required this.status,
-        required this.game,
-        required this.theme,
-      }) : super(key: key);
+  const PinWidget({
+    Key? key,
+    required this.pinColor,
+    required this.name,
+    required this.status,
+    required this.game,
+    required this.theme,
+    required this.problemGenerator,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     // Stores the path of the correct pin color based on the planet.
     String pinPath;
 
@@ -56,17 +57,13 @@ class PinWidget extends StatelessWidget {
     String planet4 = "assets/images/pms_pin_neptune.svg";
     // Add new planets here as necessary.
 
-
-
     // Loads a game based on its type and sends theme information.
-    void loadGame(String name, GameType game, CompletionStatus status)
-    {
+    void loadGame(String name, GameType game, CompletionStatus status) {
       // Notify which level is selected. Can remove when no longer nec.
       print("Loading level $name. Game: $game. Status: $status.");
 
       // If the level is locked, do not load a game.
-      if (status == CompletionStatus.locked)
-      {
+      if (status == CompletionStatus.locked) {
         print("Status is locked. Load cancelled.");
         return;
       }
@@ -78,11 +75,10 @@ class PinWidget extends StatelessWidget {
       // Identify which game to load based on the GameType.
       // To add more game types, add to this switch statement.
       switch (game) {
-
         case GameType.geyser:
           gameToLoad = GeyserGameStateful(
             planet: 'mars',
-            geyserProblem: ProblemGenerator(1, true),
+            geyserProblem: problemGenerator,
           );
 
         case GameType.shooting:
@@ -93,8 +89,8 @@ class PinWidget extends StatelessWidget {
         case GameType.mining:
           // Add mining game with theme
           gameToLoad = MiningGame(
-              planet: 'neptune',
-              miningProblem: ProblemGenerator(1, true)
+            planet: 'neptune',
+            miningProblem: problemGenerator,
           );
 
         case GameType.racing:
@@ -118,12 +114,9 @@ class PinWidget extends StatelessWidget {
       );
     }
 
-
-
     // Assign the path based on what planet we're pasting pins on
     // so we know what colors to set the pins.
-    switch (pinColor)
-    {
+    switch (pinColor) {
       case 1:
         pinPath = planet1;
         break;
@@ -150,16 +143,14 @@ class PinWidget extends StatelessWidget {
         loadGame(name, game, status);
       },
 
-        // Use a Stack to display the correct pin and icon beside it.
+      // Use a Stack to display the correct pin and icon beside it.
       child: Stack(
         children: [
-
           // Display a locked pin level if the status is locked.
           Visibility(
             visible: status == CompletionStatus.locked,
             child: Stack(
               children: [
-
                 // Display the pin icon, but grayed-out.
                 // Use planet4 as it looks best grayed-out.
                 SizedBox(
@@ -171,10 +162,26 @@ class PinWidget extends StatelessWidget {
                     // Applies a grayscale color filter. Sourced
                     // from online to skip entire library import.
                     colorFilter: const ColorFilter.matrix(<double>[
-                      0.2126,0.7152,0.0722,0,0,
-                      0.2126,0.7152,0.0722,0,0,
-                      0.2126,0.7152,0.0722,0,0,
-                      0,0,0,1,0,
+                      0.2126,
+                      0.7152,
+                      0.0722,
+                      0,
+                      0,
+                      0.2126,
+                      0.7152,
+                      0.0722,
+                      0,
+                      0,
+                      0.2126,
+                      0.7152,
+                      0.0722,
+                      0,
+                      0,
+                      0,
+                      0,
+                      0,
+                      1,
+                      0,
                     ]),
                   ),
                 ),
@@ -191,7 +198,6 @@ class PinWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -201,12 +207,14 @@ class PinWidget extends StatelessWidget {
             visible: status == CompletionStatus.complete,
             child: Stack(
               children: [
-
                 // Display the pin icon in its normal color.
                 SizedBox(
                   width: 34,
                   height: 34,
-                  child: SvgPicture.asset(pinPath, fit: BoxFit.fill,),
+                  child: SvgPicture.asset(
+                    pinPath,
+                    fit: BoxFit.fill,
+                  ),
                 ),
 
                 // Display a checkmark close to the pin with padding.
@@ -220,7 +228,6 @@ class PinWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -231,16 +238,17 @@ class PinWidget extends StatelessWidget {
           Visibility(
             visible: status == CompletionStatus.current,
             child: Stack(
-
               // Set clipBehavior so the rocket/avatar shows properly.
               clipBehavior: Clip.none,
               children: [
-
                 // Display the pin icon in its normal color.
                 SizedBox(
                   width: 34,
                   height: 34,
-                  child: SvgPicture.asset(pinPath, fit: BoxFit.fill,),
+                  child: SvgPicture.asset(
+                    pinPath,
+                    fit: BoxFit.fill,
+                  ),
                 ),
 
                 // Display the rocket close to the pin (its own widget).
@@ -250,7 +258,6 @@ class PinWidget extends StatelessWidget {
                   child: PMSRocketWidget(),
                 ),
               ],
-
             ),
           ),
 
@@ -258,7 +265,8 @@ class PinWidget extends StatelessWidget {
           // game with each pin (i.e. 1-1 mining).
           Visibility(
             visible: debugView,
-            child: Text("       $name ${game.toString().split('.').last}",
+            child: Text(
+              "       $name ${game.toString().split('.').last}",
               style: const TextStyle(
                 fontSize: 22,
                 fontFamily: "Fredoka",

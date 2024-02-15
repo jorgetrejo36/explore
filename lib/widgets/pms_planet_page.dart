@@ -1,9 +1,47 @@
+import 'package:explore/utils/problem_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'dart:math';
 import 'package:explore/screens/planet_home_screen.dart';
 import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/widgets/pms_pin.dart';
+
+// This is where the mapping between the problem generator and levels go. These
+// are manually written so they can be adjusted as seen fit
+final List<List<ProblemGenerator>> problemGeneratorCurriculum = [
+  // Earth
+  [
+    ProblemGenerator(1, true),
+    ProblemGenerator(2, true),
+    ProblemGenerator(2, false),
+    ProblemGenerator(2, false),
+    ProblemGenerator(2, false),
+  ],
+  // Mars
+  [
+    ProblemGenerator(3, true),
+    ProblemGenerator(4, true),
+    ProblemGenerator.withRange(3, 4),
+    ProblemGenerator(4, false),
+    ProblemGenerator(4, false),
+  ],
+  // Saturn
+  [
+    ProblemGenerator(5, true),
+    ProblemGenerator(6, true),
+    ProblemGenerator(7, true),
+    ProblemGenerator.withRange(5, 7),
+    ProblemGenerator(7, false),
+  ],
+  // Neptune
+  [
+    ProblemGenerator(8, true),
+    ProblemGenerator(9, true),
+    ProblemGenerator(10, true),
+    ProblemGenerator.withRange(8, 10),
+    ProblemGenerator(10, false),
+  ],
+];
 
 // Loads a single "page" for the Planet Map Screen.
 // This includes the respective planet, its pinned levels, and the
@@ -212,6 +250,7 @@ class PlanetPage extends StatelessWidget {
                 : levelStatuses[pinIndex], // Load from DB
             game: planetGames.removeLast(),
             theme: gameTheme,
+            problemGenerator: problemGeneratorCurriculum[index - 1][pinIndex],
           ),
         );
       },
