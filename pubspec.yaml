@@ -143,6 +143,17 @@ flutter:
 
 
 
+    - assets/images/neptune-bg.svg
+    - assets/images/neptune-geyser.svg
+    - assets/images/GeyserBubbles.svg
+    - assets/images/GeyserGround.svg
+    - assets/images/EarthGeyser.png
+    - assets/images/ufo.svg
+    - assets/images/SaturnGeyser.png
+    - assets/images/MarsGeyser.png
+    - assets/images/asteroids.svg
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
