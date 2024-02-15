@@ -59,12 +59,10 @@ class PinWidget extends StatelessWidget {
 
     // Loads a game based on its type and sends theme information.
     void loadGame(String name, GameType game, CompletionStatus status) {
-    void loadGame(String name, GameType game, CompletionStatus status) {
       // Notify which level is selected. Can remove when no longer nec.
       print("Loading level $name. Game: $game. Status: $status.");
 
       // If the level is locked, do not load a game.
-      if (status == CompletionStatus.locked) {
       if (status == CompletionStatus.locked) {
         print("Status is locked. Load cancelled.");
         return;
@@ -79,7 +77,7 @@ class PinWidget extends StatelessWidget {
       switch (game) {
         case GameType.geyser:
           gameToLoad = GeyserGameStateful(
-            planet: theme,
+            planet: 'mars',
             geyserProblem: problemGenerator,
           );
 
@@ -184,26 +182,6 @@ class PinWidget extends StatelessWidget {
                       0,
                       1,
                       0,
-                      0.2126,
-                      0.7152,
-                      0.0722,
-                      0,
-                      0,
-                      0.2126,
-                      0.7152,
-                      0.0722,
-                      0,
-                      0,
-                      0.2126,
-                      0.7152,
-                      0.0722,
-                      0,
-                      0,
-                      0,
-                      0,
-                      0,
-                      1,
-                      0,
                     ]),
                   ),
                 ),
@@ -234,11 +212,8 @@ class PinWidget extends StatelessWidget {
                   width: 34,
                   height: 34,
                   child: SvgPicture.asset(
-                    
                     pinPath,
-                   
                     fit: BoxFit.fill,
-                  
                   ),
                 ),
 
@@ -271,11 +246,8 @@ class PinWidget extends StatelessWidget {
                   width: 34,
                   height: 34,
                   child: SvgPicture.asset(
-                    
                     pinPath,
-                   
                     fit: BoxFit.fill,
-                  
                   ),
                 ),
 
@@ -294,7 +266,6 @@ class PinWidget extends StatelessWidget {
           Visibility(
             visible: debugView,
             child: Text(
-              
               "       $name ${game.toString().split('.').last}",
               style: const TextStyle(
                 fontSize: 22,
@@ -308,4 +279,3 @@ class PinWidget extends StatelessWidget {
     );
   }
 }
-
