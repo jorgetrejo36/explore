@@ -1,11 +1,7 @@
 import 'package:explore/screens/choose_rocket_screen.dart';
 import 'package:explore/screens/leaderboard_screen.dart';
-import 'package:explore/screens/planet_home_screen.dart';
-import 'package:explore/utils/realm_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
-import 'package:realm/realm.dart';
-import 'package:explore/schemas.dart';
 
 class AvatarHomeScreen extends StatefulWidget {
   const AvatarHomeScreen({Key? key});
@@ -15,36 +11,6 @@ class AvatarHomeScreen extends StatefulWidget {
 }
 
 class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
-  List<ExploreUser> users = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUserData();
-  }
-
-  Future<void> _loadUserData() async {
-    try {
-      // Open a Realm instance
-      final realm = Realm(config);
-
-      // Read all instances of the ExploreUser model
-      final exploreUsers = realm.all<ExploreUser>();
-
-      // Convert RealmResults to a Dart List and take the first 8 elements
-      final limitedUsers = exploreUsers.toList().take(8).toList();
-
-      // Store the retrieved instances in the list
-      setState(() {
-        users = limitedUsers;
-      });
-      // Close the Realm instance when done
-      realm.close();
-    } catch (e) {
-      print('Error loading data: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -54,6 +20,7 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
     // Image path for the circle buttons
     String buttonImage = "assets/images/Vector.png";
     String trophyImage = "assets/images/trophy.png"; // Path to additional image
+    String rocketImage = "assets/images/rocket.png";
 
     // Define a map to assign colors to specific button indices
     Map<int, Color> buttonColors = {
@@ -76,51 +43,29 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: spacing),
-          child: Center(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(290, 0, 0, 0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Handle button press
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: CircleBorder(),
-                      primary: Colors.transparent, // Set transparent background
-                      elevation: 0, // No shadow
-                    ),
-                    child: Image.asset(
-                      'assets/images/VectorSetting.png',
-                      width: 30, // Adjust icon size as needed
-                      height: 30, // Adjust icon size as needed
-                    ),
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width *
-                      0.8, // Adjust width as needed
-                  height: MediaQuery.of(context).size.height *
-                      0.7, // Adjust height as needed
+        child: Center(
+          child: Stack(
+            children: [
+              Center(
+                child: Container(
+                  width: screenWidth * 2.5,
+                  height: screenWidth * 2.5,
                   decoration: BoxDecoration(
-                    color: Color(0xFFBFCDDB), // BFCDDB color
-                    borderRadius:
-                        BorderRadius.circular(20.0), // Set border radius
+                    image: DecorationImage(
+                      image: AssetImage(rocketImage), // Rocket image
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: spacing),
                   child: GridView.count(
                     crossAxisCount: 2,
-                    mainAxisSpacing: 30, // Adjust the spacing between rows
-                    crossAxisSpacing: 10, // Adjust the spacing between columns
-                    childAspectRatio:
-                        1.3, // Adjust the aspect ratio of each grid item
+                    mainAxisSpacing: 15,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 1.3,
                     children: List.generate(
                       8,
                       (index) => ElevatedButton(
                         onPressed: () {
-                          // Navigate to the LeaderboardScreen
+                          // Navigate to the ChooseRocketScreen
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -130,61 +75,55 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                         },
                         style: ElevatedButton.styleFrom(
                           shape: const CircleBorder(),
-                          primary: buttonColors[
-                              index + 1], // Assign button color from the map
+                          primary: buttonColors[index + 1],
                         ),
                         child: Image.asset(
                           buttonImage,
-                          width: 40, // Adjust image size as needed
-                          height: 40, // Adjust image size as needed
+                          width: 40,
+                          height: 40,
                         ),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: spacing), // Fixed spacing between containers
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LeaderboardScreen()),
-                    );
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width *
-                        0.8, // Adjust width as needed
-                    height: MediaQuery.of(context).size.height *
-                        0.2, // Adjust height as needed
-                    decoration: BoxDecoration(
-                      color: Color(0xFFBFCDDB), // BFCDDB color
-                      borderRadius:
-                          BorderRadius.circular(20.0), // Set border radius
-                    ),
-                    alignment: Alignment.center,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          trophyImage,
-                          width: 110, // Adjust image size as needed
-                          height: 130, // Adjust image size as needed
+              ),
+              Positioned(
+                top: -spacing * 3,
+                right: 0,
+                left: 0,
+                child: Center(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LeaderboardScreen(),
                         ),
-                        const Text(
-                          "Leaderboard",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            fontSize: 30,
-                            fontFamily: 'Fredoka',
+                      );
+                    },
+                    child: Container(
+                      width: avatarSize,
+                      height: avatarSize * 1.2,
+                      decoration: BoxDecoration(
+                        color: Color(0xFFBFCDDB),
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            trophyImage,
+                            width: 110,
+                            height: 130,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

@@ -193,7 +193,7 @@ class Level extends _Level with RealmEntity, RealmObjectBase, RealmObject {
     ObjectId id,
     int levelNumOnPlanet,
     int questionAmount,
-    bool status,
+    int status,
     double timeTaken,
     int questionsCorrect,
     int highscore,
@@ -229,9 +229,9 @@ class Level extends _Level with RealmEntity, RealmObjectBase, RealmObject {
       RealmObjectBase.set(this, 'questionAmount', value);
 
   @override
-  bool get status => RealmObjectBase.get<bool>(this, 'status') as bool;
+  int get status => RealmObjectBase.get<int>(this, 'status') as int;
   @override
-  set status(bool value) => RealmObjectBase.set(this, 'status', value);
+  set status(int value) => RealmObjectBase.set(this, 'status', value);
 
   @override
   double get timeTaken =>
@@ -266,7 +266,7 @@ class Level extends _Level with RealmEntity, RealmObjectBase, RealmObject {
       SchemaProperty('id', RealmPropertyType.objectid, primaryKey: true),
       SchemaProperty('levelNumOnPlanet', RealmPropertyType.int),
       SchemaProperty('questionAmount', RealmPropertyType.int),
-      SchemaProperty('status', RealmPropertyType.bool),
+      SchemaProperty('status', RealmPropertyType.int),
       SchemaProperty('timeTaken', RealmPropertyType.double),
       SchemaProperty('questionsCorrect', RealmPropertyType.int),
       SchemaProperty('highscore', RealmPropertyType.int),

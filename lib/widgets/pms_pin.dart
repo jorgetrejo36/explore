@@ -29,6 +29,8 @@ class PinWidget extends StatelessWidget {
   // What is the theme of this pin? Assigned based on levelName
   // currently, so there are no space themes yet.
   final GameTheme theme;
+  // problem generator object
+  final ProblemGenerator problemGenerator;
 
   // Constructor.
   // Refer to "name" (i.e. "1-4") to determine the theme type.
@@ -39,6 +41,7 @@ class PinWidget extends StatelessWidget {
     required this.status,
     required this.game,
     required this.theme,
+    required this.problemGenerator,
   }) : super(key: key);
 
   @override
@@ -56,10 +59,12 @@ class PinWidget extends StatelessWidget {
 
     // Loads a game based on its type and sends theme information.
     void loadGame(String name, GameType game, CompletionStatus status) {
+    void loadGame(String name, GameType game, CompletionStatus status) {
       // Notify which level is selected. Can remove when no longer nec.
       print("Loading level $name. Game: $game. Status: $status.");
 
       // If the level is locked, do not load a game.
+      if (status == CompletionStatus.locked) {
       if (status == CompletionStatus.locked) {
         print("Status is locked. Load cancelled.");
         return;
@@ -75,7 +80,7 @@ class PinWidget extends StatelessWidget {
         case GameType.geyser:
           gameToLoad = GeyserGameStateful(
             planet: theme,
-            geyserProblem: ProblemGenerator(1, true),
+            geyserProblem: problemGenerator,
           );
 
         case GameType.shooting:
@@ -86,7 +91,9 @@ class PinWidget extends StatelessWidget {
         case GameType.mining:
           // Add mining game with theme
           gameToLoad = MiningGame(
-              planet: 'neptune', miningProblem: ProblemGenerator(1, true));
+            planet: 'neptune',
+            miningProblem: problemGenerator,
+          );
 
         case GameType.racing:
           // Add racing game w/ theme. Temp GameScreen until it's made.
@@ -177,6 +184,26 @@ class PinWidget extends StatelessWidget {
                       0,
                       1,
                       0,
+                      0.2126,
+                      0.7152,
+                      0.0722,
+                      0,
+                      0,
+                      0.2126,
+                      0.7152,
+                      0.0722,
+                      0,
+                      0,
+                      0.2126,
+                      0.7152,
+                      0.0722,
+                      0,
+                      0,
+                      0,
+                      0,
+                      0,
+                      1,
+                      0,
                     ]),
                   ),
                 ),
@@ -207,8 +234,11 @@ class PinWidget extends StatelessWidget {
                   width: 34,
                   height: 34,
                   child: SvgPicture.asset(
+                    
                     pinPath,
+                   
                     fit: BoxFit.fill,
+                  
                   ),
                 ),
 
@@ -241,8 +271,11 @@ class PinWidget extends StatelessWidget {
                   width: 34,
                   height: 34,
                   child: SvgPicture.asset(
+                    
                     pinPath,
+                   
                     fit: BoxFit.fill,
+                  
                   ),
                 ),
 
@@ -261,6 +294,7 @@ class PinWidget extends StatelessWidget {
           Visibility(
             visible: debugView,
             child: Text(
+              
               "       $name ${game.toString().split('.').last}",
               style: const TextStyle(
                 fontSize: 22,
@@ -274,3 +308,4 @@ class PinWidget extends StatelessWidget {
     );
   }
 }
+

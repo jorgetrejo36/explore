@@ -7,7 +7,6 @@ import 'package:realm/realm.dart';
 
 final Configuration config = Configuration.local(
   [ExploreUser.schema, Planet.schema, Level.schema],
-  shouldDeleteIfMigrationNeeded: true,
 );
 
 const Map<GameTheme, String> gameThemeToName = {
@@ -22,7 +21,78 @@ const Map<GameTheme, String> gameThemeToName = {
 const int totalPlanetItems = 10;
 const int questionsPerLevel = 5;
 
+class PlanetLevelLockStatus {
+  final bool planetStatus;
+  final List<CompletionStatus> levelStatuses;
+
+  PlanetLevelLockStatus({
+    required this.planetStatus,
+    required this.levelStatuses,
+  });
+}
+
 class RealmUtils {
+  List<PlanetLevelLockStatus> getPlanetLevelLockStatuses() {
+    // open local realm instance
+    final realm = Realm(config);
+
+    // get the user controller
+    final UserController loggedInUser = Get.find();
+
+    // Get current user
+    final ExploreUser user =
+        realm.find<ExploreUser>(loggedInUser.id) as ExploreUser;
+
+    // Create a shallow copy of the original list
+    final List<Planet> sortedPlanets = [...user.planets];
+    // sort sortedPlanets (which is not yet sorted)
+    sortedPlanets
+        .sort((a, b) => a.identifyingEnum.compareTo(b.identifyingEnum));
+
+    final List<bool> planetStatuses = sortedPlanets
+        .map(
+          (planet) =>
+              CompletionStatus.values[planet.status] == CompletionStatus.locked
+                  ? false
+                  : true,
+        )
+        .toList();
+
+    // make a list of lists for the lock status of the individual levels
+    final List<List<CompletionStatus>> levelStatuses =
+        List.generate(planetStatuses.length, (_) => []);
+
+    for (int i = 0; i < planetStatuses.length; i++) {
+      if (planetStatuses[i] == true) {
+        // sort the levels into the correct order after retrieving from DB
+        final List<Level> sortedLevels = [...sortedPlanets[i].levels];
+        sortedLevels
+            .sort((a, b) => a.levelNumOnPlanet.compareTo(b.levelNumOnPlanet));
+
+        // add the completion statuses to the levelStatuses list
+        levelStatuses[i] = sortedLevels
+            .map((level) => CompletionStatus.values[level.status])
+            .toList();
+      }
+    }
+
+    // add this to the proper object
+    final List<PlanetLevelLockStatus> planetLevelLockStatuses = [];
+
+    for (int i = 0; i < planetStatuses.length; i++) {
+      planetLevelLockStatuses.add(
+        PlanetLevelLockStatus(
+          planetStatus: planetStatuses[i],
+          levelStatuses: levelStatuses[i],
+        ),
+      );
+    }
+
+    realm.close();
+
+    return planetLevelLockStatuses;
+  }
+
   // this function handles the creation of a new user and adding all the
   // necessary planets and levels for this user to be able to properly save
   // their data
@@ -46,8 +116,16 @@ class RealmUtils {
       for (int j = 0; j < levelsPerPlanet; j++) {
         final ObjectId levelId = ObjectId();
         levels.add(
-          Level(levelId, j + 1, questionsPerLevel,
-              i == 0 && j == 0 ? true : false, double.maxFinite, 0, 0),
+          Level(
+              levelId,
+              j + 1,
+              questionsPerLevel,
+              i == 0 && j == 0
+                  ? CompletionStatus.current.index
+                  : CompletionStatus.locked.index,
+              double.maxFinite,
+              0,
+              0),
         );
       }
 
