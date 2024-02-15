@@ -27,7 +27,7 @@ class CreateNameScreen extends StatelessWidget {
         .createNewUser(userName, selectedImage, selectedRocketColor.index);
 
     // pop the last 3 screens in the create avatar sequence
-    // ChooseRocketScreen, ChooseAvatarScreen, and CreateNameScreen (which is this screen)
+    // AvatarHomeScreen, ChooseRocketScreen, ChooseAvatarScreen, and CreateNameScreen (which is this screen)
     for (int i = 0; i < 3; i++) {
       Navigator.pop(context);
     }

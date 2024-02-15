@@ -103,7 +103,10 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => PlanetHomeScreen(),
                                   ),
-                                );
+                                  // this is used so the page reloads when it comes back
+                                ).then((_) => setState(() {
+                                      _loadData();
+                                    }));
                               },
                               style: ElevatedButton.styleFrom(
                                 shape: const CircleBorder(),
@@ -131,7 +134,10 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                                         builder: (context) =>
                                             ChooseRocketScreen(),
                                       ),
-                                    );
+                                      // this is used so the page reloads when it comes back
+                                    ).then((_) => setState(() {
+                                          _loadData();
+                                        }));
                                   },
                                   style: ElevatedButton.styleFrom(
                                     shape: const CircleBorder(),
