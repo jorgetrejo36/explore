@@ -34,7 +34,7 @@ class _Level {
   late final ObjectId id;
   late int levelNumOnPlanet;
   late int questionAmount;
-  late bool status;
+  late int status; // enum
   late double timeTaken;
   late int questionsCorrect;
   late int highscore;
