@@ -1,3 +1,4 @@
+import 'package:explore/utils/realm_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:explore/widgets/pms_planet_page.dart';
 import 'package:explore/widgets/pms_appbar.dart';
@@ -40,6 +41,22 @@ class PlanetMapScreen extends StatefulWidget {
 }
 
 class _PlanetMapScreenState extends State<PlanetMapScreen> {
+  late List<PlanetLevelLockStatus> lockStatuses;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPlanetLockStatus();
+  }
+
+  Future<void> _loadPlanetLockStatus() async {
+    try {
+      lockStatuses = RealmUtils().getPlanetLevelLockStatuses();
+    } catch (e) {
+      print('Error loading data: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +78,11 @@ class _PlanetMapScreenState extends State<PlanetMapScreen> {
               // Generate the planet pages in reverse order so
               // they grow in indices from bottom to top.
               children: List.generate(numPlanets, (index) {
-                return PlanetPage(index: index + 1);
+                return PlanetPage(
+                  index: index + 1,
+                  isPlanetLocked: !lockStatuses[index].planetStatus,
+                  levelStatuses: lockStatuses[index].levelStatuses,
+                );
               }).reversed.toList(),
             ),
           ),
