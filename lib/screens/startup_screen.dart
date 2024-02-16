@@ -1,5 +1,6 @@
 import 'package:explore/screens/avatar_home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class StartupScreen extends StatelessWidget {
   const StartupScreen({super.key});
