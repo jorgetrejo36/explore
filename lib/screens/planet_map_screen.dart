@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 // Variables for planets, levels, and games
 
 // Enable to view level names and types beside each pin.
-const bool debugView = false;
+const bool debugView = true;
 // Enable to force all pins & planets to unlock, ignoring Realm status.
 const bool debugDisableLoading = true;
 

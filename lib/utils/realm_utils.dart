@@ -157,36 +157,20 @@ class RealmUtils {
       for (int j = 0; j < levelsPerPlanet; j++) {
         final ObjectId levelId = ObjectId();
 
-        // this is the version that's is for testing only
+        // this is the final version that needs to be implemented
         levels.add(
           Level(
             levelId,
             j + 1,
             questionsPerLevel,
-            i == 0 && j != 4
-                ? CompletionStatus.complete.index
-                : i == 0 && j == 4
-                    ? CompletionStatus.current.index
-                    : CompletionStatus.locked.index,
+            i == 0 && j == 0
+                ? CompletionStatus.current.index
+                : CompletionStatus.locked.index,
             double.maxFinite,
             0,
             0,
           ),
         );
-        // this is the final version that needs to be implemented
-        // levels.add(
-        //   Level(
-        //     levelId,
-        //     j + 1,
-        //     questionsPerLevel,
-        //     i == 0 && j == 0
-        //         ? CompletionStatus.current.index
-        //         : CompletionStatus.locked.index,
-        //     double.maxFinite,
-        //     0,
-        //     0,
-        //   ),
-        // );
       }
 
       final ObjectId planetId = ObjectId();
