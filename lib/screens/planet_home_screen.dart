@@ -18,6 +18,7 @@ class PlanetHomeScreen extends StatefulWidget {
 
 class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
   late ExploreUser currentUser;
+  final UserController loggedInUser = Get.find();
 
   @override
   void initState() {
@@ -32,13 +33,11 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
       // Open a Realm instance
       final realm = Realm(config);
 
-      // Read all instances of the Person model
-      // Read the user with the provided userId
-      // this is guaranteed to return a user given the app logic
+      // find the user with the currentUserId
       final ExploreUser user =
           realm.find<ExploreUser>(currentUserId) as ExploreUser;
 
-      // Store the retrieved instances in the list
+      // Store this user in a seperate variable
       setState(() {
         currentUser = user;
       });

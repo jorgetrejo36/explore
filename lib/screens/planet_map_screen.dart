@@ -1,7 +1,10 @@
+import 'package:explore/schemas.dart';
 import 'package:explore/utils/realm_utils.dart';
+import 'package:explore/utils/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:explore/widgets/pms_planet_page.dart';
 import 'package:explore/widgets/pms_appbar.dart';
+import 'package:get/get.dart';
 
 // Variables for planets, levels, and games
 
@@ -42,16 +45,19 @@ class PlanetMapScreen extends StatefulWidget {
 
 class _PlanetMapScreenState extends State<PlanetMapScreen> {
   late List<PlanetLevelLockStatus> lockStatuses;
+  late KeyUserInfo user;
 
   @override
   void initState() {
     super.initState();
-    _loadPlanetLockStatus();
+    _loadData();
   }
 
-  Future<void> _loadPlanetLockStatus() async {
+  Future<void> _loadData() async {
     try {
       lockStatuses = RealmUtils().getPlanetLevelLockStatuses();
+      final UserController loggedInUser = Get.find();
+      user = RealmUtils().getUser(loggedInUser.id);
     } catch (e) {
       print('Error loading data: $e');
     }
@@ -62,7 +68,10 @@ class _PlanetMapScreenState extends State<PlanetMapScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       // Use the custom AppBar for the Planet Map Screen.
-      appBar: const PMSAppBarWidget(),
+      appBar: PMSAppBarWidget(
+        name: user.name,
+        avatarPath: user.avatar,
+      ),
       body: Stack(
         children: [
           // Use a scroll view to store the planet pages.

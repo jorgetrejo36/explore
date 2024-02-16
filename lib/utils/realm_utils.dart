@@ -40,6 +40,21 @@ class KeyUserInfo {
 }
 
 class RealmUtils {
+  KeyUserInfo getUser(ObjectId id) {
+    // open local realm instance
+    final realm = Realm(config);
+
+    final ExploreUser user = realm.find<ExploreUser>(id) as ExploreUser;
+
+    final KeyUserInfo userInfo =
+        KeyUserInfo(id: id, name: user.name, avatar: user.avatar);
+
+    // close realm instance
+    realm.close();
+
+    return userInfo;
+  }
+
   List<KeyUserInfo> getAllUsers() {
     // open local realm instance
     final realm = Realm(config);
