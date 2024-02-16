@@ -46,21 +46,21 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
         child: Center(
           child: Stack(
             children: [
+              Positioned.fill(
+                child: Image.asset(
+                  rocketImage, // Rocket image
+                  fit: BoxFit.contain,
+                ),
+              ),
               Center(
                 child: Container(
-                  width: screenWidth * 2.5,
-                  height: screenWidth * 2.5,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(rocketImage), // Rocket image
-                      fit: BoxFit.contain,
-                    ),
-                  ),
+                  width: screenWidth * .5,
+                  height: screenWidth * 1.2,
                   child: GridView.count(
                     crossAxisCount: 2,
-                    mainAxisSpacing: 15,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 1.3,
+                    mainAxisSpacing: 6,
+                    crossAxisSpacing: 20,
+                    childAspectRatio: .85,
                     children: List.generate(
                       8,
                       (index) => ElevatedButton(
@@ -79,8 +79,8 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                         ),
                         child: Image.asset(
                           buttonImage,
-                          width: 40,
-                          height: 40,
+                          width: 100,
+                          height: 100,
                         ),
                       ),
                     ),
@@ -88,12 +88,12 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                 ),
               ),
               Positioned(
-                top: -spacing * 3,
-                right: 0,
-                left: 0,
+                top: spacing * 3,
+                right: screenWidth * 0.15,
+                left: screenWidth * 0.15,
                 child: Center(
-                  child: InkWell(
-                    onTap: () {
+                  child: ElevatedButton(
+                    onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -101,23 +101,16 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                         ),
                       );
                     },
-                    child: Container(
-                      width: avatarSize,
-                      height: avatarSize * 1.2,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFBFCDDB),
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      alignment: Alignment.center,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            trophyImage,
-                            width: 110,
-                            height: 130,
-                          ),
-                        ],
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      primary: Color(0xFF647F86),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Image.asset(
+                        trophyImage,
+                        width: 110,
+                        height: 130,
                       ),
                     ),
                   ),
