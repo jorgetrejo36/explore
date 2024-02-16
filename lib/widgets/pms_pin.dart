@@ -84,6 +84,7 @@ class PinWidget extends StatelessWidget {
         case GameType.shooting:
           gameToLoad = ShootingGameStateful(
             planet: theme,
+            shootingProblem: problemGenerator,
           );
 
         case GameType.mining:

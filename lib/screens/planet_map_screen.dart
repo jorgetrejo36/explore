@@ -1,3 +1,4 @@
+import 'package:explore/screens/planet_home_screen.dart';
 import 'package:explore/utils/realm_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:explore/widgets/pms_planet_page.dart';
@@ -6,7 +7,9 @@ import 'package:explore/widgets/pms_appbar.dart';
 // Variables for planets, levels, and games
 
 // Enable to view level names and types beside each pin.
-const bool debugView = true;
+const bool debugView = false;
+// Enable to force all pins & planets to unlock, ignoring Realm status.
+const bool debugDisableLoading = true;
 
 // How many planets are there?
 // Update this and the code in pms_planet_page to add more planets.
@@ -72,16 +75,28 @@ class _PlanetMapScreenState extends State<PlanetMapScreen> {
             controller: ScrollController(
               // Calculate which page height to scroll to.
               initialScrollOffset:
-                  (widget.selectedPlanet) * MediaQuery.of(context).size.height,
+              (widget.selectedPlanet) * MediaQuery.of(context).size.height,
             ),
             child: Column(
               // Generate the planet pages in reverse order so
               // they grow in indices from bottom to top.
               children: List.generate(numPlanets, (index) {
                 return PlanetPage(
-                  index: index + 1,
-                  isPlanetLocked: !lockStatuses[index].planetStatus,
-                  levelStatuses: lockStatuses[index].levelStatuses,
+                    index: index + 1,
+                    isPlanetLocked: (debugDisableLoading ?
+                    // Show planets regardless of Realm status.
+                    false
+                    // Otherwise, load all planets from Realm.
+                        : !lockStatuses[index].planetStatus),
+
+                    levelStatuses: debugDisableLoading ?
+                    // Show pins regardless of Realm status.
+                    List.generate(levelsPerPlanet, (index) {
+                      return CompletionStatus.complete;
+                    })
+                    // Otherwise, load all pins from Realm.
+                        : lockStatuses[index].levelStatuses
+
                 );
               }).reversed.toList(),
             ),
