@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
 import 'package:explore/screens/choose_avatar_screen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 
 class ChooseRocketScreen extends StatefulWidget {
   const ChooseRocketScreen({Key? key}) : super(key: key);
@@ -52,11 +54,11 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildRocketAvatar(Icons.rocket_launch_outlined, rocketSize,
+                  buildRocketAvatar('assets/images/rocket1.svg', rocketSize,
                       RocketColor.blue),
                   SizedBox(width: spacing),
                   buildRocketAvatar(
-                      Icons.rocket_outlined, rocketSize, RocketColor.aqua),
+                      'assets/images/rocket2.svg', rocketSize, RocketColor.aqua),
                 ],
               ),
               SizedBox(height: spacing),
@@ -64,10 +66,10 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buildRocketAvatar(
-                      Icons.rocket_launch, rocketSize, RocketColor.lightPurple),
+                      'assets/images/rocket3.svg', rocketSize, RocketColor.lightPurple),
                   SizedBox(width: spacing),
                   buildRocketAvatar(
-                      Icons.rocket, rocketSize, RocketColor.darkPurple),
+                      'assets/images/rocket4.svg', rocketSize, RocketColor.darkPurple),
                 ],
               ),
             ],
@@ -78,21 +80,26 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
   }
 
   Widget buildRocketAvatar(
-      IconData icon, double size, RocketColor rocketColor) {
+      String svgPath, double size, RocketColor rocketColor) {
     return Container(
       height: size,
       width: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: stringRocket == icon.toString()
-            ? AppColors.lightGrey
-            : AppColors.darkBlue,
+        color: stringRocket == svgPath
+            ? AppColors.darkGrey
+            : AppColors.lightGrey,
       ),
       margin: const EdgeInsets.all(10.0),
       child: IconButton(
-        icon: Icon(icon),
+        icon: Transform.rotate(
+          angle: 30 * (3.1415926535 / 180), // Rotate 30 degrees to the right
+          child: SvgPicture.asset(
+            svgPath, // Replace with your SVG file path
+          ),
+        ),
         onPressed: () {
-          selectRocket(icon.toString());
+          selectRocket(svgPath);
           navigateToChooseAvatarScreen(rocketColor);
         },
       ),

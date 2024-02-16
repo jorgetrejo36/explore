@@ -14,6 +14,8 @@ class ChooseAvatarScreen extends StatefulWidget {
 }
 
 class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
+  String stringAvatar = "";
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -109,7 +111,10 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColors.lightGrey,
+        //color: AppColors.lightGrey,
+        color: stringAvatar == svgPath
+            ? AppColors.darkGrey
+            : AppColors.lightGrey,
       ),
       width: size,
       height: size,
