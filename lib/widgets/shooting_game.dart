@@ -1,54 +1,144 @@
 import 'package:flutter/material.dart';
-
+// ignore: unused_import
 import '../screens/game_result_screen.dart';
 import '../screens/planet_map_screen.dart';
 // ignore: unused_import
 import 'shooting_themes.dart';
-
-// The Shooting Game's contents are included here.
-// Currently a skeleton of the base game (some elements/art).
-// Minimum functionality added; will implement with proper
-// moving, animations, and indicators this week + winning/losing.
-
-// Added most basic functionality (lives, points, game end).
+// ignore: unused_import
+import 'package:explore/widgets/retry_window.dart';
+import 'package:explore/utils/problem_generator.dart';
+import 'package:explore/widgets/sg_info_bar.dart';
+import 'package:explore/widgets/sg_player_rocket.dart';
+// ignore: unused_import
+import 'package:explore/widgets/sg_obstacle_container.dart';
 
 class ShootingGameStateful extends StatefulWidget {
+  const ShootingGameStateful(
+      {super.key, required this.planet, required this.shootingProblem});
+
+  // Stores the planet this game is themed to (coming soon) and
+  // its associated problem set.
   final GameTheme planet;
-  const ShootingGameStateful({Key? key, required this.planet}) : super(key: key);
+  final ProblemGenerator shootingProblem;
 
   @override
   State<ShootingGameStateful> createState() => _ShootingGameState();
 }
 
 class _ShootingGameState extends State<ShootingGameStateful> {
+  // How many problems does the player have to answer for this game?
+  int numProblems = 5;
+  // How many lives does the player have left? Starts with 3.
   int livesLeft = 3;
+  // How many problems in total has the player answered (right or wrong)?
   int problemsAnswered = 0;
-  double playerPosX = -185;
+  // How many problems has the player gotten correct or incorrect, individually?
+  // The first is used to keep track of
+  int problemsCorrect = 0;
+  int problemsWrong = 0;
+  // Stores the answer choice the player selects.
+  int answerChoice = 0;
+  // Has the player answered the current problem yet?
+  bool hasAnswered = false;
+  // Has the game started?
+  bool gameStarted = false;
 
-  void loseLife() {
+  // Stores the problem the player has to answer.
+  late GeneratedProblem problem = widget.shootingProblem.generateProblem();
+  // Stores the correct answer and list of answer choices to the current problem.
+  late int correctAnswer = problem.answerChoices.getAnswers()[0];
+  late List<dynamic> choices = problem.answerChoices.getAnswers();
+
+  // What's the player rocket's X and Y positions at initialization?
+  late double rocketXPos;
+  late double rocketYPos;
+  // Is the rocket on?
+  bool rocketOn = false;
+
+  // What are the X positions of the columns?
+  late double leftX;
+  late double centerX;
+  late double rightX;
+
+  // What column is the player in?
+  late String rocketColumn = "center";
+
+  @override
+  void didChangeDependencies() {
+    // Sets player rocket to center ground on initialization.
+    super.didChangeDependencies();
+    rocketXPos = MediaQuery.of(context).size.width / 2 - 35;
+    rocketYPos = MediaQuery.of(context).size.height - 255;
+    rocketColumn = "center";
+
+    // Set column positions
+    leftX = rocketXPos - 150;
+    centerX = rocketXPos;
+    rightX = rocketXPos + 150;
+  }
+
+  // Function to move the rocket
+  void moveRocket(String column) {
     setState(() {
-      livesLeft--;
-      print('Lives Left: $livesLeft');
+      if (column == "left")
+        {
+          // Move left.
+          rocketXPos = leftX;
+          rocketColumn = "left";
+        }
+      if (column == "center")
+        {
+          // Move center.
+          rocketXPos = centerX;
+          rocketColumn = "center";
+        }
+      else if (column == "right")
+        {
+          // Move right.
+          rocketXPos = rightX;
+          rocketColumn = "right";
+        }
+      else if (column == "up1")
+        {
+          // Game starting, move rocket UP.
+          rocketYPos -= 175;
+        }
+    });
+
+    print("Player rocket moved to $rocketColumn column.");
+  }
+
+  // Generate a new problem.
+  void nextQuestion(bool newAnsweredQuestion) {
+    setState(() {
+      problem = widget.shootingProblem.generateProblem();
     });
   }
 
-  void answerCorrectly() {
-    setState(() {
-      problemsAnswered++;
-      print('Points: $problemsAnswered');
-      playerPosX += 115;
-    });
+
+  void dropObstacles()
+  {
+    print("Dropping obstacles.");
   }
 
-  void answerWrong() {
+  void startGame()
+  {
+    // Start the game, move the rocket up, and load questions!
     setState(() {
-      print('Points: $problemsAnswered');
-      playerPosX -= 115;
+      gameStarted = true;
     });
+
+    // Move rocket up and turn it on so it's ready.
+    moveRocket("up1");
+    rocketOn = true;
+
+    // Load the first problem.
+    // nextProblem() here.
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       // Transparent AppBar to store the back button.
@@ -80,6 +170,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
       body: Stack(
         fit: StackFit.expand,
         children: [
+
           // Background sky gradient for the game (all art will
           // change soon to use shooting_themes.dart).
           Container(
@@ -94,88 +185,132 @@ class _ShootingGameState extends State<ShootingGameStateful> {
               ),
             ),
           ),
+
           // Clouds (sky_art) for the Earth shooting game.
-          Positioned(
-            top: 0,
-            child: Image.asset(
-              'assets/images/shooting_earth_sky_art.png',
-              height: MediaQuery.of(context).size.height * 1.05,
-              width: MediaQuery.of(context).size.width,
-              fit: BoxFit.fitWidth,
+          Visibility(
+            visible: !gameStarted,
+            child: Positioned(
+              top: 0,
+              child: Image.asset(
+                'assets/images/shooting_earth_sky_art.png',
+                height: MediaQuery.of(context).size.height * 1.05,
+                width: MediaQuery.of(context).size.width,
+                fit: BoxFit.fitWidth,
+              ),
             ),
           ),
-          // Text at the top to display the skeleton title (temp).
-          const Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  "\nShooting Game",
-                  style: TextStyle(
-                    fontFamily: "Fredoka",
-                    fontSize: 36,
-                  ),
-                ),
-              ],
-            ),
-          ),
+
           // Ground (ground_art) for the Earth shooting game.
-          Positioned(
+          Visibility(
+            visible: !gameStarted,
+            child: Positioned(
+              bottom: 0,
+              child: Image.asset(
+                'assets/images/shooting_earth_ground_art.png',
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+
+          // Game Info bar (displays question, lives, rewards)
+          const Positioned(
             bottom: 0,
-            child: Image.asset(
-              'assets/images/shooting_earth_ground_art.png',
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              fit: BoxFit.fill,
+            left: 0,
+            right: 0,
+            child: SGInfoBar(),
+          ),
+
+          // Player rocket:
+          SGPlayerRocket(
+              isOn: rocketOn,
+              rocketX: rocketXPos,
+              rocketY: rocketYPos,
+          ),
+
+          // Right answer button.
+          Visibility(
+            visible: gameStarted,
+            child: Positioned(
+              bottom: 16,
+              right: 16,
+              child: TextButton(
+                onPressed: () {
+                  moveRocket("right");
+                },
+                child: Text('Right Answer'),
+              ),
             ),
           ),
-          // Player rocket (also temporary).
-          Positioned(
-            bottom: -325,
-            right: playerPosX,
-            child: Image.asset(
-              'assets/images/shooting_player.png',
-              height: MediaQuery.of(context).size.height,
+
+          // Center answer button
+          Visibility(
+            visible: gameStarted,
+            child: Positioned(
+              bottom: 16,
+              left: MediaQuery.of(context).size.width / 3,
+              child: TextButton(
+                onPressed: () {
+                  moveRocket("center");
+                },
+                child: Text('Center Answer'),
+              ),
             ),
           ),
-          // Elevated buttons
-          Positioned(
-            bottom: MediaQuery.of(context).size.height * 0.6,
-            left: MediaQuery.of(context).size.width * 0.3,
-            child: ElevatedButton(
-              onPressed: () => loseLife(),
-              child: Text('Lose a life'),
+
+          // Left answer button
+          Visibility(
+            visible: gameStarted,
+            child: Positioned(
+              bottom: 16,
+              left: 16,
+              child: TextButton(
+                onPressed: () {
+                  moveRocket("left");
+                },
+                child: Text('Left Answer'),
+              ),
             ),
           ),
-          Positioned(
-            bottom: MediaQuery.of(context).size.height * 0.6 - 50,
-            left: MediaQuery.of(context).size.width * 0.3,
-            child: ElevatedButton(
-              onPressed: () => answerCorrectly(),
-              child: Text('Answer correctly'),
-            ),
-          ),
-          Positioned(
-            bottom: MediaQuery.of(context).size.height * 0.6 - 100,
-            left: MediaQuery.of(context).size.width * 0.3,
-            child: ElevatedButton(
-              onPressed: () => answerWrong(),
-              child: Text('Answer wrong'),
-            ),
-          ),
-          Positioned(
-            bottom: MediaQuery.of(context).size.height * 0.6 - 150,
-            left: MediaQuery.of(context).size.width * 0.3,
-            child: ElevatedButton(
-              onPressed: () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const GameResultScreen(),
+
+          Center(
+            child: Visibility(
+              visible: !gameStarted,
+              child: ElevatedButton(
+                onPressed: startGame,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black, // Set button color to white
+                ),
+                child: const Text('Start Game',  style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 32,
+                )
                 ),
               ),
-              child: const Text("Finish game"),
             ),
           ),
+
+          // Button to make objects fall
+          Center(
+            child: Visibility(
+              visible: gameStarted,
+              child: ElevatedButton(
+                onPressed: dropObstacles,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white, // Set button color to white
+                ),
+                child: const Text('Drop Obstacles',  style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                )
+                ),
+              ),
+            ),
+          ),
+
         ],
       ),
     );

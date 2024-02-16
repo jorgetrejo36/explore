@@ -44,8 +44,9 @@ class GameScreen extends StatelessWidget {
               onPressed: () => Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ShootingGameStateful(
+                  builder: (context) => ShootingGameStateful(
                     planet: GameTheme.earth,
+                    shootingProblem: ProblemGenerator(1, true),
                   ),
                 ),
               ),
