@@ -138,6 +138,7 @@ flutter:
     - assets/images/astronaut3.svg
     - assets/images/astronaut4.svg
     - assets/images/alien4.svg
+    - assets/images/rocket.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
