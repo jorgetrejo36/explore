@@ -30,8 +30,6 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
   Future<void> _loadData() async {
     try {
       users = RealmUtils().getAllUsers();
-      print(users[0].name);
-      print(users[0].avatar);
     } catch (e) {
       print('Error loading data: $e');
     }
