@@ -7,6 +7,8 @@ import 'package:realm/realm.dart';
 
 final Configuration config = Configuration.local(
   [ExploreUser.schema, Planet.schema, Level.schema],
+  // take this out for production
+  shouldDeleteIfMigrationNeeded: true,
 );
 
 const Map<GameTheme, String> gameThemeToName = {
