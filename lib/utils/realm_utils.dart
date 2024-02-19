@@ -41,7 +41,33 @@ class KeyUserInfo {
   KeyUserInfo({required this.id, required this.name, required this.avatar});
 }
 
+class RocketAvatar {
+  final String avatarPath;
+  final String rocketPath;
+
+  RocketAvatar({required this.avatarPath, required this.rocketPath});
+}
+
 class RealmUtils {
+  RocketAvatar getRocketAvatar() {
+    // get current logged in user
+    final UserController loggedInUser = Get.find();
+
+    // open local realm instance
+    final realm = Realm(config);
+
+    final ExploreUser user =
+        realm.find<ExploreUser>(loggedInUser.id) as ExploreUser;
+
+    final RocketAvatar rocketAvatar =
+        RocketAvatar(avatarPath: user.avatarPath, rocketPath: user.rocketPath);
+
+    // close realm instance
+    realm.close();
+
+    return rocketAvatar;
+  }
+
   KeyUserInfo getUser(ObjectId id) {
     // open local realm instance
     final realm = Realm(config);
