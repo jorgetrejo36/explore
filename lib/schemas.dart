@@ -8,8 +8,8 @@ class _ExploreUser {
   late final ObjectId id;
 
   late String name;
-  late String avatar;
-  late int rocketColor; // enum
+  late String avatarPath;
+  late String rocketPath;
   late int totalScore;
   late int totalItems;
   late int currentLevel;

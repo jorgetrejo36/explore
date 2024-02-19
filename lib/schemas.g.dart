@@ -12,8 +12,8 @@ class ExploreUser extends _ExploreUser
   ExploreUser(
     ObjectId id,
     String name,
-    String avatar,
-    int rocketColor,
+    String avatarPath,
+    String rocketPath,
     int totalScore,
     int totalItems,
     int currentLevel, {
@@ -21,8 +21,8 @@ class ExploreUser extends _ExploreUser
   }) {
     RealmObjectBase.set(this, 'id', id);
     RealmObjectBase.set(this, 'name', name);
-    RealmObjectBase.set(this, 'avatar', avatar);
-    RealmObjectBase.set(this, 'rocketColor', rocketColor);
+    RealmObjectBase.set(this, 'avatarPath', avatarPath);
+    RealmObjectBase.set(this, 'rocketPath', rocketPath);
     RealmObjectBase.set(this, 'totalScore', totalScore);
     RealmObjectBase.set(this, 'totalItems', totalItems);
     RealmObjectBase.set(this, 'currentLevel', currentLevel);
@@ -43,14 +43,18 @@ class ExploreUser extends _ExploreUser
   set name(String value) => RealmObjectBase.set(this, 'name', value);
 
   @override
-  String get avatar => RealmObjectBase.get<String>(this, 'avatar') as String;
+  String get avatarPath =>
+      RealmObjectBase.get<String>(this, 'avatarPath') as String;
   @override
-  set avatar(String value) => RealmObjectBase.set(this, 'avatar', value);
+  set avatarPath(String value) =>
+      RealmObjectBase.set(this, 'avatarPath', value);
 
   @override
-  int get rocketColor => RealmObjectBase.get<int>(this, 'rocketColor') as int;
+  String get rocketPath =>
+      RealmObjectBase.get<String>(this, 'rocketPath') as String;
   @override
-  set rocketColor(int value) => RealmObjectBase.set(this, 'rocketColor', value);
+  set rocketPath(String value) =>
+      RealmObjectBase.set(this, 'rocketPath', value);
 
   @override
   int get totalScore => RealmObjectBase.get<int>(this, 'totalScore') as int;
@@ -90,8 +94,8 @@ class ExploreUser extends _ExploreUser
         ObjectType.realmObject, ExploreUser, 'ExploreUser', [
       SchemaProperty('id', RealmPropertyType.objectid, primaryKey: true),
       SchemaProperty('name', RealmPropertyType.string),
-      SchemaProperty('avatar', RealmPropertyType.string),
-      SchemaProperty('rocketColor', RealmPropertyType.int),
+      SchemaProperty('avatarPath', RealmPropertyType.string),
+      SchemaProperty('rocketPath', RealmPropertyType.string),
       SchemaProperty('totalScore', RealmPropertyType.int),
       SchemaProperty('totalItems', RealmPropertyType.int),
       SchemaProperty('currentLevel', RealmPropertyType.int),
