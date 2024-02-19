@@ -49,7 +49,7 @@ class RealmUtils {
     final ExploreUser user = realm.find<ExploreUser>(id) as ExploreUser;
 
     final KeyUserInfo userInfo =
-        KeyUserInfo(id: id, name: user.name, avatar: user.avatar);
+        KeyUserInfo(id: id, name: user.name, avatar: user.avatarPath);
 
     // close realm instance
     realm.close();
@@ -64,8 +64,11 @@ class RealmUtils {
     final users = realm
         .all<ExploreUser>()
         .map(
-          (user) =>
-              KeyUserInfo(id: user.id, name: user.name, avatar: user.avatar),
+          (user) => KeyUserInfo(
+            id: user.id,
+            name: user.name,
+            avatar: user.avatarPath,
+          ),
         )
         .toList();
 
@@ -142,7 +145,7 @@ class RealmUtils {
   ExploreUser createNewUser(
     String username,
     String avatarImagePath,
-    int rocketColor,
+    String rocketImagePath,
   ) {
     // open local realm instance
     final realm = Realm(config);
@@ -195,7 +198,7 @@ class RealmUtils {
       userId,
       username,
       avatarImagePath,
-      rocketColor,
+      rocketImagePath,
       0, // this is a new user so total score is 0
       0, // this is a new user so total items is 0
       1, // all users start at level 1

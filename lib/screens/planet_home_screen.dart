@@ -137,7 +137,7 @@ class UserInfo extends StatelessWidget {
                 child: Center(
                   // db pull the svg
                   child: SvgPicture.asset(
-                    user.avatar,
+                    user.avatarPath,
                     // width: 70,
                   ),
                 ),

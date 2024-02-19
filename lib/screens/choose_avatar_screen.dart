@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ChooseAvatarScreen extends StatefulWidget {
-  final RocketColor selectedRocketColor;
+  final String selectedRocketPath;
 
-  const ChooseAvatarScreen({Key? key, required this.selectedRocketColor})
+  const ChooseAvatarScreen({Key? key, required this.selectedRocketPath})
       : super(key: key);
 
   @override
@@ -112,9 +112,8 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         //color: AppColors.lightGrey,
-        color: stringAvatar == svgPath
-            ? AppColors.darkGrey
-            : AppColors.lightGrey,
+        color:
+            stringAvatar == svgPath ? AppColors.darkGrey : AppColors.lightGrey,
       ),
       width: size,
       height: size,
@@ -130,7 +129,7 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
           MaterialPageRoute(
             builder: (context) => CreateNameScreen(
               selectedImage: svgPath,
-              selectedRocketColor: widget.selectedRocketColor,
+              selectedRocketPath: widget.selectedRocketPath,
             ),
           ),
         ),

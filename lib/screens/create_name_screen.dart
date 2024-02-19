@@ -10,12 +10,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class CreateNameScreen extends StatelessWidget {
   final String selectedImage;
-  final RocketColor selectedRocketColor;
+  final String selectedRocketPath;
 
   const CreateNameScreen({
     Key? key,
     required this.selectedImage,
-    required this.selectedRocketColor,
+    required this.selectedRocketPath,
   }) : super(key: key);
 
   void createNewUser({
@@ -23,8 +23,7 @@ class CreateNameScreen extends StatelessWidget {
     required String userName,
   }) async {
     // create new user
-    RealmUtils()
-        .createNewUser(userName, selectedImage, selectedRocketColor.index);
+    RealmUtils().createNewUser(userName, selectedImage, selectedRocketPath);
 
     // pop the last 3 screens in the create avatar sequence
     // AvatarHomeScreen, ChooseRocketScreen, ChooseAvatarScreen, and CreateNameScreen (which is this screen)
