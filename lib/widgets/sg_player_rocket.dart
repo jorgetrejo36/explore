@@ -25,20 +25,22 @@ class SGPlayerRocket extends StatelessWidget {
         alignment: Alignment.center,
         clipBehavior: Clip.none,
         children: [
-          // Rocket image
-          SvgPicture.asset(
-            'assets/images/rocket1.svg',
-            height: MediaQuery.of(context).size.height * 0.14,
-          ),
+
           // Flame below rocket (only show if the rocket is on!)
           if (isOn)
             Positioned(
-              top: (795 * 0.14), // Adjust this value to position the flame
+              top: (MediaQuery.of(context).size.height * 0.121),
               child: SvgPicture.asset(
                 'assets/images/rocketFlame.svg',
                 height: MediaQuery.of(context).size.height * 0.1,
               ),
             ),
+
+          // Rocket image
+          SvgPicture.asset(
+            'assets/images/rocket1.svg',
+            height: MediaQuery.of(context).size.height * 0.14,
+          ),
         ],
       ),
     );

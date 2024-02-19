@@ -67,24 +67,23 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Center(
+        child: Positioned (
           child: Stack(
             children: [
+              Positioned.fill(
+                child: Image.asset(
+                  rocketImage, // Rocket image
+                  fit: BoxFit.contain,
+                ),
+              ),
               Center(
                 child: Container(
-                  width: screenWidth * 2.5,
-                  height: screenWidth * 2.5,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(rocketImage), // Rocket image
-                      fit: BoxFit.contain,
-                    ),
-                  ),
+                  width: screenWidth * .65,
+                  height: screenWidth * 1.15,
                   child: GridView.count(
                     crossAxisCount: 2,
-                    mainAxisSpacing: 15,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 1.3,
+                    mainAxisSpacing: 20,
+                    childAspectRatio: 1.5,
                     children: List.generate(
                       maxUsers,
                       (index) => index < users.length
@@ -114,11 +113,28 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                                 children: [
                                   SvgPicture.asset(
                                     users[index].avatar,
-                                    width: 40,
-                                    height: 40,
+                                    width: 450,
+                                    height: 450,
                                   ),
-                                  Text(users[index].name,
-                                      style: TextStyle(color: Colors.white)),
+
+                                  Positioned(
+                                    bottom: -1,
+                                    left: 0,
+                                    right: 0,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFFAC6FE3),
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Text(
+                                        users[index].name, 
+                                        style: TextStyle(color: Colors.white),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                  
                                 ],
                               ),
                             )
@@ -154,12 +170,12 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                 ),
               ),
               Positioned(
-                top: -spacing * 3,
-                right: 0,
-                left: 0,
+                top: spacing * 3,
+                right: screenWidth * 0.15,
+                left: screenWidth * 0.15,
                 child: Center(
-                  child: InkWell(
-                    onTap: () {
+                  child: ElevatedButton(
+                    onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -167,23 +183,16 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                         ),
                       );
                     },
-                    child: Container(
-                      width: avatarSize,
-                      height: avatarSize * 1.2,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFBFCDDB),
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      alignment: Alignment.center,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            trophyImage,
-                            width: 110,
-                            height: 130,
-                          ),
-                        ],
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      primary: Color(0xFF647F86),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Image.asset(
+                        trophyImage,
+                        width: 110,
+                        height: 130,
                       ),
                     ),
                   ),
@@ -194,5 +203,7 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
         ),
       ),
     );
+
+    
   }
 }
