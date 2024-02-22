@@ -72,7 +72,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
       child: SvgPicture.asset(
         'assets/images/alien.svg',
         width: double.infinity,
-        height: 150,
+        height: MediaQuery.of(context).size.height / 6,
         fit: BoxFit.fill,
       ),
     );
@@ -90,7 +90,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
       child: SvgPicture.asset(
         widget.top,
         width: double.infinity,
-        height: 250, // Fixed height
+        height: MediaQuery.of(context).size.height / 4, // Fixed height
         fit: BoxFit.fill,
       ),
     );
@@ -102,7 +102,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
       child: SvgPicture.asset(
         widget.item,
         width: double.infinity,
-        height: 75,
+        height: MediaQuery.of(context).size.height / 12,
         fit: BoxFit.fill,
       ),
     );
@@ -125,7 +125,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
             ? [
                 SizedBox(
                   width: double.infinity,
-                  height: 250,
+                  height: MediaQuery.of(context).size.height / 4,
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Stack(
