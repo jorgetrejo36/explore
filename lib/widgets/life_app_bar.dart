@@ -25,7 +25,10 @@ class LifeAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25 / 2.5),
+        padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width / 100,
+          vertical: MediaQuery.of(context).size.height / 100,
+        ),
         child: Stack(children: [
           Positioned.fill(
               child: Center(

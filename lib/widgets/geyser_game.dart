@@ -23,7 +23,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
   // Variables
   int counter = 0;
   int lives = 3;
-  int answer = 0; // Player submitted answer
+  int answer = -1;
   bool answeredQuestion = false;
   int questions = 5;
   int questionsAnswered = 0;
@@ -189,31 +189,36 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                   child: Container(
                     alignment: Alignment.topCenter,
                     child: !answeredQuestion
-                        ? IconButton(
-                            style: IconButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              iconSize: 50,
-                            ),
-                            icon: const Icon(Icons.arrow_right_rounded),
-                            onPressed: () => {answerQuestion(answer)},
-                          )
+                        ? answer != -1
+                            ? IconButton(
+                                style: IconButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  iconSize:
+                                      MediaQuery.of(context).size.height / 16,
+                                ),
+                                icon: const Icon(Icons.arrow_right_rounded),
+                                onPressed: () => {answerQuestion(answer)},
+                              )
+                            : null
                         : Column(
                             children: [
                               SvgPicture.asset(
                                 correctAnswer == answer
                                     ? 'assets/images/right.svg'
                                     : 'assets/images/wrong.svg',
-                                width: 70,
-                                height: 70,
+                                height: MediaQuery.of(context).size.height / 14,
+                                width: MediaQuery.of(context).size.height / 14,
                               ),
                               Padding(
-                                padding: EdgeInsets.all(20),
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.height / 30),
                                 child: IconButton(
                                   style: IconButton.styleFrom(
                                     backgroundColor: Colors.white,
-                                    iconSize: 50,
+                                    iconSize:
+                                        MediaQuery.of(context).size.height / 17,
                                   ),
-                                  icon: Icon(Icons.arrow_right_rounded),
+                                  icon: const Icon(Icons.arrow_right_rounded),
                                   onPressed: () =>
                                       {nextQuestion(!answeredQuestion)},
                                 ),
@@ -248,7 +253,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                         child: SvgPicture.asset(
                           skins['ground']!,
                           width: double.infinity,
-                          height: 150,
+                          height: MediaQuery.of(context).size.height / 6,
                           fit: BoxFit.fill,
                         ),
                       ),
@@ -275,7 +280,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                         child: SvgPicture.asset(
                           skins['ground']!,
                           width: double.infinity,
-                          height: 250,
+                          height: MediaQuery.of(context).size.height / 4,
                           fit: BoxFit.fill,
                         ),
                       ),
@@ -302,7 +307,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                         child: SvgPicture.asset(
                           skins['ground']!,
                           width: double.infinity,
-                          height: 150,
+                          height: MediaQuery.of(context).size.height / 6,
                           fit: BoxFit.fill,
                         ),
                       ),
