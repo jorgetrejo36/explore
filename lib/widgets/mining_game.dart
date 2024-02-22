@@ -292,6 +292,7 @@ class _MiningRowState extends State<MiningRow> {
           GestureDetector(
             onTap: () {
               selectAnswer(2);
+              print("this is working");
             },
             child: Container(
               margin: EdgeInsets.only(top: 30),

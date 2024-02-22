@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 import 'package:explore/widgets/racing_themes.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,9 @@ class _RacingGameState extends State<RacingGame>
   late GeneratedProblem problem3 = widget.racingProblem.generateProblem();
   late GeneratedProblem problem4 = widget.racingProblem.generateProblem();
   late GeneratedProblem problem5 = widget.racingProblem.generateProblem();
-
+  late GeneratedProblem problem6 = widget.racingProblem.generateProblem();
+  late GeneratedProblem problem7 = widget.racingProblem.generateProblem();
+  late GeneratedProblem problem8 = widget.racingProblem.generateProblem();
   // List of problem objects to reference
   late List<GeneratedProblem> problemList = [
     problem1,
@@ -38,18 +41,129 @@ class _RacingGameState extends State<RacingGame>
     problem3,
     problem4,
     problem5,
+    problem6,
+    problem7,
+    problem8,
   ];
 
-  late List<MiningRow> miningRowList = [
-    MiningRow(theme: this.theme, problem: problem1, update: _updateQuestion)
+  late List<List<double>> playerLocations = [
+    [
+      MediaQuery.of(context).size.width * 0.12,
+      MediaQuery.of(context).size.width * 0.22
+    ],
+    [
+      MediaQuery.of(context).size.width * 0.22,
+      MediaQuery.of(context).size.width * 0.34
+    ],
+    [
+      MediaQuery.of(context).size.width * 0.34,
+      MediaQuery.of(context).size.width * 0.46
+    ],
+    [
+      MediaQuery.of(context).size.width * 0.46,
+      MediaQuery.of(context).size.width * 0.58
+    ],
+    [
+      MediaQuery.of(context).size.width * 0.58,
+      MediaQuery.of(context).size.width * 0.70
+    ],
+    [
+      MediaQuery.of(context).size.width * 0.70,
+      MediaQuery.of(context).size.width * 0.88
+    ],
   ];
 
-  List<bool> problemVisibility = [false, false, false, false, false];
+  late List<int> curChoices =
+      problemList[currentProblem].answerChoices.getAnswers();
+  late int curSolution =
+      problemList[currentProblem].answerChoices.getAnswers()[0];
+
   int currentProblem = 0;
+  int animationIterator = 0;
+  int enemy1Location = 0;
+  int enemy2Location = 0;
 
   // Player variables
   int score = 0;
   bool correct = false;
+  bool test = true;
+
+  void selectAnswer(int choiceNum) {
+    decideEnemyMovement();
+
+    if (curChoices[choiceNum] == curSolution) {
+      setState(() {
+        test = !test;
+        animationIterator++;
+        score++;
+        test = !test;
+      });
+      print(curChoices);
+    }
+    checkGameEnd();
+  }
+
+  void setNextProblem() {
+    setState(() {
+      currentProblem++;
+      curChoices = problemList[currentProblem].answerChoices.getAnswers();
+      curSolution = problemList[currentProblem].answerChoices.getAnswers()[0];
+      curChoices.shuffle();
+    });
+  }
+
+  void checkGameEnd() {
+    if (score > 4 || enemy1Location > 4 || enemy2Location > 4) {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: Center(
+            child: Text(
+              '$score / 5',
+              style: const TextStyle(
+                fontFamily: 'Fredoka',
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            Center(
+              child: (score <= 4)
+                  ? IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/images/reload.svg',
+                        colorFilter:
+                            ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                        semanticsLabel: "arrow pointing in circle",
+                        height: 50,
+                        width: 50,
+                      ),
+                      // Navigate back when the back button is pressed
+                      onPressed: () => Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RacingGame(
+                              planet: widget.planet,
+                              racingProblem: widget.racingProblem),
+                        ),
+                      ),
+                    )
+                  : ElevatedButton(
+                      onPressed: () => Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const GameResultScreen(),
+                        ),
+                      ),
+                      child: const Text("Game Complete"),
+                    ),
+            )
+          ],
+        ),
+      );
+    } else {
+      setNextProblem();
+    }
+  }
 
   // Pushes game results screen to user
   // Todo: Send game data to second screen
@@ -61,31 +175,21 @@ class _RacingGameState extends State<RacingGame>
         ));
   }
 
-  // Displays the problem in the list to the game
-  void newQuestion(int problemNum) {
-    setState(() {
-      miningRowList.add(MiningRow(
-          theme: theme,
-          problem: problemList[problemNum],
-          update: _updateQuestion));
-    });
-  }
+  void decideEnemyMovement() {
+    int rng = Random().nextInt(100);
 
-  // Iterates problem list by one, then deicdes to either end game or update the question
-  _updateQuestion(int level) {
-    if (level == 0) {
-      displayIncorrect();
-    } else if (level == 1) {
-      displayCorrect();
+    if (rng <= 10) {
       setState(() {
-        currentProblem = currentProblem + level;
-        score++;
-        //correct = false;
-        if (currentProblem < 5) {
-          newQuestion(currentProblem);
-        } else {
-          gameFinish();
-        }
+        enemy1Location++;
+        enemy2Location++;
+      });
+    } else if (rng <= 70) {
+      setState(() {
+        enemy1Location++;
+      });
+    } else if (rng > 70) {
+      setState(() {
+        enemy2Location++;
       });
     }
   }
@@ -150,14 +254,7 @@ class _RacingGameState extends State<RacingGame>
         elevation: 0,
       ),
       body: MediaQuery.of(context).orientation == Orientation.portrait
-          ? Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/${theme.racingStart}.png"),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )
+          ? racing_start_screen(theme: theme)
           : Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
@@ -170,68 +267,138 @@ class _RacingGameState extends State<RacingGame>
               child: Column(children: [
                 // Game Info
                 Container(
+                  height: MediaQuery.of(context).size.height * 0.50,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // Equation and Solutions
                       Container(
+                        width: MediaQuery.of(context).size.width * 0.88,
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.08),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * 0.23,
-                              height: MediaQuery.of(context).size.height * 0.2,
-                              margin: EdgeInsets.symmetric(
-                                vertical:
-                                    MediaQuery.of(context).size.height * 0.05,
-                              ),
-                              decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                                color: Color.fromARGB(239, 248, 248, 248),
-                              ),
-                            ),
+                                width: MediaQuery.of(context).size.width * 0.23,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.226,
+                                margin: EdgeInsets.symmetric(
+                                  vertical:
+                                      MediaQuery.of(context).size.height * 0.05,
+                                ),
+                                decoration: const BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  color: Color.fromARGB(239, 248, 248, 248),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    problemList[currentProblem]
+                                        .problem
+                                        .getProblemString(),
+                                    style: TextStyle(
+                                        color: Color.fromARGB(238, 31, 31, 31),
+                                        fontSize: 72,
+                                        fontFamily: 'Fredoka'),
+                                    //textAlign: TextAlign.center,
+                                  ),
+                                )),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Container(
-                                  width: 75,
-                                  height: 75,
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal:
-                                        MediaQuery.of(context).size.width *
-                                            0.05,
-                                  ),
-                                  decoration: const BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(100)),
-                                    color: Color.fromARGB(239, 248, 248, 248),
+                                GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () {
+                                    selectAnswer(0);
+                                  },
+                                  child: Container(
+                                    width: 75,
+                                    height: 75,
+                                    margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          MediaQuery.of(context).size.width *
+                                              0.05,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(100)),
+                                      color: Color.fromARGB(239, 248, 248, 248),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "${curChoices[0]}",
+                                        style: TextStyle(
+                                            color:
+                                                Color.fromARGB(238, 31, 31, 31),
+                                            fontSize: 55,
+                                            fontFamily: 'Fredoka'),
+                                        //textAlign: TextAlign.center,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                Container(
-                                  width: 75,
-                                  height: 75,
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal:
-                                        MediaQuery.of(context).size.width *
-                                            0.05,
-                                  ),
-                                  decoration: const BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(100)),
-                                    color: Color.fromARGB(239, 248, 248, 248),
+                                GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () {
+                                    print("this is working");
+                                    selectAnswer(1);
+                                  },
+                                  child: Container(
+                                    width: 75,
+                                    height: 75,
+                                    margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          MediaQuery.of(context).size.width *
+                                              0.05,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(100)),
+                                      color: Color.fromARGB(239, 248, 248, 248),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "${curChoices[1]}",
+                                        style: TextStyle(
+                                            color:
+                                                Color.fromARGB(238, 31, 31, 31),
+                                            fontSize: 55,
+                                            fontFamily: 'Fredoka'),
+                                        //textAlign: TextAlign.center,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                Container(
-                                  width: 75,
-                                  height: 75,
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal:
-                                        MediaQuery.of(context).size.width *
-                                            0.05,
-                                  ),
-                                  decoration: const BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(100)),
-                                    color: Color.fromARGB(239, 248, 248, 248),
+                                GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () {
+                                    print("this is working");
+                                    selectAnswer(2);
+                                  },
+                                  child: Container(
+                                    width: 75,
+                                    height: 75,
+                                    margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          MediaQuery.of(context).size.width *
+                                              0.05,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(100)),
+                                      color: Color.fromARGB(239, 248, 248, 248),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "${curChoices[2]}",
+                                        style: TextStyle(
+                                            color:
+                                                Color.fromARGB(238, 31, 31, 31),
+                                            fontSize: 55,
+                                            fontFamily: 'Fredoka'),
+                                        //textAlign: TextAlign.center,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -241,321 +408,275 @@ class _RacingGameState extends State<RacingGame>
                       ),
                       // Leaderboard
                       Container(
-                        child: Column(children: [
-                          Row(
-                            //crossAxisAlignment: CrossAxisAlignment.end,
+                        width: MediaQuery.of(context).size.width * 0.11,
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Container(
-                                color: Colors.black,
-                                child: Text(
-                                  "1.",
-                                  style: TextStyle(
-                                      color: Color.fromARGB(239, 248, 248, 248),
-                                      fontSize: 48,
-                                      fontFamily: 'Fredoka'),
-                                ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    child: Text(
+                                      "1.",
+                                      style: TextStyle(
+                                          color: Color.fromARGB(
+                                              239, 248, 248, 248),
+                                          fontSize: 46,
+                                          fontFamily: 'Fredoka'),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 19),
+                                    child: SvgPicture.asset(
+                                      'assets/images/alien.svg',
+                                      height: 50,
+                                    ),
+                                  )
+                                ],
                               ),
-                              Container(
-                                child: SvgPicture.asset(
-                                  'assets/images/alien.svg',
-                                  height: 50,
-                                  semanticsLabel: "bubble",
-                                ),
-                              )
-                            ],
-                          ),
-                          Container(
-                            child: Text(
-                              "2.",
-                              style: TextStyle(
-                                  color: Color.fromARGB(239, 248, 248, 248),
-                                  fontSize: 48,
-                                  fontFamily: 'Fredoka'),
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              "3.",
-                              style: TextStyle(
-                                  color: Color.fromARGB(238, 241, 166, 166),
-                                  fontSize: 48,
-                                  fontFamily: 'Fredoka'),
-                            ),
-                          ),
-                        ]),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    child: Text(
+                                      "2.",
+                                      style: TextStyle(
+                                          color: Color.fromARGB(
+                                              239, 248, 248, 248),
+                                          fontSize: 46,
+                                          fontFamily: 'Fredoka'),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 10),
+                                    child: SvgPicture.asset(
+                                      'assets/images/alien2.svg',
+                                      height: 50,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    child: Text(
+                                      "3.",
+                                      style: TextStyle(
+                                          color: Color.fromARGB(
+                                              239, 248, 248, 248),
+                                          fontSize: 46,
+                                          fontFamily: 'Fredoka'),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 10),
+                                    child: SvgPicture.asset(
+                                      'assets/images/alien3.svg',
+                                      height: 50,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ]),
                       )
                     ],
                   ),
                 ),
                 // Player Tracks
                 Container(
-                  child: Column(
-                    children: [Container(), Container(), Container()],
+                  height: MediaQuery.of(context).size.height * 0.07,
+                  width: MediaQuery.of(context).size.width,
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.15,
+                  width: MediaQuery.of(context).size.width,
+                  margin: EdgeInsets.only(top: 5),
+                  child: Stack(
+                    children: <Widget>[
+                      AnimatedPositioned(
+                        left: test
+                            ? playerLocations[enemy1Location][0]
+                            : playerLocations[enemy1Location][1],
+                        duration: const Duration(seconds: 2),
+                        curve: Curves.fastOutSlowIn,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              test = !test;
+                              currentProblem++;
+                              test = !test;
+                            });
+                          },
+                          child: SvgPicture.asset(
+                            'assets/images/UFO2.svg',
+                            height: 35,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.14,
+                  width: MediaQuery.of(context).size.width,
+                  child: Stack(
+                    children: <Widget>[
+                      AnimatedPositioned(
+                        left: test
+                            ? playerLocations[enemy2Location][0]
+                            : playerLocations[enemy2Location][1],
+                        duration: const Duration(seconds: 2),
+                        curve: Curves.fastOutSlowIn,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              test = !test;
+                              currentProblem++;
+                              test = !test;
+                            });
+                          },
+                          child: SvgPicture.asset(
+                            'assets/images/UFO1.svg',
+                            height: 35,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.11,
+                  width: MediaQuery.of(context).size.width,
+                  child: Stack(
+                    children: <Widget>[
+                      AnimatedPositioned(
+                          left: test
+                              ? playerLocations[animationIterator][0]
+                              : playerLocations[animationIterator][1],
+                          duration: const Duration(seconds: 2),
+                          curve: Curves.fastOutSlowIn,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                test = !test;
+                                currentProblem++;
+                                test = !test;
+                              });
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10),
+                              child: Transform(
+                                alignment: Alignment.center,
+                                transform: Matrix4.rotationY(3.14159),
+                                child: SvgPicture.asset(
+                                  'assets/images/submarine.svg',
+                                  height: 47,
+                                ),
+                              ),
+                            ),
+                          )),
+                    ],
                   ),
                 )
               ])));
 }
 
-/// Builds a clickable row of mining objects with given problem data
-class MiningRow extends StatefulWidget {
-  final RacingTheme theme;
-  final GeneratedProblem problem;
-  final ValueChanged<int> update;
+class racing_start_screen extends StatefulWidget {
+  const racing_start_screen({
+    super.key,
+    required this.theme,
+  });
 
-  const MiningRow(
-      {super.key,
-      required this.theme,
-      required this.problem,
-      required this.update});
+  final RacingTheme theme;
 
   @override
-  State<MiningRow> createState() => _MiningRowState();
+  State<racing_start_screen> createState() => _racing_start_screenState();
 }
 
-class _MiningRowState extends State<MiningRow> {
-  late RowData row = RowData(
-    widget.theme,
-    widget.problem.answerChoices.getAnswers(),
-    widget.problem.answerChoices.getAnswers()[0],
+class _racing_start_screenState extends State<racing_start_screen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 2),
+    vsync: this,
+  )..repeat(reverse: true);
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeIn,
   );
 
-  void selectAnswer(int rowNumber) {
-    setState(() {
-      row.showNumber[rowNumber] = false;
-      row.selected[rowNumber] = true;
-
-      if (row.rowChoices[rowNumber] == row.solution) {
-        //row.rowImages[rowNumber] = row.currentTheme.miningCurrency;
-        row.rowRotation[rowNumber] = 0;
-
-        row.showNumber[0] = false;
-        row.showNumber[1] = false;
-        row.showNumber[2] = false;
-
-        widget.update(1);
-      } else {
-        widget.update(0);
-      }
-    });
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.127,
-      padding: EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () {
-              if (row.showNumber[0] == true) {
-                selectAnswer(0);
-              }
-            },
-            child: Container(
-              margin: EdgeInsets.only(top: 15),
-              child: AnimatedCrossFade(
-                firstChild: Stack(
-                  children: [
-                    Transform.rotate(
-                      angle: row.rowRotation[0],
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.33,
-                        child: Center(
-                          child: SvgPicture.asset(
-                            'assets/images/${row.rowImages[0]}.svg',
-                            height: 80,
-                            width: 25,
-                            semanticsLabel: "bubble",
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (row.showNumber[0])
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.33,
-                        height: MediaQuery.of(context).size.height * 0.1,
-                        //decoration: BoxDecoration(color: Colors.red),
-                        child: Center(
-                          child: StrokeText(
-                            text: " ${row.rowChoices[0]} ",
-                            textStyle: TextStyle(
-                                color: AppColors.white,
-                                fontFamily: 'Fredoka',
-                                fontSize: 42),
-                            strokeColor: AppColors.darkGrey,
-                            strokeWidth: 6.5,
-                          ),
-                        ),
-                      )
-                  ],
-                ),
-                secondChild: Container(
-                  width: MediaQuery.of(context).size.width * 0.33,
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image:
+                  AssetImage("assets/images/${widget.theme.racingStart}.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(
+              left: MediaQuery.of(context).size.width * 0.35,
+              top: MediaQuery.of(context).size.height * 0.68),
+          child: Stack(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 10),
+                child: Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.rotationY(3.14159),
                   child: SvgPicture.asset(
-                    'assets/images/${row.currentTheme.enemyVehicle}.svg',
-                    height: 80,
-                    width: 25,
-                    semanticsLabel: "bubble",
+                    'assets/images/submarine.svg',
+                    height: 100,
                   ),
                 ),
-                crossFadeState:
-                    !(row.selected[0] && (row.rowChoices[0] == row.solution))
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                duration: Duration(milliseconds: 500),
               ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              if (row.showNumber[1] == true) {
-                selectAnswer(1);
-              }
-            },
-            child: AnimatedCrossFade(
-              firstChild: Stack(
-                children: [
-                  Transform.rotate(
-                    angle: row.rowRotation[1],
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.33,
-                      child: SvgPicture.asset(
-                        'assets/images/${row.rowImages[0]}.svg',
-                        height: 80,
-                        width: 25,
-                        semanticsLabel: "bubble",
-                      ),
-                    ),
-                  ),
-                  if (row.showNumber[1])
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.33,
-                      height: MediaQuery.of(context).size.height * 0.1,
-                      //decoration: BoxDecoration(color: Colors.red),
-                      child: Center(
-                        child: StrokeText(
-                          text: " ${row.rowChoices[1]} ",
-                          textStyle: TextStyle(
-                              color: AppColors.white,
-                              fontFamily: 'Fredoka',
-                              fontSize: 42),
-                          strokeColor: AppColors.darkGrey,
-                          strokeWidth: 6.5,
-                        ),
-                      ),
-                    )
-                ],
-              ),
-              secondChild: Container(
-                width: MediaQuery.of(context).size.width * 0.33,
-                child: SvgPicture.asset(
-                  'assets/images/${row.currentTheme.enemyVehicle}.svg',
-                  height: 80,
-                  width: 25,
-                  semanticsLabel: "bubble",
-                ),
-              ),
-              crossFadeState:
-                  !(row.selected[1] && (row.rowChoices[1] == row.solution))
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
-              duration: Duration(milliseconds: 500),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              if (row.showNumber[2] == true) {
-                selectAnswer(2);
-              }
-            },
-            child: Container(
-              margin: EdgeInsets.only(top: 25),
-              child: AnimatedCrossFade(
-                firstChild: Stack(
-                  children: [
-                    Transform.rotate(
-                      angle: row.rowRotation[2],
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.33,
-                        child: SvgPicture.asset(
-                          'assets/images/${row.rowImages[2]}.svg',
-                          height: 78,
-                          width: 25,
-                          semanticsLabel: "bubble",
-                        ),
-                      ),
-                    ),
-                    if (row.showNumber[2])
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.33,
-                        height: MediaQuery.of(context).size.height * 0.1,
-                        //decoration: BoxDecoration(color: Colors.red),
-                        child: Center(
-                          child: StrokeText(
-                            text: " ${row.rowChoices[2]} ",
-                            textStyle: TextStyle(
-                                color: AppColors.white,
-                                fontFamily: 'Fredoka',
-                                fontSize: 42),
-                            strokeColor: AppColors.darkGrey,
-                            strokeWidth: 6.5,
-                          ),
-                        ),
-                      )
-                  ],
-                ),
-                secondChild: Container(
-                  width: MediaQuery.of(context).size.width * 0.33,
+              Container(
+                margin: EdgeInsets.only(left: 70, top: 60),
+                child: Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.rotationY(3.14159),
                   child: SvgPicture.asset(
-                    'assets/images/${row.currentTheme.enemyVehicle}.svg',
-                    height: 80,
-                    width: 25,
-                    semanticsLabel: "bubble",
+                    'assets/images/alien2.svg',
+                    height: 60,
                   ),
                 ),
-                crossFadeState:
-                    !(row.selected[2] && (row.rowChoices[2] == row.solution))
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                duration: Duration(milliseconds: 500),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+        Center(
+          child: FadeTransition(
+            opacity: _animation,
+            child: Center(
+                child: Image(
+              image: AssetImage("assets/images/rotate-smartphone.png"),
+              width: 200,
+            )),
+          ),
+        ),
+      ],
     );
   }
 }
 
-/// Manages data in a given row. Includes theme, visibility, and problem data
-class RowData {
-  static double randomSeed = Random().nextDouble() * 360;
-  List<double> rowRotation = [
-    270 + randomSeed,
-    90 + randomSeed,
-    180 + randomSeed
-  ];
-
-  List<bool> showNumber = [true, true, true];
-  List<bool> selected = [false, false, false];
-  late String reward;
+class ChoicesData {
   late int solution;
-  late List<String> rowImages;
   late List<int> rowChoices;
-  late RacingTheme currentTheme;
 
-  RowData(theme, choices, answer) {
-    currentTheme = theme;
-    rowImages = [
-      "${currentTheme.enemyVehicle}",
-      "${currentTheme.enemyVehicle}",
-      "${currentTheme.enemyVehicle}"
-    ];
+  ChoicesData(choices, answer) {
     rowChoices = choices;
-    reward = "${currentTheme.enemyVehicle}";
     solution = answer;
-
     rowChoices.shuffle();
   }
 }
