@@ -292,15 +292,22 @@ class _RacingGameState extends State<RacingGame>
                                   color: Color.fromARGB(239, 248, 248, 248),
                                 ),
                                 child: Center(
-                                  child: Text(
-                                    problemList[currentProblem]
-                                        .problem
-                                        .getProblemString(),
-                                    style: TextStyle(
-                                        color: Color.fromARGB(238, 31, 31, 31),
-                                        fontSize: 72,
-                                        fontFamily: 'Fredoka'),
-                                    //textAlign: TextAlign.center,
+                                  child: AnimatedSwitcher(
+                                    duration: Duration(milliseconds: 800),
+                                    child: Text(
+                                      problemList[currentProblem]
+                                          .problem
+                                          .getProblemString(),
+                                      key: ValueKey(problemList[currentProblem]
+                                          .problem
+                                          .getProblemString()),
+                                      style: TextStyle(
+                                          color:
+                                              Color.fromARGB(238, 31, 31, 31),
+                                          fontSize: 72,
+                                          fontFamily: 'Fredoka'),
+                                      //textAlign: TextAlign.center,
+                                    ),
                                   ),
                                 )),
                             Row(
@@ -325,14 +332,18 @@ class _RacingGameState extends State<RacingGame>
                                       color: Color.fromARGB(239, 248, 248, 248),
                                     ),
                                     child: Center(
-                                      child: Text(
-                                        "${curChoices[0]}",
-                                        style: TextStyle(
-                                            color:
-                                                Color.fromARGB(238, 31, 31, 31),
-                                            fontSize: 55,
-                                            fontFamily: 'Fredoka'),
-                                        //textAlign: TextAlign.center,
+                                      child: AnimatedSwitcher(
+                                        duration: Duration(milliseconds: 800),
+                                        child: Text(
+                                          "${curChoices[0]}",
+                                          key: ValueKey(curChoices[0]),
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  238, 31, 31, 31),
+                                              fontSize: 55,
+                                              fontFamily: 'Fredoka'),
+                                          //textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -357,14 +368,18 @@ class _RacingGameState extends State<RacingGame>
                                       color: Color.fromARGB(239, 248, 248, 248),
                                     ),
                                     child: Center(
-                                      child: Text(
-                                        "${curChoices[1]}",
-                                        style: TextStyle(
-                                            color:
-                                                Color.fromARGB(238, 31, 31, 31),
-                                            fontSize: 55,
-                                            fontFamily: 'Fredoka'),
-                                        //textAlign: TextAlign.center,
+                                      child: AnimatedSwitcher(
+                                        duration: Duration(milliseconds: 800),
+                                        child: Text(
+                                          "${curChoices[1]}",
+                                          key: ValueKey(curChoices[1]),
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  238, 31, 31, 31),
+                                              fontSize: 55,
+                                              fontFamily: 'Fredoka'),
+                                          //textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -389,14 +404,18 @@ class _RacingGameState extends State<RacingGame>
                                       color: Color.fromARGB(239, 248, 248, 248),
                                     ),
                                     child: Center(
-                                      child: Text(
-                                        "${curChoices[2]}",
-                                        style: TextStyle(
-                                            color:
-                                                Color.fromARGB(238, 31, 31, 31),
-                                            fontSize: 55,
-                                            fontFamily: 'Fredoka'),
-                                        //textAlign: TextAlign.center,
+                                      child: AnimatedSwitcher(
+                                        duration: Duration(milliseconds: 800),
+                                        child: Text(
+                                          "${curChoices[2]}",
+                                          key: ValueKey(curChoices[2]),
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  238, 31, 31, 31),
+                                              fontSize: 55,
+                                              fontFamily: 'Fredoka'),
+                                          //textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     ),
                                   ),
