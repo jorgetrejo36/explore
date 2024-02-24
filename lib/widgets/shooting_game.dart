@@ -98,8 +98,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     setUpGame();
   }
 
-  void applyTheme()
-  {
+  void applyTheme() {
     // Switch planet, use based on shooting_themes.dart. Remove unused import.
   }
 
@@ -109,8 +108,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     return minHeight + random.nextDouble() * (maxHeight - minHeight);
   }
 
-  void setUpGame()
-  {
+  void setUpGame() {
     // Assign the instance.
     shootingGameStateInstance = this;
 
@@ -135,8 +133,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
       String col;
       double xPos;
 
-      switch (index % 3)
-      {
+      switch (index % 3) {
         case 0:
           col = "left";
           xPos = leftX - 4;
@@ -169,38 +166,30 @@ class _ShootingGameState extends State<ShootingGameStateful> {
         obstacleCol: col,
       );
     });
-
   }
 
-  void shootObstacle(int obstacleID)
-  {
+  void shootObstacle(int obstacleID) {
     // Get a reference to this obstacle we tapped.
     SGObstacle thisObs = obstacles[obstacleID];
 
-    if (!canSolve || !thisObs.isDropping)
-      {
-        // Don't shoot an asteroid that has already stopped moving or
-        // if we aren't allowed to solve things yet.
-        return;
-      }
+    if (!canSolve || !thisObs.isDropping) {
+      // Don't shoot an asteroid that has already stopped moving or
+      // if we aren't allowed to solve things yet.
+      return;
+    }
 
     setState(() {
-      if (thisObs.obstacleCol == "left")
-      {
+      if (thisObs.obstacleCol == "left") {
         // Move the rocket left.
         moveRocket("left");
         thisObs.isDestroyed = true;
         thisObs.isDropping = false;
-      }
-      else if (thisObs.obstacleCol == "center")
-      {
+      } else if (thisObs.obstacleCol == "center") {
         // Move the rocket center.
         moveRocket("center");
         thisObs.isDestroyed = true;
         thisObs.isDropping = false;
-      }
-      else
-      {
+      } else {
         // Move the rocket right.
         moveRocket("right");
         thisObs.isDestroyed = true;
@@ -208,18 +197,14 @@ class _ShootingGameState extends State<ShootingGameStateful> {
       }
     });
 
-
-
     int answerPicked = thisObs.answerValue;
     print("Clicked answer choice $answerPicked.");
   }
 
-  void loseGame()
-  {
+  void loseGame() {
     // Stop the game and obstacles from continuing.
     canSolve = false;
-    for (int i = 0; i < numObstacles; i++)
-    {
+    for (int i = 0; i < numObstacles; i++) {
       obstacles[i].isDropping = false;
     }
 
@@ -241,53 +226,55 @@ class _ShootingGameState extends State<ShootingGameStateful> {
         actions: <Widget>[
           Center(
             child: problemsCorrect / numProblems < 0.8
-            // Retry game
+                // Retry game
                 ? IconButton(
-              icon: SvgPicture.asset(
-                'assets/images/reload.svg',
-                colorFilter:
-                ColorFilter.mode(Colors.black, BlendMode.srcIn),
-                semanticsLabel: "arrow pointing in circle",
-                height: 50,
-                width: 50,
-              ),
-              onPressed: () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ShootingGameStateful(
-                      planet: widget.planet,
-                      shootingProblem: widget.shootingProblem),
-                ),
-              ),
-            )
+                    icon: SvgPicture.asset(
+                      'assets/images/reload.svg',
+                      colorFilter:
+                          ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                      semanticsLabel: "arrow pointing in circle",
+                      height: 50,
+                      width: 50,
+                    ),
+                    onPressed: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ShootingGameStateful(
+                            planet: widget.planet,
+                            shootingProblem: widget.shootingProblem),
+                      ),
+                    ),
+                  )
                 : ElevatedButton(
-              // Game result screen
-              onPressed: () => {
-                Navigator.pop(context),
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const GameResultScreen(),
+                    // Game result screen
+                    onPressed: () => {
+                      Navigator.pop(context),
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GameResultScreen(
+                            currency: 0,
+                            time: 0,
+                          ),
+                        ),
+                      ),
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                    ),
+                    child: const Icon(
+                      Icons.arrow_right_rounded,
+                      color: Colors.black,
+                      size: 60,
+                    ),
                   ),
-                ),
-              },
-              style: ElevatedButton.styleFrom(
-                shape: const CircleBorder(),
-              ),
-              child: const Icon(
-                Icons.arrow_right_rounded,
-                color: Colors.black,
-                size: 60,
-              ),
-            ),
           )
         ],
       ),
     );
   }
 
-  void loseLife()
-  {
+  void loseLife() {
     // Lose a life.
     livesLeft -= 1;
 
@@ -296,14 +283,12 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     print("Lives left: $livesLeft");
 
     // Check; if we have no lives left, we have lost.
-    if (livesLeft == 0)
-      {
-        loseGame();
-      }
+    if (livesLeft == 0) {
+      loseGame();
+    }
   }
 
-  void collideRocket(int obstacleID)
-  {
+  void collideRocket(int obstacleID) {
     // If this is called, an obstacle has collided with our rocket.
 
     // First, grab any important info from the obstacle.
@@ -326,29 +311,23 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   // Function to move the rocket
   void moveRocket(String column) {
     setState(() {
-      if (column == "left")
-        {
-          // Move left.
-          rocketXPos = leftX;
-          rocketColumn = "left";
-        }
-      if (column == "center")
-        {
-          // Move center.
-          rocketXPos = centerX;
-          rocketColumn = "center";
-        }
-      else if (column == "right")
-        {
-          // Move right.
-          rocketXPos = rightX;
-          rocketColumn = "right";
-        }
-      else if (column == "up1")
-        {
-          // Game starting, move rocket UP.
-          rocketYPos -= (MediaQuery.of(context).size.height * 0.185);
-        }
+      if (column == "left") {
+        // Move left.
+        rocketXPos = leftX;
+        rocketColumn = "left";
+      }
+      if (column == "center") {
+        // Move center.
+        rocketXPos = centerX;
+        rocketColumn = "center";
+      } else if (column == "right") {
+        // Move right.
+        rocketXPos = rightX;
+        rocketColumn = "right";
+      } else if (column == "up1") {
+        // Game starting, move rocket UP.
+        rocketYPos -= (MediaQuery.of(context).size.height * 0.185);
+      }
     });
   }
 
@@ -361,8 +340,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
 
   // Start the game (turn rocket on and move it up, create first
   // question and answers, drop obstacles and show first problem.
-  void startGame()
-  {
+  void startGame() {
     // Start the game, move the rocket up, and load questions!
     setState(() {
       gameStarted = true;
@@ -372,8 +350,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     moveRocket("up1");
     rocketOn = true;
 
-    for (int i = 0; i < numObstacles; i++)
-    {
+    for (int i = 0; i < numObstacles; i++) {
       obstacles[i].isDropping = true;
     }
 
@@ -391,7 +368,6 @@ class _ShootingGameState extends State<ShootingGameStateful> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       // Transparent AppBar to store the back button.
@@ -409,28 +385,27 @@ class _ShootingGameState extends State<ShootingGameStateful> {
           // Back button arrow and functionality. Will need to add a
           // warning if you quit a game before it is complete!
           child: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-
-            // Navigate back when the back button is pressed.
-            // Will be an issue on game end screen, update!
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                // Replace 0 with the int value of the planet attached to this
-                // shooting game instance.
-                builder: (context) => const PlanetMapScreen(selectedPlanet: 0),
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
               ),
-            )
-          ),
+
+              // Navigate back when the back button is pressed.
+              // Will be an issue on game end screen, update!
+              onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      // Replace 0 with the int value of the planet attached to this
+                      // shooting game instance.
+                      builder: (context) =>
+                          const PlanetMapScreen(selectedPlanet: 0),
+                    ),
+                  )),
         ),
       ),
       body: Stack(
         fit: StackFit.expand,
         children: [
-
           // Background sky gradient for the game (all art will
           // change soon to use shooting_themes.dart).
           Container(
@@ -489,8 +464,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
             child: SGInfoBar(),
           ),
 
-          for (int i = 0; i < numObstacles; i++)
-            obstacles[i],
+          for (int i = 0; i < numObstacles; i++) obstacles[i],
           // obstacles[0],
 
           Center(
@@ -501,16 +475,15 @@ class _ShootingGameState extends State<ShootingGameStateful> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black, // Set button color to white
                 ),
-                child: const Text('Start Game',  style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 32,
-                )
-                ),
+                child: const Text('Start Game',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 32,
+                    )),
               ),
             ),
           ),
-
         ],
       ),
     );

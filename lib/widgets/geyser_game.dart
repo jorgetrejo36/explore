@@ -106,7 +106,10 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const GameResultScreen(),
+                              builder: (context) => GameResultScreen(
+                                currency: 0,
+                                time: 0,
+                              ),
                             ),
                           ),
                         },

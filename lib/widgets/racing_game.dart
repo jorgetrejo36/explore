@@ -34,6 +34,8 @@ class _RacingGameState extends State<RacingGame>
   late GeneratedProblem problem6 = widget.racingProblem.generateProblem();
   late GeneratedProblem problem7 = widget.racingProblem.generateProblem();
   late GeneratedProblem problem8 = widget.racingProblem.generateProblem();
+  late GeneratedProblem problem9 = widget.racingProblem.generateProblem();
+  late GeneratedProblem problem10 = widget.racingProblem.generateProblem();
   // List of problem objects to reference
   late List<GeneratedProblem> problemList = [
     problem1,
@@ -44,8 +46,11 @@ class _RacingGameState extends State<RacingGame>
     problem6,
     problem7,
     problem8,
+    problem9,
+    problem10,
   ];
 
+  // Player animation points
   late List<List<double>> playerLocations = [
     [
       MediaQuery.of(context).size.width * 0.12,
@@ -73,20 +78,32 @@ class _RacingGameState extends State<RacingGame>
     ],
   ];
 
-  late List<int> curChoices =
-      problemList[currentProblem].answerChoices.getAnswers();
-  late int curSolution =
-      problemList[currentProblem].answerChoices.getAnswers()[0];
-
-  int currentProblem = 0;
+  // Player point data
   int animationIterator = 0;
   int enemy1Location = 0;
   int enemy2Location = 0;
 
+  // Current Problem Data Generation
+  late List<int> curChoices =
+      problemList[currentProblem].answerChoices.getAnswers();
+  late int curSolution =
+      problemList[currentProblem].answerChoices.getAnswers()[0];
+  int currentProblem = 0;
+
   // Player variables
-  int score = 0;
+  int playerLocation = 0;
   bool correct = false;
   bool test = true;
+  LeaderboardEntry player = LeaderboardEntry("alien", 0, "player");
+
+  // EnemyAI Data
+  LeaderboardEntry enemy1 = LeaderboardEntry("alien2", 0, "enemy");
+  LeaderboardEntry enemy2 = LeaderboardEntry("alien3", 0, "enemy");
+
+  // Leaderboard data
+  late List<LeaderboardEntry> leaderboardData = [player, enemy1, enemy2];
+  final timer = Stopwatch();
+  late int finalTime = (timer.elapsedMilliseconds / 1000).round();
 
   void selectAnswer(int choiceNum) {
     decideEnemyMovement();
@@ -95,11 +112,13 @@ class _RacingGameState extends State<RacingGame>
       setState(() {
         test = !test;
         animationIterator++;
-        score++;
+        playerLocation++;
+        player.incrementScore();
         test = !test;
       });
       print(curChoices);
     }
+    updateLeaderboard();
     checkGameEnd();
   }
 
@@ -113,13 +132,14 @@ class _RacingGameState extends State<RacingGame>
   }
 
   void checkGameEnd() {
-    if (score > 4 || enemy1Location > 4 || enemy2Location > 4) {
+    if (playerLocation > 4 || enemy1Location > 4 || enemy2Location > 4) {
+      timer.stop;
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: Center(
             child: Text(
-              '$score / 5',
+              'Replace with player placement number',
               style: const TextStyle(
                 fontFamily: 'Fredoka',
               ),
@@ -127,7 +147,7 @@ class _RacingGameState extends State<RacingGame>
           ),
           actions: <Widget>[
             Center(
-              child: (score <= 4)
+              child: (playerLocation <= 4)
                   ? IconButton(
                       icon: SvgPicture.asset(
                         'assets/images/reload.svg',
@@ -151,7 +171,10 @@ class _RacingGameState extends State<RacingGame>
                       onPressed: () => Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const GameResultScreen(),
+                          builder: (context) => GameResultScreen(
+                            currency: player.score,
+                            time: finalTime,
+                          ),
                         ),
                       ),
                       child: const Text("Game Complete"),
@@ -165,16 +188,6 @@ class _RacingGameState extends State<RacingGame>
     }
   }
 
-  // Pushes game results screen to user
-  // Todo: Send game data to second screen
-  void gameFinish() {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const GameResultScreen(),
-        ));
-  }
-
   void decideEnemyMovement() {
     int rng = Random().nextInt(100);
 
@@ -182,16 +195,26 @@ class _RacingGameState extends State<RacingGame>
       setState(() {
         enemy1Location++;
         enemy2Location++;
+        enemy1.incrementScore();
+        enemy2.incrementScore();
       });
     } else if (rng <= 70) {
       setState(() {
         enemy1Location++;
+        enemy1.incrementScore();
       });
     } else if (rng > 70) {
       setState(() {
         enemy2Location++;
+        enemy2.incrementScore();
       });
     }
+  }
+
+  void updateLeaderboard() {
+    setState(() {
+      leaderboardData.sort((a, b) => b.score.compareTo(a.score));
+    });
   }
 
   displayCorrect() {
@@ -223,6 +246,7 @@ class _RacingGameState extends State<RacingGame>
   @override
   void initState() {
     super.initState();
+    timer.start();
     //repeatOnce();
   }
 
@@ -387,7 +411,6 @@ class _RacingGameState extends State<RacingGame>
                                 GestureDetector(
                                   behavior: HitTestBehavior.opaque,
                                   onTap: () {
-                                    print("this is working");
                                     selectAnswer(2);
                                   },
                                   child: Container(
@@ -447,7 +470,7 @@ class _RacingGameState extends State<RacingGame>
                                   Container(
                                     margin: EdgeInsets.only(left: 19),
                                     child: SvgPicture.asset(
-                                      'assets/images/alien.svg',
+                                      'assets/images/${leaderboardData[0].sprite}.svg',
                                       height: 50,
                                     ),
                                   )
@@ -469,7 +492,7 @@ class _RacingGameState extends State<RacingGame>
                                   Container(
                                     margin: EdgeInsets.only(left: 10),
                                     child: SvgPicture.asset(
-                                      'assets/images/alien2.svg',
+                                      'assets/images/${leaderboardData[1].sprite}.svg',
                                       height: 50,
                                     ),
                                   )
@@ -491,7 +514,7 @@ class _RacingGameState extends State<RacingGame>
                                   Container(
                                     margin: EdgeInsets.only(left: 10),
                                     child: SvgPicture.asset(
-                                      'assets/images/alien3.svg',
+                                      'assets/images/${leaderboardData[2].sprite}.svg',
                                       height: 50,
                                     ),
                                   )
@@ -689,13 +712,17 @@ class _racing_start_screenState extends State<racing_start_screen>
   }
 }
 
-class ChoicesData {
-  late int solution;
-  late List<int> rowChoices;
+class LeaderboardEntry {
+  late String sprite;
+  late int score;
+  late String type;
+  LeaderboardEntry(String playerSprite, int playerScore, String playerType) {
+    sprite = playerSprite;
+    score = playerScore;
+    type = playerType;
+  }
 
-  ChoicesData(choices, answer) {
-    rowChoices = choices;
-    solution = answer;
-    rowChoices.shuffle();
+  void incrementScore() {
+    score++;
   }
 }

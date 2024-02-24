@@ -1,9 +1,14 @@
 import 'package:explore/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:explore/widgets/score_calculator.dart';
 
 class GameResultScreen extends StatelessWidget {
-  const GameResultScreen({super.key});
+  final int currency;
+  final int time;
+  GameResultScreen({super.key, required this.currency, required this.time});
+
+  late int score = calculateScore(currency, time);
 
   @override
   Widget build(BuildContext context) {
@@ -29,18 +34,24 @@ class GameResultScreen extends StatelessWidget {
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height *
                         0.35, // 35% of the screen (40/100)
-                    child: const Column(
+                    child: Column(
                       children: [
                         Expanded(
                           child: DataBoxWidget(
                             imagePath: "assets/images/diamond.svg",
-                            score: 5,
+                            score: currency,
                           ),
                         ),
                         Expanded(
                           child: DataBoxWidget(
                             imagePath: "assets/images/star.svg",
-                            score: 123,
+                            score: time,
+                          ),
+                        ),
+                        Expanded(
+                          child: DataBoxWidget(
+                            imagePath: "assets/images/star.svg",
+                            score: score,
                           ),
                         ),
                       ],
