@@ -2,6 +2,7 @@ import 'package:explore/screens/avatar_home_screen.dart';
 import 'package:explore/utils/user_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class StartupScreen extends StatefulWidget {
   const StartupScreen({super.key});

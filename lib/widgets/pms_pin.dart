@@ -1,3 +1,4 @@
+import 'package:explore/widgets/racing_game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:explore/screens/game_screen.dart';
@@ -96,7 +97,8 @@ class PinWidget extends StatelessWidget {
 
         case GameType.racing:
           // Add racing game w/ theme. Temp GameScreen until it's made.
-          gameToLoad = GameScreen();
+          gameToLoad = RacingGame(
+              planet: 'neptune', racingProblem: ProblemGenerator(1, true));
 
         // Add GameType.scrolling if we make a fifth game.
 
@@ -107,7 +109,7 @@ class PinWidget extends StatelessWidget {
       }
 
       // Load the game.
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => gameToLoad,
