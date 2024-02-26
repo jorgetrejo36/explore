@@ -33,6 +33,16 @@ class _GeyserGameState extends State<GeyserGameStateful> {
   late int correctAnswer = problem.answerChoices.getAnswers()[0];
   late List<dynamic> choices = problem.answerChoices.getAnswers();
 
+  // Timer
+  final timer = Stopwatch();
+  late int finalTime = (timer.elapsedMilliseconds / 1000).round();
+
+  @override
+  void initState() {
+    super.initState();
+    timer.start();
+  }
+
   // For item counter
   void increment() {
     setState(() {
@@ -66,6 +76,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
 
       // Pop up of retry or game results
       if ((questionsAnswered == questions) || (lives == 0)) {
+        timer.stop();
         showDialog<String>(
           context: context,
           builder: (BuildContext context) => AlertDialog(
@@ -107,8 +118,8 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => GameResultScreen(
-                                currency: 0,
-                                time: 0,
+                                currency: counter,
+                                time: finalTime,
                               ),
                             ),
                           ),
