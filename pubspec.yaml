@@ -90,6 +90,12 @@ flutter:
     - assets/images/pms_pin_neptune.svg
     - assets/images/shooting_earth_ground_art.png
     - assets/images/shooting_earth_sky_art.png
+    - assets/images/shooting_mars_ground_art.png
+    - assets/images/shooting_mars_sky_art.png
+    - assets/images/shooting_saturn_ground_art.png
+    - assets/images/shooting_saturn_sky_art.png
+    - assets/images/shooting_neptune_ground_art.png
+    - assets/images/shooting_neptune_sky_art.png
     - assets/images/shooting_player.png
     - assets/images/rocket_temp.svg
     - assets/images/mars-bg.svg
@@ -102,7 +108,6 @@ flutter:
     - assets/images/alien2.svg
     - assets/images/alien3.svg
     - assets/images/car.svg
-    - assets/images/diamond.svg
     - assets/images/star.svg
     - assets/images/Vector.png
     - assets/images/trophy.png
@@ -132,7 +137,6 @@ flutter:
     - assets/images/ufo.svg
     - assets/images/SaturnGeyser.png
     - assets/images/MarsGeyser.png
-    - assets/images/asteroids.svg
     - assets/images/astronaut.svg
     - assets/images/astronaut2.svg
     - assets/images/astronaut3.svg
@@ -141,6 +145,10 @@ flutter:
     - assets/images/rocket.png
     - assets/images/sg_asteroid_earth.svg
     - assets/images/sg_asteroid_destroyed_earth.svg
+    - assets/images/ring-temp.svg
+    - assets/images/ring-temp-faded.svg
+    - assets/images/lollipop.svg
+    - assets/images/blue-fish.svg
 
     - assets/images/asteroids.svg
     - assets/images/EarthRacing.png
