@@ -1,8 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
+import 'package:explore/utils/realm_utils.dart'; // Import your utility class
 
-class LeaderboardScreen extends StatelessWidget {
+class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});
+
+  @override
+  _LeaderboardScreenState createState() => _LeaderboardScreenState();
+}
+
+class _LeaderboardScreenState extends State<LeaderboardScreen> {
+  late List<PlayerData> users;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    try {
+      users = RealmUtils().getLeaderboardUsers();
+    } catch (e) {
+      print('Error loading data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,58 +106,17 @@ class LeaderboardScreen extends StatelessWidget {
                   margin: EdgeInsets.only(
                     top: MediaQuery.of(context).size.height * 0.0225,
                   ),
-                  child: const Column(
-                    children: [
-                      // Start of Score Bar Widget
-                      ScoreBar(
+                  child: ListView.builder(
+                    itemCount: users.length,
+                    itemBuilder: (context, index) {
+                      final player = users[index];
+                      return ScoreBar(
                         barColor: Color(0xffa149f0),
-                        imgName: "TestMonster",
-                        name: "Bevin",
-                        score: "201",
-                      ),
-                      ScoreBar(
-                        barColor: Color(0xff8c74ec),
-                        imgName: "TestMonster2",
-                        name: "Smevin",
-                        score: "198",
-                      ),
-                      ScoreBar(
-                        barColor: Color(0xff3e7cda),
-                        imgName: "TestMonster3",
-                        name: "Kevin",
-                        score: "153",
-                      ),
-                      ScoreBar(
-                        barColor: Color(0xff2ab2d7),
-                        imgName: "TestMonster",
-                        name: "Evan",
-                        score: "124",
-                      ),
-                      ScoreBar(
-                        barColor: Color(0xffa149f0),
-                        imgName: "TestMonster2",
-                        name: "Devon",
-                        score: "117",
-                      ),
-                      ScoreBar(
-                        barColor: Color(0xff8c74ec),
-                        imgName: "TestMonster3",
-                        name: "Slevin",
-                        score: "98",
-                      ),
-                      ScoreBar(
-                        barColor: Color(0xff3e7cda),
-                        imgName: "TestMonster",
-                        name: "Grevin",
-                        score: "24",
-                      ),
-                      ScoreBar(
-                        barColor: Color(0xff2ab2d7),
-                        imgName: "TestMonster2",
-                        name: "Steve",
-                        score: "12",
-                      ),
-                    ],
+                        imgName: player.imgName,
+                        name: player.name,
+                        score: player.score,
+                      );
+                    },
                   ),
                 ),
               ],

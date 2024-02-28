@@ -41,6 +41,14 @@ class KeyUserInfo {
   KeyUserInfo({required this.id, required this.name, required this.avatar});
 }
 
+class PlayerData {
+  final String name;
+  final String score;
+  final String imgName;
+
+  PlayerData({required this.name, required this.score, required this.imgName});
+}
+
 class RocketAvatar {
   final String avatarPath;
   final String rocketPath;
@@ -245,5 +253,31 @@ class RealmUtils {
     realm.close();
 
     return user;
+  }
+  List<PlayerData> getLeaderboardUsers() {
+    // open local realm instance
+    final realm = Realm(config);
+
+    // Get all users
+    final users = realm.all<ExploreUser>().toList();
+
+    // Sort users by total score in descending order
+    users.sort((a, b) => b.totalScore.compareTo(a.totalScore));
+
+    // Map ExploreUser instances to PlayerData instances for leaderboard
+    final List<PlayerData> leaderboardUsers = users
+        .map(
+          (user) => PlayerData(
+        name: user.name,
+        score: user.totalScore.toString(),
+        imgName: user.avatarPath, // You may want to modify this
+      ),
+    )
+        .toList();
+
+    // close realm instance
+    realm.close();
+
+    return leaderboardUsers;
   }
 }
