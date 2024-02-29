@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
-import 'package:explore/utils/realm_utils.dart'; // Import your utility class
+import 'package:explore/utils/realm_utils.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});
@@ -61,42 +62,47 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.22,
-                  //Start of TopPlayer widget
+                  // Start of TopPlayer widget
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        margin: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.075,
+                      if (users.isNotEmpty)
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.075,
+                          ),
+                          child: TopPlayer(
+                            outlineColor: Color.fromARGB(255, 201, 201, 201),
+                            name: users[0].name,
+                            backgroundColor: Color(0xffa149f0),
+                            imgName: users[0].imgName,
+                          ),
                         ),
-                        child: const TopPlayer(
-                          outlineColor: Color.fromARGB(255, 201, 201, 201),
-                          name: "Devin",
-                          backgroundColor: Color(0xffa149f0),
-                          imgName: "TestMonster",
+                      if (users.length > 1)
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          child: TopPlayer(
+                            outlineColor: Color(0xFFECBC14),
+                            name: users[1].name,
+                            backgroundColor: Color(0xffa149f0),
+                            imgName: users[1].imgName,
+                          ),
                         ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.02),
-                        child: const TopPlayer(
-                          outlineColor: Color(0xFFECBC14),
-                          name: "Kevin",
-                          backgroundColor: Color(0xffa149f0),
-                          imgName: "TestMonster2",
+                      if (users.length > 2)
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.09,
+                          ),
+                          child: TopPlayer(
+                            outlineColor: Color.fromARGB(255, 197, 98, 12),
+                            name: users[2].name,
+                            backgroundColor: Color(0xffa149f0),
+                            imgName: users[2].imgName,
+                          ),
                         ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.09),
-                        child: const TopPlayer(
-                          outlineColor: Color.fromARGB(255, 197, 98, 12),
-                          name: "Smevin",
-                          backgroundColor: Color(0xffa149f0),
-                          imgName: "TestMonster3",
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -170,8 +176,8 @@ class TopPlayer extends StatelessWidget {
             ),
             child: Align(
               alignment: AlignmentDirectional(0, 0),
-              child: Image.asset(
-                "assets/images/$imgName.png",
+              child: SvgPicture.asset(
+                imgName,
                 fit: BoxFit.contain,
                 height: 75,
               ),
@@ -240,7 +246,7 @@ class ScoreBar extends StatelessWidget {
         children: [
           Container(
             width: MediaQuery.of(context).size.width * 0.18,
-            child: Image.asset("assets/images/$imgName.png"),
+            child: SvgPicture.asset(imgName),
           ),
           Container(
             width: MediaQuery.of(context).size.width * 0.6,
