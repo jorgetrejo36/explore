@@ -64,10 +64,13 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
   }
 
   Widget _buildAlienSvg() {
-    final Tween<double> rotationAnimation = Tween(begin: 0.0, end: 1.0);
+    final rotationAnimation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+          parent: _animationController2!, curve: Curves.linearToEaseOut),
+    );
 
     return RotationTransition(
-      turns: rotationAnimation.animate(_animationController2!),
+      turns: rotationAnimation,
       alignment: Alignment.center,
       child: SvgPicture.asset(
         'assets/images/alien.svg',
@@ -81,7 +84,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
   Widget _buildSmokeSvg() {
     final scaleAnimation = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-          parent: _animationController!, curve: Curves.fastOutSlowIn),
+          parent: _animationController!, curve: Curves.linearToEaseOut),
     );
 
     return ScaleTransition(
@@ -119,6 +122,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
       if (widget.choice != widget.correctAnswer) {
         _animationController?.reset(); // Reset the animation controller
         _animationController?.forward(); // Start the smoke animation
+        _animationController2?.reset(); // Reset the animation controller
         _animationController2?.forward(); // Start the smoke animation
 
         return widget.choice == widget.answer
