@@ -158,25 +158,38 @@ class _RacingGameState extends State<RacingGame>
                         width: 50,
                       ),
                       // Navigate back when the back button is pressed
-                      onPressed: () => Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => RacingGame(
-                              planet: widget.planet,
-                              racingProblem: widget.racingProblem),
-                        ),
-                      ),
-                    )
-                  : ElevatedButton(
-                      onPressed: () => Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => GameResultScreen(
-                            currency: player.score,
-                            time: finalTime,
+                      onPressed: () async => {
+                        SystemChrome.setPreferredOrientations([
+                          DeviceOrientation.portraitUp,
+                          DeviceOrientation.portraitUp,
+                        ]),
+                        await Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RacingGame(
+                                planet: widget.planet,
+                                racingProblem: widget.racingProblem),
                           ),
                         ),
-                      ),
+                      },
+                    )
+                  : ElevatedButton(
+                      onPressed: () async => {
+                        SystemChrome.setPreferredOrientations(
+                          [
+                            DeviceOrientation.portraitUp,
+                          ],
+                        ),
+                        await Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GameResultScreen(
+                              currency: player.score,
+                              time: finalTime,
+                            ),
+                          ),
+                        ),
+                      },
                       child: const Text("Game Complete"),
                     ),
             )
@@ -247,6 +260,12 @@ class _RacingGameState extends State<RacingGame>
   void initState() {
     super.initState();
     timer.start();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     //repeatOnce();
   }
 
@@ -258,6 +277,9 @@ class _RacingGameState extends State<RacingGame>
   @override
   void dispose() {
     _controller.dispose();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     super.dispose();
   }
 
@@ -272,7 +294,12 @@ class _RacingGameState extends State<RacingGame>
             size: 35,
           ),
           // Navigate back when the back button is pressed
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => {
+            SystemChrome.setPreferredOrientations(
+              [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+            ),
+            Navigator.pop(context),
+          },
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
