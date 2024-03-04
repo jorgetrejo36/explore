@@ -1,5 +1,6 @@
 import 'package:explore/schemas.dart';
 import 'package:explore/screens/choose_rocket_screen.dart';
+import 'package:explore/screens/delete_avatar_screen.dart';
 import 'package:explore/screens/leaderboard_screen.dart';
 import 'package:explore/screens/planet_home_screen.dart';
 import 'package:explore/utils/realm_utils.dart';
@@ -59,6 +60,24 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
     };
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Align(
+          alignment: Alignment.centerRight,
+          child: IconButton(
+            icon: SvgPicture.asset(
+              'assets/images/trash-can.svg',
+              height: MediaQuery.of(context).size.height / 15,
+            ),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DeleteAvatarScreen(),
+              ),
+            ),
+          ),
+        ),
+      ),
       extendBodyBehindAppBar: true,
       body: DecoratedBox(
         decoration: const BoxDecoration(
@@ -67,7 +86,7 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Positioned (
+        child: Positioned(
           child: Stack(
             children: [
               Positioned.fill(
@@ -116,25 +135,24 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                                     width: 450,
                                     height: 450,
                                   ),
-
                                   Positioned(
                                     bottom: -1,
                                     left: 0,
                                     right: 0,
                                     child: Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 0, vertical: 2),
                                       decoration: BoxDecoration(
                                         color: Color(0xFFAC6FE3),
                                         borderRadius: BorderRadius.circular(20),
                                       ),
                                       child: Text(
-                                        users[index].name, 
+                                        users[index].name,
                                         style: TextStyle(color: Colors.white),
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
                                   ),
-                                  
                                 ],
                               ),
                             )
@@ -203,7 +221,5 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
         ),
       ),
     );
-
-    
   }
 }

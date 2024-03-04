@@ -149,7 +149,8 @@ flutter:
     - assets/images/ring-temp-faded.svg
     - assets/images/lollipop.svg
     - assets/images/blue-fish.svg
-
+    - assets/images/trash-can.svg
+    - assets/images/garbage-bin.svg
     - assets/images/asteroids.svg
     - assets/images/EarthRacing.png
     - assets/images/MarsRacing.png
