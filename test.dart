@@ -8,6 +8,7 @@ void main() {
       GeneratedProblem problem = generator.generateProblem();
       expect(problem, isNotNull);
       expect(problem.problem.getProblemString(), isNotNull);
+      print('Sample Problem: $problem');
     });
 
     test('generateProblem returns a valid problem with restricted difficulty', () {
@@ -15,6 +16,7 @@ void main() {
       GeneratedProblem problem = generator.generateProblem();
       expect(problem, isNotNull);
       expect(problem.problem.getProblemString(), isNotNull);
+      print('Sample Problem: $problem');
     });
 
     test('generateProblem returns a valid problem with range', () {
@@ -22,6 +24,7 @@ void main() {
       GeneratedProblem problem = generator.generateProblem();
       expect(problem, isNotNull);
       expect(problem.problem.getProblemString(), isNotNull);
+      print('Sample Problem: $problem');
     });
 
     test('generateProblem statistics for a large sample', () {
