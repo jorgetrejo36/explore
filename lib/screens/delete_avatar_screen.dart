@@ -43,8 +43,6 @@ class _DeleteAvatarScreenState extends State<DeleteAvatarScreen> {
     double spacing = screenWidth * 0.06;
 
     // Image path for the circle buttons
-    String buttonImage = "assets/images/Vector.png";
-    String trashCan = "assets/images/trash-can.svg"; // Path to additional image
     String rocketImage = "assets/images/rocket.png";
 
     // Define a map to assign colors to specific button indices
@@ -109,16 +107,6 @@ class _DeleteAvatarScreenState extends State<DeleteAvatarScreen> {
                                 // take the id of the user that was selected and assign it to the user
                                 // controller
                                 loggedInUser.updateId(users[index].id);
-                                // Navigate to the planet home screen for this user
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) => PlanetHomeScreen(),
-                                //   ),
-                                //   // this is used so the page reloads when it comes back
-                                // ).then((_) => setState(() {
-                                //       _loadData();
-                                //     }));
                                 showDialog<String>(
                                   context: context,
                                   builder: (BuildContext context) =>
@@ -200,7 +188,8 @@ class _DeleteAvatarScreenState extends State<DeleteAvatarScreen> {
                                             ),
                                           ),
                                           IconButton(
-                                            onPressed: () => {},
+                                            onPressed: () =>
+                                                {Navigator.pop(context)},
                                             icon: SvgPicture.asset(
                                               'assets/images/wrong.svg',
                                               height: MediaQuery.of(context)
@@ -246,6 +235,16 @@ class _DeleteAvatarScreenState extends State<DeleteAvatarScreen> {
                                         style: TextStyle(color: Colors.white),
                                         textAlign: TextAlign.center,
                                       ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Icon(
+                                      Icons.close,
+                                      color: Colors.red,
+                                      size: MediaQuery.of(context).size.width /
+                                          10,
                                     ),
                                   ),
                                 ],
