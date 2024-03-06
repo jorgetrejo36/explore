@@ -284,371 +284,407 @@ class _RacingGameState extends State<RacingGame>
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Color(0xfff6f6f6),
-            size: 35,
-          ),
-          // Navigate back when the back button is pressed
-          onPressed: () => {
-            SystemChrome.setPreferredOrientations(
-              [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
-            ),
-            Navigator.pop(context),
-          },
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: MediaQuery.of(context).orientation == Orientation.portrait
-          ? racing_start_screen(theme: theme)
-          : Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/${theme.background}.png"),
-                  fit: BoxFit.cover,
-                ),
+  Widget build(BuildContext context) => PopScope(
+        canPop: true,
+        onPopInvoked: (bool didPop) {
+          if (didPop) {
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.portraitUp,
+            ]);
+          }
+        },
+        child: Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Color(0xfff6f6f6),
+                size: 35,
               ),
-              child: Column(children: [
-                // Game Info
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.50,
-                  child: Row(
+              // Navigate back when the back button is pressed
+              onPressed: () => {
+                SystemChrome.setPreferredOrientations(
+                  [
+                    DeviceOrientation.portraitUp,
+                    DeviceOrientation.portraitDown
+                  ],
+                ),
+                Navigator.pop(context),
+              },
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
+          body: MediaQuery.of(context).orientation == Orientation.portrait
+              ? racing_start_screen(theme: theme)
+              : Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image:
+                          AssetImage("assets/images/${theme.background}.png"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Column(
                     children: [
-                      // Equation and Solutions
+                      // Game Info
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.88,
-                        padding: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.08),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        height: MediaQuery.of(context).size.height * 0.50,
+                        child: Row(
                           children: [
+                            // Equation and Solutions
                             Container(
-                                width: MediaQuery.of(context).size.width * 0.23,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.226,
-                                margin: EdgeInsets.symmetric(
-                                  vertical:
-                                      MediaQuery.of(context).size.height * 0.05,
-                                ),
-                                decoration: const BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                  color: Color.fromARGB(239, 248, 248, 248),
-                                ),
-                                child: Center(
-                                  child: AnimatedSwitcher(
-                                    duration: Duration(milliseconds: 800),
-                                    child: Text(
-                                      problemList[currentProblem]
-                                          .problem
-                                          .getProblemString(),
-                                      key: ValueKey(problemList[currentProblem]
-                                          .problem
-                                          .getProblemString()),
-                                      style: TextStyle(
-                                          color:
-                                              Color.fromARGB(238, 31, 31, 31),
-                                          fontSize: 72,
-                                          fontFamily: 'Fredoka'),
-                                      //textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                )),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTap: () {
-                                    selectAnswer(0);
-                                  },
-                                  child: Container(
-                                    width: 75,
-                                    height: 75,
-                                    margin: EdgeInsets.symmetric(
-                                      horizontal:
-                                          MediaQuery.of(context).size.width *
-                                              0.05,
-                                    ),
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(100)),
-                                      color: Color.fromARGB(239, 248, 248, 248),
-                                    ),
-                                    child: Center(
-                                      child: AnimatedSwitcher(
-                                        duration: Duration(milliseconds: 800),
-                                        child: Text(
-                                          "${curChoices[0]}",
-                                          key: ValueKey(curChoices[0]),
-                                          style: TextStyle(
-                                              color: Color.fromARGB(
-                                                  238, 31, 31, 31),
-                                              fontSize: 55,
-                                              fontFamily: 'Fredoka'),
-                                          //textAlign: TextAlign.center,
+                              width: MediaQuery.of(context).size.width * 0.88,
+                              padding: EdgeInsets.only(
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.08),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.23,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.226,
+                                      margin: EdgeInsets.symmetric(
+                                        vertical:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                      ),
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20)),
+                                        color:
+                                            Color.fromARGB(239, 248, 248, 248),
+                                      ),
+                                      child: Center(
+                                        child: AnimatedSwitcher(
+                                          duration: Duration(milliseconds: 800),
+                                          child: Text(
+                                            problemList[currentProblem]
+                                                .problem
+                                                .getProblemString(),
+                                            key: ValueKey(
+                                                problemList[currentProblem]
+                                                    .problem
+                                                    .getProblemString()),
+                                            style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    238, 31, 31, 31),
+                                                fontSize: 72,
+                                                fontFamily: 'Fredoka'),
+                                            //textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      )),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        onTap: () {
+                                          selectAnswer(0);
+                                        },
+                                        child: Container(
+                                          width: 75,
+                                          height: 75,
+                                          margin: EdgeInsets.symmetric(
+                                            horizontal: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.05,
+                                          ),
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(100)),
+                                            color: Color.fromARGB(
+                                                239, 248, 248, 248),
+                                          ),
+                                          child: Center(
+                                            child: AnimatedSwitcher(
+                                              duration:
+                                                  Duration(milliseconds: 800),
+                                              child: Text(
+                                                "${curChoices[0]}",
+                                                key: ValueKey(curChoices[0]),
+                                                style: TextStyle(
+                                                    color: Color.fromARGB(
+                                                        238, 31, 31, 31),
+                                                    fontSize: 55,
+                                                    fontFamily: 'Fredoka'),
+                                                //textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTap: () {
-                                    print("this is working");
-                                    selectAnswer(1);
-                                  },
-                                  child: Container(
-                                    width: 75,
-                                    height: 75,
-                                    margin: EdgeInsets.symmetric(
-                                      horizontal:
-                                          MediaQuery.of(context).size.width *
-                                              0.05,
-                                    ),
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(100)),
-                                      color: Color.fromARGB(239, 248, 248, 248),
-                                    ),
-                                    child: Center(
-                                      child: AnimatedSwitcher(
-                                        duration: Duration(milliseconds: 800),
-                                        child: Text(
-                                          "${curChoices[1]}",
-                                          key: ValueKey(curChoices[1]),
-                                          style: TextStyle(
-                                              color: Color.fromARGB(
-                                                  238, 31, 31, 31),
-                                              fontSize: 55,
-                                              fontFamily: 'Fredoka'),
-                                          //textAlign: TextAlign.center,
+                                      GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        onTap: () {
+                                          print("this is working");
+                                          selectAnswer(1);
+                                        },
+                                        child: Container(
+                                          width: 75,
+                                          height: 75,
+                                          margin: EdgeInsets.symmetric(
+                                            horizontal: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.05,
+                                          ),
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(100)),
+                                            color: Color.fromARGB(
+                                                239, 248, 248, 248),
+                                          ),
+                                          child: Center(
+                                            child: AnimatedSwitcher(
+                                              duration:
+                                                  Duration(milliseconds: 800),
+                                              child: Text(
+                                                "${curChoices[1]}",
+                                                key: ValueKey(curChoices[1]),
+                                                style: TextStyle(
+                                                    color: Color.fromARGB(
+                                                        238, 31, 31, 31),
+                                                    fontSize: 55,
+                                                    fontFamily: 'Fredoka'),
+                                                //textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTap: () {
-                                    selectAnswer(2);
-                                  },
-                                  child: Container(
-                                    width: 75,
-                                    height: 75,
-                                    margin: EdgeInsets.symmetric(
-                                      horizontal:
-                                          MediaQuery.of(context).size.width *
-                                              0.05,
-                                    ),
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(100)),
-                                      color: Color.fromARGB(239, 248, 248, 248),
-                                    ),
-                                    child: Center(
-                                      child: AnimatedSwitcher(
-                                        duration: Duration(milliseconds: 800),
-                                        child: Text(
-                                          "${curChoices[2]}",
-                                          key: ValueKey(curChoices[2]),
-                                          style: TextStyle(
-                                              color: Color.fromARGB(
-                                                  238, 31, 31, 31),
-                                              fontSize: 55,
-                                              fontFamily: 'Fredoka'),
-                                          //textAlign: TextAlign.center,
+                                      GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        onTap: () {
+                                          selectAnswer(2);
+                                        },
+                                        child: Container(
+                                          width: 75,
+                                          height: 75,
+                                          margin: EdgeInsets.symmetric(
+                                            horizontal: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.05,
+                                          ),
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(100)),
+                                            color: Color.fromARGB(
+                                                239, 248, 248, 248),
+                                          ),
+                                          child: Center(
+                                            child: AnimatedSwitcher(
+                                              duration:
+                                                  Duration(milliseconds: 800),
+                                              child: Text(
+                                                "${curChoices[2]}",
+                                                key: ValueKey(curChoices[2]),
+                                                style: TextStyle(
+                                                    color: Color.fromARGB(
+                                                        238, 31, 31, 31),
+                                                    fontSize: 55,
+                                                    fontFamily: 'Fredoka'),
+                                                //textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                            // Leaderboard
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.11,
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          child: Text(
+                                            "1.",
+                                            style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    239, 248, 248, 248),
+                                                fontSize: 46,
+                                                fontFamily: 'Fredoka'),
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(left: 19),
+                                          child: SvgPicture.asset(
+                                            'assets/images/${leaderboardData[0].sprite}.svg',
+                                            height: 50,
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                  ),
-                                ),
-                              ],
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          child: Text(
+                                            "2.",
+                                            style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    239, 248, 248, 248),
+                                                fontSize: 46,
+                                                fontFamily: 'Fredoka'),
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(left: 10),
+                                          child: SvgPicture.asset(
+                                            'assets/images/${leaderboardData[1].sprite}.svg',
+                                            height: 50,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          child: Text(
+                                            "3.",
+                                            style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    239, 248, 248, 248),
+                                                fontSize: 46,
+                                                fontFamily: 'Fredoka'),
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(left: 10),
+                                          child: SvgPicture.asset(
+                                            'assets/images/${leaderboardData[2].sprite}.svg',
+                                            height: 50,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ]),
                             )
                           ],
                         ),
                       ),
-                      // Leaderboard
+                      // Player Tracks
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.11,
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    child: Text(
-                                      "1.",
-                                      style: TextStyle(
-                                          color: Color.fromARGB(
-                                              239, 248, 248, 248),
-                                          fontSize: 46,
-                                          fontFamily: 'Fredoka'),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 19),
-                                    child: SvgPicture.asset(
-                                      'assets/images/${leaderboardData[0].sprite}.svg',
-                                      height: 50,
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    child: Text(
-                                      "2.",
-                                      style: TextStyle(
-                                          color: Color.fromARGB(
-                                              239, 248, 248, 248),
-                                          fontSize: 46,
-                                          fontFamily: 'Fredoka'),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10),
-                                    child: SvgPicture.asset(
-                                      'assets/images/${leaderboardData[1].sprite}.svg',
-                                      height: 50,
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    child: Text(
-                                      "3.",
-                                      style: TextStyle(
-                                          color: Color.fromARGB(
-                                              239, 248, 248, 248),
-                                          fontSize: 46,
-                                          fontFamily: 'Fredoka'),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10),
-                                    child: SvgPicture.asset(
-                                      'assets/images/${leaderboardData[2].sprite}.svg',
-                                      height: 50,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ]),
-                      )
-                    ],
-                  ),
-                ),
-                // Player Tracks
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.07,
-                  width: MediaQuery.of(context).size.width,
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.15,
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.only(top: 5),
-                  child: Stack(
-                    children: <Widget>[
-                      AnimatedPositioned(
-                        left: test
-                            ? playerLocations[enemy1Location][0]
-                            : playerLocations[enemy1Location][1],
-                        duration: const Duration(seconds: 2),
-                        curve: Curves.fastOutSlowIn,
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              test = !test;
-                              currentProblem++;
-                              test = !test;
-                            });
-                          },
-                          child: SvgPicture.asset(
-                            'assets/images/UFO2.svg',
-                            height: 35,
-                          ),
-                        ),
+                        height: MediaQuery.of(context).size.height * 0.07,
+                        width: MediaQuery.of(context).size.width,
                       ),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.14,
-                  width: MediaQuery.of(context).size.width,
-                  child: Stack(
-                    children: <Widget>[
-                      AnimatedPositioned(
-                        left: test
-                            ? playerLocations[enemy2Location][0]
-                            : playerLocations[enemy2Location][1],
-                        duration: const Duration(seconds: 2),
-                        curve: Curves.fastOutSlowIn,
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              test = !test;
-                              currentProblem++;
-                              test = !test;
-                            });
-                          },
-                          child: SvgPicture.asset(
-                            'assets/images/UFO1.svg',
-                            height: 35,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.11,
-                  width: MediaQuery.of(context).size.width,
-                  child: Stack(
-                    children: <Widget>[
-                      AnimatedPositioned(
-                          left: test
-                              ? playerLocations[animationIterator][0]
-                              : playerLocations[animationIterator][1],
-                          duration: const Duration(seconds: 2),
-                          curve: Curves.fastOutSlowIn,
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                test = !test;
-                                currentProblem++;
-                                test = !test;
-                              });
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(left: 10),
-                              child: Transform(
-                                alignment: Alignment.center,
-                                transform: Matrix4.rotationY(3.14159),
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.15,
+                        width: MediaQuery.of(context).size.width,
+                        margin: EdgeInsets.only(top: 5),
+                        child: Stack(
+                          children: <Widget>[
+                            AnimatedPositioned(
+                              left: test
+                                  ? playerLocations[enemy1Location][0]
+                                  : playerLocations[enemy1Location][1],
+                              duration: const Duration(seconds: 2),
+                              curve: Curves.fastOutSlowIn,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    test = !test;
+                                    currentProblem++;
+                                    test = !test;
+                                  });
+                                },
                                 child: SvgPicture.asset(
-                                  'assets/images/submarine.svg',
-                                  height: 47,
+                                  'assets/images/UFO2.svg',
+                                  height: 35,
                                 ),
                               ),
                             ),
-                          )),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.14,
+                        width: MediaQuery.of(context).size.width,
+                        child: Stack(
+                          children: <Widget>[
+                            AnimatedPositioned(
+                              left: test
+                                  ? playerLocations[enemy2Location][0]
+                                  : playerLocations[enemy2Location][1],
+                              duration: const Duration(seconds: 2),
+                              curve: Curves.fastOutSlowIn,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    test = !test;
+                                    currentProblem++;
+                                    test = !test;
+                                  });
+                                },
+                                child: SvgPicture.asset(
+                                  'assets/images/UFO1.svg',
+                                  height: 35,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.11,
+                        width: MediaQuery.of(context).size.width,
+                        child: Stack(
+                          children: <Widget>[
+                            AnimatedPositioned(
+                                left: test
+                                    ? playerLocations[animationIterator][0]
+                                    : playerLocations[animationIterator][1],
+                                duration: const Duration(seconds: 2),
+                                curve: Curves.fastOutSlowIn,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      test = !test;
+                                      currentProblem++;
+                                      test = !test;
+                                    });
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 10),
+                                    child: Transform(
+                                      alignment: Alignment.center,
+                                      transform: Matrix4.rotationY(3.14159),
+                                      child: SvgPicture.asset(
+                                        'assets/images/submarine.svg',
+                                        height: 47,
+                                      ),
+                                    ),
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                )
-              ])));
+                ),
+        ),
+      );
 }
 
 class racing_start_screen extends StatefulWidget {
