@@ -246,4 +246,26 @@ class RealmUtils {
 
     return user;
   }
+
+  void deleteUser(ObjectId userId) {
+    // open local realm instance
+    final realm = Realm(config);
+
+    // get the user controller
+    final UserController loggedInUser = Get.find();
+
+    // Check if the user exists
+    final ExploreUser userToDelete = realm.find<ExploreUser>(userId) as ExploreUser;
+
+    if (userToDelete != null) {
+      // Remove the user
+      realm.write(() {
+        realm.delete(userToDelete);
+      });
+
+    }
+
+    // close realm instance
+    realm.close();
+  }
 }
