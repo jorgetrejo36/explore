@@ -57,6 +57,42 @@ class RocketAvatar {
 }
 
 class RealmUtils {
+  String getRocketPath() {
+    // get current logged in user
+    final UserController loggedInUser = Get.find();
+
+    // open local realm instance
+    final realm = Realm(config);
+
+    final ExploreUser user =
+        realm.find<ExploreUser>(loggedInUser.id) as ExploreUser;
+
+    final String rocketPath = user.rocketPath;
+
+    // close realm instance
+    realm.close();
+
+    return rocketPath;
+  }
+
+  String getAvatarPath() {
+    // get current logged in user
+    final UserController loggedInUser = Get.find();
+
+    // open local realm instance
+    final realm = Realm(config);
+
+    final ExploreUser user =
+        realm.find<ExploreUser>(loggedInUser.id) as ExploreUser;
+
+    final String avatarPath = user.avatarPath;
+
+    // close realm instance
+    realm.close();
+
+    return avatarPath;
+  }
+
   RocketAvatar getRocketAvatar() {
     // get current logged in user
     final UserController loggedInUser = Get.find();
@@ -254,6 +290,7 @@ class RealmUtils {
 
     return user;
   }
+
   List<PlayerData> getLeaderboardUsers() {
     // open local realm instance
     final realm = Realm(config);
@@ -268,11 +305,11 @@ class RealmUtils {
     final List<PlayerData> leaderboardUsers = users
         .map(
           (user) => PlayerData(
-        name: user.name,
-        score: user.totalScore.toString(),
-        imgName: user.avatarPath, // You may want to modify this
-      ),
-    )
+            name: user.name,
+            score: user.totalScore.toString(),
+            imgName: user.avatarPath, // You may want to modify this
+          ),
+        )
         .toList();
 
     // close realm instance
