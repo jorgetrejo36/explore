@@ -262,7 +262,6 @@ class RealmUtils {
       realm.write(() {
         realm.delete(userToDelete);
       });
-
     }
 
     // close realm instance
