@@ -106,7 +106,16 @@ class _GameResultScreenState extends State<GameResultScreen> {
                         color: Colors.white, // Icon color
                         size: 40, // Icon size
                       ),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        // add the user score to the DB
+                        RealmUtils().addUserScore(
+                          time: widget.time,
+                          currency: widget.currency,
+                          score: widget.score,
+                        );
+                        // pop this pade to navigate back to the planet map screen
+                        Navigator.pop(context);
+                      },
                     ),
                   ),
                 ),

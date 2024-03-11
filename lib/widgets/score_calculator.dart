@@ -1,3 +1,5 @@
+// this needs to be made official
+
 int calculateScore(int currency, int timer) {
   int score = currency * 100;
   int reductionStart = 30;

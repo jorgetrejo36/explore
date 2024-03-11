@@ -57,6 +57,26 @@ class RocketAvatar {
 }
 
 class RealmUtils {
+  void addUserScore({
+    required int currency,
+    required int score,
+    required int time,
+  }) {
+    // get current logged in user
+    final UserController loggedInUser = Get.find();
+
+    // open local realm instance
+    final realm = Realm(config);
+
+    realm.write(() {
+      final ExploreUser user =
+          realm.find<ExploreUser>(loggedInUser.id) as ExploreUser;
+    });
+
+    // close local realm instance
+    realm.close();
+  }
+
   String getRocketPath() {
     // get current logged in user
     final UserController loggedInUser = Get.find();
@@ -125,6 +145,22 @@ class RealmUtils {
     realm.close();
 
     return userInfo;
+  }
+
+  void deleteUser(ObjectId id) {
+    // open local realm instance
+    final realm = Realm(config);
+
+    // delete the user
+    realm.write(() {
+      final ExploreUser userToDelete =
+          realm.find<ExploreUser>(id) as ExploreUser;
+
+      realm.delete(userToDelete);
+    });
+
+    // close realm instance
+    realm.close();
   }
 
   List<KeyUserInfo> getAllUsers() {
