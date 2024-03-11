@@ -1,9 +1,32 @@
 import 'package:explore/app_colors.dart';
+import 'package:explore/utils/realm_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 
-class GameResultScreen extends StatelessWidget {
+class GameResultScreen extends StatefulWidget {
   const GameResultScreen({super.key});
+
+  @override
+  State<GameResultScreen> createState() => _GameResultScreenState();
+}
+
+class _GameResultScreenState extends State<GameResultScreen> {
+  late RocketAvatar rocketAvatar;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    try {
+      rocketAvatar = RealmUtils().getRocketAvatar();
+    } catch (e) {
+      print('Error loading data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +73,9 @@ class GameResultScreen extends StatelessWidget {
                 SizedBox(
                   height: MediaQuery.of(context).size.height *
                       0.35, // 45% of the screen (85/100),
-                  child: const AvatarWithRocketWidget(),
+                  child: AvatarWithRocketWidget(
+                    rocketAvatar: rocketAvatar,
+                  ),
                 ),
                 Expanded(
                   child:
@@ -149,15 +174,45 @@ class DataBoxWidget extends StatelessWidget {
 }
 
 class AvatarWithRocketWidget extends StatelessWidget {
-  const AvatarWithRocketWidget({super.key});
+  final RocketAvatar rocketAvatar;
+
+  const AvatarWithRocketWidget({super.key, required this.rocketAvatar});
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SvgPicture.asset(
-        'assets/images/car.svg',
-        width: 200, // Set the width of the SvgPicture
-        height: 200, // Set the height of the SvgPicture
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return Stack(
+            children: [
+              // Rocket SVG
+              Transform.rotate(
+                angle: 1,
+                child: SvgPicture.asset(
+                  rocketAvatar.rocketPath,
+                  width: 100,
+                  fit: BoxFit.contain,
+                  // Path to your bottom SVG file Adjust the width as needed
+                ),
+              ),
+              // Top SVG
+              Positioned(
+                left: 53,
+                bottom: 85,
+                child: ClipOval(
+                  child: Transform.scale(
+                    scale: 1.5,
+                    child: SvgPicture.asset(
+                      rocketAvatar.avatarPath,
+                      width:
+                          37, // Path to your top SVG file Adjust the width as needed
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
