@@ -7,35 +7,34 @@ class ShootingTheme {
   late String shootingObstacles;
   late String background;
 
-  // To be implemented this week along with animiations.
-
+  // In progress; applies themed asset paths based on planet.
   shootingTheme() {
 
     switch (theme) {
       case GameTheme.earth:
         shootingPlanet = "earth";
-        shootingSky = "cloudsEarth";
+        shootingSky = "assets/images/shooting_earth_sky_art.png";
         shootingObstacles = "asteroids";
         background = "earthShootingBackground";
         break;
 
       case GameTheme.mars:
         shootingPlanet = "mars";
-        shootingSky = "cloudsMars";
+        shootingSky = "assets/images/shooting_mars_sky_art.png";
         shootingObstacles = "asteroids";
         background = "marsShootingBackground";
         break;
 
       case GameTheme.saturn:
         shootingPlanet = "saturn";
-        shootingSky = "stars";
+        shootingSky = "assets/images/shooting_saturn_sky_art.png";
         shootingObstacles = "rings";
         background = "saturnShootingBackground";
         break;
 
       case GameTheme.neptune:
         shootingPlanet = "neptune";
-        shootingSky = "none";
+        shootingSky = "assets/images/shooting_neptune_sky_art.png";
         shootingObstacles = "fish";
         background = "neptuneShootingBackground";
         break;

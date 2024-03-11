@@ -27,6 +27,7 @@ class SGPlayerRocket extends StatelessWidget {
         children: [
 
           // Flame below rocket (only show if the rocket is on!)
+          // This is separate from the rocket and does not need to be loaded.
           if (isOn)
             Positioned(
               top: (MediaQuery.of(context).size.height * 0.121),
@@ -36,11 +37,12 @@ class SGPlayerRocket extends StatelessWidget {
               ),
             ),
 
-          // Rocket image
+          // TODO Player rocket image (needs to be loaded from DB).
           SvgPicture.asset(
             'assets/images/rocket1.svg',
             height: MediaQuery.of(context).size.height * 0.14,
           ),
+
         ],
       ),
     );

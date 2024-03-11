@@ -3,9 +3,14 @@ import 'package:explore/utils/realm_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:explore/widgets/score_calculator.dart';
 
 class GameResultScreen extends StatefulWidget {
-  const GameResultScreen({super.key});
+  final int currency;
+  final int time;
+  GameResultScreen({super.key, required this.currency, required this.time});
+
+  late int score = calculateScore(currency, time);
 
   @override
   State<GameResultScreen> createState() => _GameResultScreenState();
@@ -52,18 +57,24 @@ class _GameResultScreenState extends State<GameResultScreen> {
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height *
                         0.35, // 35% of the screen (40/100)
-                    child: const Column(
+                    child: Column(
                       children: [
                         Expanded(
                           child: DataBoxWidget(
                             imagePath: "assets/images/diamond.svg",
-                            score: 5,
+                            score: widget.currency,
                           ),
                         ),
                         Expanded(
                           child: DataBoxWidget(
                             imagePath: "assets/images/star.svg",
-                            score: 123,
+                            score: widget.time,
+                          ),
+                        ),
+                        Expanded(
+                          child: DataBoxWidget(
+                            imagePath: "assets/images/star.svg",
+                            score: widget.score,
                           ),
                         ),
                       ],

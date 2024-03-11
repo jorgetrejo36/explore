@@ -64,15 +64,18 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
   }
 
   Widget _buildAlienSvg() {
-    final Tween<double> rotationAnimation = Tween(begin: 0.0, end: 1.0);
+    final rotationAnimation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+          parent: _animationController2!, curve: Curves.linearToEaseOut),
+    );
 
     return RotationTransition(
-      turns: rotationAnimation.animate(_animationController2!),
+      turns: rotationAnimation,
       alignment: Alignment.center,
       child: SvgPicture.asset(
         'assets/images/alien.svg',
         width: double.infinity,
-        height: 150,
+        height: MediaQuery.of(context).size.height / 6,
         fit: BoxFit.fill,
       ),
     );
@@ -81,7 +84,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
   Widget _buildSmokeSvg() {
     final scaleAnimation = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-          parent: _animationController!, curve: Curves.fastOutSlowIn),
+          parent: _animationController!, curve: Curves.linearToEaseOut),
     );
 
     return ScaleTransition(
@@ -90,7 +93,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
       child: SvgPicture.asset(
         widget.top,
         width: double.infinity,
-        height: 250, // Fixed height
+        height: MediaQuery.of(context).size.height / 4, // Fixed height
         fit: BoxFit.fill,
       ),
     );
@@ -102,7 +105,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
       child: SvgPicture.asset(
         widget.item,
         width: double.infinity,
-        height: 75,
+        height: MediaQuery.of(context).size.height / 12,
         fit: BoxFit.fill,
       ),
     );
@@ -119,13 +122,14 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
       if (widget.choice != widget.correctAnswer) {
         _animationController?.reset(); // Reset the animation controller
         _animationController?.forward(); // Start the smoke animation
+        _animationController2?.reset(); // Reset the animation controller
         _animationController2?.forward(); // Start the smoke animation
 
         return widget.choice == widget.answer
             ? [
                 SizedBox(
                   width: double.infinity,
-                  height: 250,
+                  height: MediaQuery.of(context).size.height / 4,
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Stack(

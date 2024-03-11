@@ -1,14 +1,17 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/svg.dart';
 import 'shooting_game.dart';
 
-// Assigned to all obstacles that do not yet have an answer option.
+// Assigned to all obstacles that do not yet have an answer option. Hides
+// the text on the obstacle.
 const int emptyObstacle = 9999;
-// Assigned to obstacles if they are used on the 1st try to correctly
-// solve a problem.
+// Assigned to obstacles if they are solved correctly; hides the text, but
+// displays the reward image (when destroyed).
 const int correctObstacle = -9999;
-// Assigned to obstacles if they have been filled before.
+// Assigned to obstacles if they have been filled before. Hides the text, and
+// prevents us from adding an answer choice to them.
 const int filledObstacle = 99999;
 
 class SGObstacle extends StatefulWidget {
@@ -23,6 +26,10 @@ class SGObstacle extends StatefulWidget {
   late bool isDestroyed;
   // Is this obstacle dropping?
   late bool isDropping;
+  // Has this obstacle been marked for deletion (to disappear)?
+  late bool markForDeletion;
+  // How many seconds should this obstacle exist before being deleted?
+  int secondsToExist = 2;
 
   // Is this entire obstacle and everything else visible?
   late bool alive;
@@ -35,9 +42,9 @@ class SGObstacle extends StatefulWidget {
   final int obstacleIndex;
 
   // At what X value is this obstacle currently at?
-  final double obstacleX;
+  late double obstacleX;
   // At what Y value is this obstacle currently at?
-  final double obstacleY;
+  late double obstacleY;
   // What column is this obstacle in?
   final String obstacleCol;
 
@@ -51,6 +58,7 @@ class SGObstacle extends StatefulWidget {
     this.answerValue = emptyObstacle,
     this.isDropping = false,
     this.alive = true,
+    this.markForDeletion = false,
     required this.obstacleIndex,
     required this.obstacleX,
     required this.obstacleY,
@@ -58,43 +66,66 @@ class SGObstacle extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SGObstacleState createState() => _SGObstacleState();
-
+  SGObstacleState createState() => SGObstacleState();
 }
 
-class _SGObstacleState extends State<SGObstacle> with TickerProviderStateMixin {
+class SGObstacleState extends State<SGObstacle> with TickerProviderStateMixin {
   // Stores the Y position of this obstacle.
   late double obstacleY;
   // The ticker used to repeatedly drop this obstacle.
   late Ticker dropTicker;
   // Gets assigned in build(); same as rocketYPos in shooting_game.dart.
   late double rocketYTop;
-
   // How fast should this obstacle drop?
-  double dropRate = 0.3;
+  double dropRate = 0.75;
 
   @override
   void initState() {
     super.initState();
+    // Initialize this obstacle's Y position and turn it on (make it visible).
     obstacleY = widget.obstacleY;
     widget.alive = true;
 
-    // Create a ticker and instruct it to move the obstacle on every tick.
+    // Create a ticker and instruct it to move the obstacle and update
+    // its visual information.
     dropTicker = createTicker((_) {
-      // Every tick, move the obstacle down
-      if (widget.isDropping)
+      setState(() {
+        // Dirty fix because Flutter is a jerk about rebuilding state of
+        // a widget generated at runtime in a list from within another widget.
+        widget.isDestroyed = widget.isDestroyed;
+        widget.isDropping = widget.isDropping;
+        widget.answerValue = widget.answerValue;
+        widget.alive = widget.alive;
+
+        // Every tick, move the obstacle down.
+        if (widget.isDropping)
         {
-          setState(() {
-            obstacleY += dropRate; // Adjust the rate of falling as needed
-          });
+          obstacleY += dropRate;
 
           // Check if it has passed the yValue of the rocket.
           if (obstacleY >= rocketYTop)
-            {
-              // This obstacle has collided with the rocket.
-              shootingGameStateInstance?.collideRocket(widget.obstacleIndex);
-            }
+          {
+            // This obstacle has collided with the rocket.
+            shootingGameStateInstance?.collideRocket(widget.obstacleIndex);
+          }
         }
+
+        // Check if we have invoked a deletion. If so, prime the obstacle to
+        // delete itself after X secondsToExist.
+        if (widget.markForDeletion)
+          {
+            widget.markForDeletion = false;
+
+            // Delete this obstacle after X secondsToExist.
+            Timer(Duration(seconds: widget.secondsToExist), () {
+              setState(() {
+                widget.alive = false;
+                widget.isDropping = false;
+                dropTicker.stop();
+              });
+            });
+          }
+      });
     });
 
     dropTicker.start();
@@ -102,6 +133,8 @@ class _SGObstacleState extends State<SGObstacle> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    // Assign the same value as we did for the rocket so we know what height
+    // a "collision" occurs in our dropTicker.
     rocketYTop = MediaQuery.of(context).size.height * 0.48;
 
     return Visibility(
@@ -114,13 +147,11 @@ class _SGObstacleState extends State<SGObstacle> with TickerProviderStateMixin {
             // Attempt to shoot the obstacle.
             shootingGameStateInstance?.shootObstacle(widget.obstacleIndex);
           },
-          // The SMASHED image should also stop moving, so it should be a diff
-          // object and, when created, appear at the exact position of the origin
-          // obstacle.
           child: Stack(
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
+
               // SVG image for reward (if answered correctly)
               Visibility(
                 visible: widget.isDestroyed && widget.answerValue == correctObstacle,
@@ -157,7 +188,8 @@ class _SGObstacleState extends State<SGObstacle> with TickerProviderStateMixin {
               // Text overlay displaying value
               Visibility(
                 visible: (widget.answerValue != emptyObstacle &&
-                          widget.answerValue != correctObstacle),
+                          widget.answerValue != correctObstacle &&
+                          widget.answerValue != filledObstacle),
                 child: Stack(
                   children: [
                     // White text for answer value.
@@ -170,29 +202,30 @@ class _SGObstacleState extends State<SGObstacle> with TickerProviderStateMixin {
                           fontSize: 48,
                           fontWeight: FontWeight.bold,
                           fontFamily: "Fredoka",
-                            shadows: [
-                              Shadow( // bottomLeft
+                          shadows: [
+                              // Black outline around white text.
+                              // In order, the shadows display on the:
+                              // bottomLeft, bottomRight, topRight, topLeft.
+                              Shadow(
                                   offset: Offset(-1.5, -1.5),
-                                  color: Colors.black
+                                  color: Colors.black,
                               ),
-                              Shadow( // bottomRight
+                              Shadow(
                                   offset: Offset(1.5, -1.5),
-                                  color: Colors.black
+                                  color: Colors.black,
                               ),
-                              Shadow( // topRight
+                              Shadow(
                                   offset: Offset(1.5, 1.5),
-                                  color: Colors.black
+                                  color: Colors.black,
                               ),
-                              Shadow( // topLeft
+                              Shadow(
                                   offset: Offset(-1.5, 1.5),
-                                  color: Colors.black
+                                  color: Colors.black,
                               ),
-                            ]
+                            ],
                         ),
                       ),
                     ),
-
-
                   ],
                 ),
               ),
@@ -203,6 +236,7 @@ class _SGObstacleState extends State<SGObstacle> with TickerProviderStateMixin {
     );
   }
 
+  // Override dispose to clear the dropTicker when done.
   @override
   void dispose() {
     dropTicker.dispose();

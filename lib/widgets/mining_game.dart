@@ -49,15 +49,71 @@ class _MiningGameState extends State<MiningGame>
   // Player variables
   int score = 0;
   bool correct = false;
+  final timer = Stopwatch();
+  late int finalTime = (timer.elapsedMilliseconds / 1000).round();
 
   // Pushes game results screen to user
   // Todo: Send game data to second screen
   void gameFinish() {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const GameResultScreen(),
-        ));
+    timer.stop();
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Center(
+          child: Text(
+            '${(timer.elapsedMilliseconds / 1000).round()} / 5',
+            style: const TextStyle(
+              fontFamily: 'Fredoka',
+            ),
+          ),
+        ),
+        actions: <Widget>[
+          Center(
+            child: score / 5 < 0.8
+                // Retry game
+                ? IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/images/reload.svg',
+                      colorFilter:
+                          ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                      semanticsLabel: "arrow pointing in circle",
+                      height: 50,
+                      width: 50,
+                    ),
+                    onPressed: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MiningGame(
+                            planet: widget.planet,
+                            miningProblem: widget.miningProblem),
+                      ),
+                    ),
+                  )
+                : ElevatedButton(
+                    // Game result screen
+                    onPressed: () => {
+                      Navigator.pop(context),
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GameResultScreen(
+                              currency: score, time: finalTime),
+                        ),
+                      ),
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                    ),
+                    child: const Icon(
+                      Icons.arrow_right_rounded,
+                      color: Colors.black,
+                      size: 60,
+                    ),
+                  ),
+          )
+        ],
+      ),
+    );
   }
 
   // Displays the problem in the list to the game
@@ -74,18 +130,19 @@ class _MiningGameState extends State<MiningGame>
   _updateQuestion(int level) {
     if (level == 0) {
       displayIncorrect();
+      currentProblem = currentProblem + 1;
     } else if (level == 1) {
       displayCorrect();
       setState(() {
         currentProblem = currentProblem + level;
         score++;
         //correct = false;
-        if (currentProblem < 5) {
-          newQuestion(currentProblem);
-        } else {
-          gameFinish();
-        }
       });
+    }
+    if (currentProblem < 5) {
+      newQuestion(currentProblem);
+    } else {
+      gameFinish();
     }
   }
 
@@ -118,6 +175,7 @@ class _MiningGameState extends State<MiningGame>
   @override
   void initState() {
     super.initState();
+    timer.start();
     //repeatOnce();
   }
 

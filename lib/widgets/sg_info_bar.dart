@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class SGInfoBar extends StatelessWidget {
-  // Temporary; need to re-add state to this bar to send problem.
-  static String problemText = "2 - 2";
-  static int livesLeft = 3;
-  static bool gameStarted = true;
+class SGInfoBar extends StatefulWidget {
 
-  const SGInfoBar({Key? key}) : super(key: key);
+  // Duplicates of the variables from the shooting game main screen, so we
+  // can assign and update the information here visually.
+  final bool gameStarted;
+  final int livesLeft;
+  final String problemText;
+
+  const SGInfoBar({Key? key,
+    required this.gameStarted,
+    required this.livesLeft,
+    required this.problemText,}) : super(key: key);
+
+  @override
+  State<SGInfoBar> createState() => _SGInfoBarState();
+}
+
+class _SGInfoBarState extends State<SGInfoBar> {
 
   @override
   Widget build(BuildContext context) {
@@ -15,17 +26,39 @@ class SGInfoBar extends StatelessWidget {
       height: 200,
       color: Colors.transparent,
       child: Visibility(
-        visible: gameStarted,
+        visible: widget.gameStarted,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+
             Text(
-              problemText,
-              style: TextStyle(
-                color: Colors.black,
+              widget.problemText,
+              style: const TextStyle(
+                color: Colors.white,
                 fontSize: 96,
                 fontWeight: FontWeight.bold,
                 fontFamily: "Fredoka",
+                shadows: [
+                  // Black outline around white text.
+                  // In order, the shadows display on the:
+                  // bottomLeft, bottomRight, topRight, topLeft.
+                  Shadow(
+                    offset: Offset(-3, -3),
+                    color: Colors.black,
+                  ),
+                  Shadow(
+                    offset: Offset(3, -3),
+                    color: Colors.black,
+                  ),
+                  Shadow(
+                    offset: Offset(3, 3),
+                    color: Colors.black,
+                  ),
+                  Shadow(
+                    offset: Offset(-3, 3),
+                    color: Colors.black,
+                  ),
+                ],
               ),
             ),
 
@@ -37,31 +70,31 @@ class SGInfoBar extends StatelessWidget {
                   width: 48,
                   height: 48,
                   child: Visibility(
-                    visible: livesLeft >= 1,
+                    visible: widget.livesLeft >= 1,
                     child: SvgPicture.asset('assets/images/life.svg'),
                   ),
                 ),
 
-                // Spacer
-                SizedBox(width: 10),
+                // Spacer between hearts.
+                const SizedBox(width: 10),
 
                 SizedBox(
                   width: 48,
                   height: 48,
                   child: Visibility(
-                    visible: livesLeft >= 2,
+                    visible: widget.livesLeft >= 2,
                     child: SvgPicture.asset('assets/images/life.svg'),
                   ),
                 ),
 
-                // Spacer
-                SizedBox(width: 10),
+                // Spacer between hearts.
+                const SizedBox(width: 10),
 
                 SizedBox(
                   width: 48,
                   height: 48,
                   child: Visibility(
-                    visible: livesLeft >= 3,
+                    visible: widget.livesLeft >= 3,
                     child: SvgPicture.asset('assets/images/life.svg'),
                   ),
                 ),

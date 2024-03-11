@@ -23,7 +23,10 @@ class GameScreen extends StatelessWidget {
               onPressed: () => Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const GameResultScreen(),
+                  builder: (context) => GameResultScreen(
+                    currency: 0,
+                    time: 0,
+                  ),
                 ),
               ),
               child: const Text("Game Complete"),
