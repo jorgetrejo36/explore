@@ -2,41 +2,41 @@
 // to plug in use "${ThisClass.varible}.svg" for icons
 // or "${ThisClass.varible}.png" for backgrounds
 
+import 'package:explore/screens/planet_map_screen.dart';
+
 class MiningTheme {
   late String theme;
   late String miningSurface;
   late String miningCurrency;
   late String background;
 
-  MiningTheme(String inputTheme) {
-    theme = inputTheme.toLowerCase();
-
-    switch (theme) {
-      case "earth":
+  MiningTheme(GameTheme inputTheme) {
+    switch (inputTheme) {
+      case GameTheme.earth:
         miningSurface = "meteorite";
         miningCurrency = "diamond";
         background = "EarthMining";
         break;
 
-      case "mars":
+      case GameTheme.mars:
         miningSurface = "meteorite";
         miningCurrency = "ruby";
         background = "MarsMining";
         break;
 
-      case "neptune":
+      case GameTheme.neptune:
         miningSurface = "bubbles";
         miningCurrency = "pearl";
         background = "NeptuneMining";
         break;
 
-      case "saturn":
+      case GameTheme.saturn:
         miningSurface = "one-asteroid";
         miningCurrency = "gem";
         background = "SaturnMining";
         break;
 
-      case "space":
+      case GameTheme.space:
         miningSurface = "one-asteroid";
         miningCurrency = "crystals";
         background = "SpaceMining";

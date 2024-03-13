@@ -4,14 +4,20 @@ import 'package:explore/widgets/geyser_choice.dart';
 import 'package:explore/widgets/geyser_data_repo.dart';
 import 'package:explore/widgets/life_app_bar.dart';
 import 'package:explore/widgets/life_counter.dart';
+import 'package:explore/widgets/score_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:explore/utils/problem_generator.dart';
 
 class GeyserGameStateful extends StatefulWidget {
-  const GeyserGameStateful(
-      {super.key, required this.planet, required this.geyserProblem});
+  const GeyserGameStateful({
+    super.key,
+    required this.level,
+    required this.planet,
+    required this.geyserProblem,
+  });
 
+  final int level;
   final GameTheme planet;
   final ProblemGenerator geyserProblem;
 
@@ -105,8 +111,10 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => GeyserGameStateful(
-                                planet: widget.planet,
-                                geyserProblem: widget.geyserProblem),
+                              level: widget.level,
+                              planet: widget.planet,
+                              geyserProblem: widget.geyserProblem,
+                            ),
                           ),
                         ),
                       )
@@ -118,6 +126,9 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => GameResultScreen(
+                                game: Game.geyser,
+                                level: widget.level,
+                                planet: widget.planet,
                                 currency: counter,
                                 time: finalTime,
                               ),

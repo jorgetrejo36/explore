@@ -21,6 +21,8 @@ import 'pms_rocket.dart';
 class PinWidget extends StatelessWidget {
   // The level's (pin's) name (1-1, 1-2, 1-3, 2-1, etc.).
   final String name;
+  // The level, respective to the planet, for this pin
+  final int level;
   // Determines the color pin to use based on the planet.
   final int pinColor;
   // Is this level pin complete (checked), current (rocket), or locked?
@@ -39,6 +41,7 @@ class PinWidget extends StatelessWidget {
     Key? key,
     required this.pinColor,
     required this.name,
+    required this.level,
     required this.status,
     required this.game,
     required this.theme,
@@ -78,12 +81,14 @@ class PinWidget extends StatelessWidget {
       switch (game) {
         case GameType.geyser:
           gameToLoad = GeyserGameStateful(
+            level: level,
             planet: theme,
             geyserProblem: problemGenerator,
           );
 
         case GameType.shooting:
           gameToLoad = ShootingGameStateful(
+            level: level,
             planet: theme,
             shootingProblem: problemGenerator,
           );
@@ -91,14 +96,18 @@ class PinWidget extends StatelessWidget {
         case GameType.mining:
           // Add mining game with theme
           gameToLoad = MiningGame(
-            planet: 'neptune',
+            level: level,
+            planet: theme,
             miningProblem: problemGenerator,
           );
 
         case GameType.racing:
           // Add racing game w/ theme. Temp GameScreen until it's made.
           gameToLoad = RacingGame(
-              planet: 'neptune', racingProblem: ProblemGenerator(1, true));
+            level: level,
+            planet: theme,
+            racingProblem: problemGenerator,
+          );
 
         // Add GameType.scrolling if we make a fifth game.
 

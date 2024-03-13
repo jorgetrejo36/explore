@@ -1,4 +1,5 @@
 import 'package:explore/app_colors.dart';
+import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/utils/realm_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -6,11 +7,22 @@ import 'package:flutter_svg/svg.dart';
 import 'package:explore/widgets/score_calculator.dart';
 
 class GameResultScreen extends StatefulWidget {
+  final Game game;
   final int currency;
+  final int level;
+  final GameTheme planet;
   final int time;
-  GameResultScreen({super.key, required this.currency, required this.time});
 
-  late int score = calculateScore(currency, time);
+  GameResultScreen({
+    super.key,
+    required this.currency,
+    required this.game,
+    required this.level,
+    required this.planet,
+    required this.time,
+  });
+
+  late int score = calculateScore(game, currency, time);
 
   @override
   State<GameResultScreen> createState() => _GameResultScreenState();
@@ -67,7 +79,7 @@ class _GameResultScreenState extends State<GameResultScreen> {
                         ),
                         Expanded(
                           child: DataBoxWidget(
-                            imagePath: "assets/images/star.svg",
+                            imagePath: "clock",
                             score: widget.time,
                           ),
                         ),
@@ -109,6 +121,8 @@ class _GameResultScreenState extends State<GameResultScreen> {
                       onPressed: () {
                         // add the user score to the DB
                         RealmUtils().addUserScore(
+                          level: widget.level,
+                          planet: widget.planet,
                           time: widget.time,
                           currency: widget.currency,
                           score: widget.score,
@@ -145,7 +159,7 @@ class DataBoxWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
         color: AppColors.lightPurple,
         borderRadius: BorderRadius.circular(15),
@@ -161,9 +175,18 @@ class DataBoxWidget extends StatelessWidget {
             flex: 2,
             child: Container(
               alignment: Alignment.center,
-              child: SvgPicture.asset(
-                imagePath, // Replace 'assets/your_image.svg' with your SVG file path/ Adjust height as needed
-              ),
+              child: imagePath == "clock"
+                  ? const FittedBox(
+                      fit: BoxFit.fill,
+                      child: Icon(
+                        Icons.timelapse,
+                        color: Colors.white,
+                        size: 50,
+                      ),
+                    )
+                  : SvgPicture.asset(
+                      imagePath,
+                    ),
             ),
           ),
           // Second item taking 60% of the width
@@ -176,7 +199,7 @@ class DataBoxWidget extends StatelessWidget {
                 style: const TextStyle(
                   fontFamily: "Fredoka",
                   color: Colors.white,
-                  fontSize: 65,
+                  fontSize: 45,
                 ),
                 textAlign: TextAlign.center,
               ),

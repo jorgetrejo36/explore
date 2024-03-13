@@ -244,6 +244,7 @@ class PlanetPage extends StatelessWidget {
           // Temporarily defaulting to all pins being complete.
           child: PinWidget(
             name: pinName,
+            level: pinIndex + 1,
             pinColor: index,
             status: isPlanetLocked
                 ? CompletionStatus.locked

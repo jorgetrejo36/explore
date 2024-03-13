@@ -1,6 +1,8 @@
 import 'dart:ffi';
 import 'dart:math';
+import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/widgets/racing_themes.dart';
+import 'package:explore/widgets/score_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,10 +13,15 @@ import 'package:flutter/services.dart';
 
 /// Creates instance of mining game given a specified theme and problem generator
 class RacingGame extends StatefulWidget {
-  final String planet;
+  final GameTheme planet;
   final ProblemGenerator racingProblem;
-  const RacingGame(
-      {super.key, required this.planet, required this.racingProblem});
+  final int level;
+  const RacingGame({
+    super.key,
+    required this.level,
+    required this.planet,
+    required this.racingProblem,
+  });
 
   @override
   State<RacingGame> createState() => _RacingGameState();
@@ -167,8 +174,10 @@ class _RacingGameState extends State<RacingGame>
                           context,
                           MaterialPageRoute(
                             builder: (context) => RacingGame(
-                                planet: widget.planet,
-                                racingProblem: widget.racingProblem),
+                              level: widget.level,
+                              planet: widget.planet,
+                              racingProblem: widget.racingProblem,
+                            ),
                           ),
                         ),
                       },
@@ -184,6 +193,9 @@ class _RacingGameState extends State<RacingGame>
                           context,
                           MaterialPageRoute(
                             builder: (context) => GameResultScreen(
+                              game: Game.racing,
+                              level: widget.level,
+                              planet: widget.planet,
                               currency: player.score,
                               time: finalTime,
                             ),

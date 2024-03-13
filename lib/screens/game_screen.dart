@@ -2,6 +2,7 @@ import 'package:explore/screens/game_result_screen.dart';
 import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/utils/problem_generator.dart';
 import 'package:explore/widgets/geyser_game.dart';
+import 'package:explore/widgets/score_calculator.dart';
 import 'package:explore/widgets/shooting_game.dart';
 import 'package:explore/widgets/mining_game.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,9 @@ class GameScreen extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => GameResultScreen(
+                    game: Game.geyser,
+                    level: 0,
+                    planet: GameTheme.earth,
                     currency: 0,
                     time: 0,
                   ),
@@ -36,7 +40,8 @@ class GameScreen extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => MiningGame(
-                    planet: "neptune",
+                    level: 0,
+                    planet: GameTheme.earth,
                     miningProblem: ProblemGenerator(1, true),
                   ),
                 ),
@@ -48,6 +53,7 @@ class GameScreen extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ShootingGameStateful(
+                    level: 0,
                     planet: GameTheme.earth,
                     shootingProblem: ProblemGenerator(1, true),
                   ),
