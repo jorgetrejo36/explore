@@ -127,7 +127,7 @@ class PlanetPage extends StatelessWidget {
     // Add more planets here as desired.
 
     double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    //double screenHeight = MediaQuery.of(context).size.height;
 
     // Values for calculating the size at which to display planets.
     // Calculated from the width/height of all planet images, which
@@ -145,7 +145,6 @@ class PlanetPage extends StatelessWidget {
     int seed;
 
     // Levels lock independently from planets. Loaded from DB.
-    // TODO Load from DB if planet is locked or not.
     //bool isPlanetLocked = false;
 
     // Set the planet image path/seed. Add more planet cases as desired.
@@ -240,7 +239,6 @@ class PlanetPage extends StatelessWidget {
 
           // Place a pin. Assign its name, the planet it belongs to,
           // and load whether it's complete, locked, or the current level.
-          // TODO Load pin completion status from DB
           // Temporarily defaulting to all pins being complete.
           child: PinWidget(
             name: pinName,
@@ -260,124 +258,117 @@ class PlanetPage extends StatelessWidget {
     // Return a stack of this planet page's images and content.
     // Again, no need to update this code if adding new planets.
     return Stack(
+      alignment: Alignment.center,
       children: [
         // First, each page always gets the background art.
         Image.asset(
           'assets/images/StarsBackground.png',
           fit: BoxFit.cover,
-          height: screenHeight,
           width: double.infinity,
+          height: planetHeight + (MediaQuery.of(context).size.height * 0.15),
         ),
 
         // Next, we should load the planet this page refers to.
 
         // Pad the planet so it's directly in the middle of the screen.
-        Padding(
-          padding: EdgeInsets.only(
-            top: (screenHeight - planetHeight) / 2,
-          ),
+        Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // Size a box to store the correctly-sized planet
+            // based on the screen size; calculated above.
+            SizedBox(
+              width: screenWidth,
+              height: planetHeight,
 
-          // This Stack will hold the planet/pins with its number below.
-          child: Stack(
-            children: [
-              // Size a box to store the correctly-sized planet
-              // based on the screen size; calculated above.
-              SizedBox(
-                width: screenWidth,
-                height: planetHeight,
-
-                // Create a Stack to display the planet & its pins.
-                child: Stack(
-                  children: [
-                    // Show the planet image.
-                    Visibility(
-                      // This shows a normal, unlocked planet.
-                      visible: !isPlanetLocked,
-                      child: Positioned.fill(
-                        // Load this planet's SVG image.
-                        child: SvgPicture.asset(
-                          planetPath,
-                          fit: BoxFit.fill,
-                        ),
+              // Create a Stack to display the planet & its pins.
+              child: Stack(
+                children: [
+                  // Show the planet image.
+                  Visibility(
+                    // This shows a normal, unlocked planet.
+                    visible: !isPlanetLocked,
+                    child: Positioned.fill(
+                      // Load this planet's SVG image.
+                      child: SvgPicture.asset(
+                        planetPath,
+                        fit: BoxFit.fill,
                       ),
                     ),
+                  ),
 
-                    // Alternatively show this instead if locked.
-                    Visibility(
-                      visible: isPlanetLocked,
-                      child: Positioned.fill(
-                        // Load this planet's SVG image in grayscale.
-                        child: SvgPicture.asset(
-                          planetPath,
-                          fit: BoxFit.fill,
-                          // Grayscale color filter. Used on pins, too.
-                          colorFilter: const ColorFilter.matrix(<double>[
-                            0.2126,
-                            0.7152,
-                            0.0722,
-                            0,
-                            0,
-                            0.2126,
-                            0.7152,
-                            0.0722,
-                            0,
-                            0,
-                            0.2126,
-                            0.7152,
-                            0.0722,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            1,
-                            0,
-                          ]),
-                        ),
+                  // Alternatively show this instead if locked.
+                  Visibility(
+                    visible: isPlanetLocked,
+                    child: Positioned.fill(
+                      // Load this planet's SVG image in grayscale.
+                      child: SvgPicture.asset(
+                        planetPath,
+                        fit: BoxFit.fill,
+                        // Grayscale color filter. Used on pins, too.
+                        colorFilter: const ColorFilter.matrix(<double>[
+                          0.2126,
+                          0.7152,
+                          0.0722,
+                          0,
+                          0,
+                          0.2126,
+                          0.7152,
+                          0.0722,
+                          0,
+                          0,
+                          0.2126,
+                          0.7152,
+                          0.0722,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          0,
+                        ]),
                       ),
                     ),
+                  ),
 
-                    // Display the level pins on this planet; iterate
-                    // 1 at a time. This list is calculated at the
-                    // top of this file.
-                    ...pinWidgets,
-                  ],
-                ),
+                  // Display the level pins on this planet; iterate
+                  // 1 at a time. This list is calculated at the
+                  // top of this file.
+                  ...pinWidgets,
+                ],
               ),
+            ),
 
-              // Display a locked icon on the planet itself if necessary.
-              Visibility(
-                visible: isPlanetLocked,
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: planetHeight / 4),
-                    child: SvgPicture.asset(
-                      "assets/images/locked.svg",
-                      height: planetHeight / 2,
-                      width: planetHeight / 2,
-                    ),
+            // Display a locked icon on the planet itself if necessary.
+            Visibility(
+              visible: isPlanetLocked,
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.only(top: planetHeight / 4),
+                  child: SvgPicture.asset(
+                    "assets/images/locked.svg",
+                    height: planetHeight / 2,
+                    width: planetHeight / 2,
                   ),
                 ),
               ),
+            ),
 
-              // Add the number below the planet. Use padding to
-              // place it slightly below and to the left of the planet.
-              Padding(
-                padding: EdgeInsets.only(left: 40.0, top: planetHeight - 25),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    planetIndex, // Starting at 1
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontFamily: "Fredoka",
-                      fontSize: 70,
-                    ),
-                  ),
+            // Add the number below the planet. Use padding to
+            // place it slightly below and to the left of the planet.
+            Positioned(
+              left: (MediaQuery.of(context).size.width * 0.075),
+              bottom: 0,
+              child: Text(
+                planetIndex, // Starting at 1
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontFamily: "Fredoka",
+                  fontSize: 70,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
     );
