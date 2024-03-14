@@ -102,11 +102,7 @@ class _DeleteAvatarScreenState extends State<DeleteAvatarScreen> {
                       (index) => index < users.length
                           ? ElevatedButton(
                               onPressed: () {
-                                // get the user controller
-                                final UserController loggedInUser = Get.find();
-                                // take the id of the user that was selected and assign it to the user
-                                // controller
-                                loggedInUser.updateId(users[index].id);
+                                // Window pops up to delete user
                                 showDialog<String>(
                                   context: context,
                                   builder: (BuildContext context) =>
@@ -174,7 +170,14 @@ class _DeleteAvatarScreenState extends State<DeleteAvatarScreen> {
                                             MainAxisAlignment.center,
                                         children: [
                                           IconButton(
-                                            onPressed: () => {},
+                                            onPressed: () => {
+                                              Navigator.pop(context),
+                                              RealmUtils()
+                                                  .deleteUser(users[index].id),
+                                              setState(() {
+                                                _loadData();
+                                              }),
+                                            },
                                             icon: SvgPicture.asset(
                                               'assets/images/right.svg',
                                               height: MediaQuery.of(context)
@@ -188,8 +191,9 @@ class _DeleteAvatarScreenState extends State<DeleteAvatarScreen> {
                                             ),
                                           ),
                                           IconButton(
-                                            onPressed: () =>
-                                                {Navigator.pop(context)},
+                                            onPressed: () => {
+                                              Navigator.pop(context),
+                                            },
                                             icon: SvgPicture.asset(
                                               'assets/images/wrong.svg',
                                               height: MediaQuery.of(context)

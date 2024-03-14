@@ -74,6 +74,10 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
               MaterialPageRoute(
                 builder: (context) => DeleteAvatarScreen(),
               ),
+            ).then(
+              (_) => setState(() {
+                _loadData();
+              }),
             ),
           ),
         ),
