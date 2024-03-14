@@ -149,7 +149,7 @@ flutter:
     - assets/images/ring-temp-faded.svg
     - assets/images/lollipop.svg
     - assets/images/blue-fish.svg
-
+    - assets/images/rocket.svg
     - assets/images/asteroids.svg
     - assets/images/EarthRacing.png
     - assets/images/MarsRacing.png
@@ -162,6 +162,7 @@ flutter:
     - assets/images/UFO1.svg
     - assets/images/UFO2.svg
     - assets/images/submarine.svg
+    - assets/images/ship.svg
     - assets/images/rotate-smartphone.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

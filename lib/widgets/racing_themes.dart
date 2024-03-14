@@ -18,6 +18,7 @@ class RacingTheme {
         enemyVehicle = "ufo";
         background = "EarthRacing";
         racingStart = "EarthRacingStart";
+        theme = 'earth';
         break;
 
       case GameTheme.mars:
@@ -25,20 +26,26 @@ class RacingTheme {
         enemyVehicle = "ufo";
         background = "MarsRacing";
         racingStart = "MarsRacingStart";
+        theme = 'mars';
+
         break;
 
       case GameTheme.neptune:
-        playerVehicle = "car";
+        playerVehicle = "submarine";
         enemyVehicle = "ufo";
         background = "NeptuneRacing";
         racingStart = "NeptuneRacingStart";
+        theme = 'neptune';
+
         break;
 
       case GameTheme.saturn:
-        playerVehicle = "car";
+        playerVehicle = "rocket";
         enemyVehicle = "ufo";
         background = "SaturnRacing";
         racingStart = "SaturnRacingStart";
+        theme = 'saturn';
+
         break;
 
       default:
@@ -46,6 +53,8 @@ class RacingTheme {
         enemyVehicle = "diamond";
         background = "EarthRacing";
         racingStart = "EarthRacingStart";
+        theme = 'earth';
+
         break;
     }
   }

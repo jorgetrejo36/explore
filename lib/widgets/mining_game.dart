@@ -68,7 +68,7 @@ class _MiningGameState extends State<MiningGame>
       builder: (BuildContext context) => AlertDialog(
         title: Center(
           child: Text(
-            '${(timer.elapsedMilliseconds / 1000).round()} / 5',
+            '${score} / 5',
             style: const TextStyle(
               fontFamily: 'Fredoka',
             ),
