@@ -128,7 +128,12 @@ class _GameResultScreenState extends State<GameResultScreen> {
                           score: widget.score,
                         );
                         // pop this pade to navigate back to the planet map screen
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  PlanetMapScreen(selectedPlanet: 1)),
+                        );
                       },
                     ),
                   ),

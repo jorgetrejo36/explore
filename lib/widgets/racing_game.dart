@@ -10,6 +10,7 @@ import 'package:stroke_text/stroke_text.dart';
 import 'package:explore/utils/problem_generator.dart';
 import 'package:explore/screens/game_result_screen.dart';
 import 'package:flutter/services.dart';
+import 'package:explore/utils/realm_utils.dart';
 
 /// Creates instance of mining game given a specified theme and problem generator
 class RacingGame extends StatefulWidget {
@@ -81,7 +82,7 @@ class _RacingGameState extends State<RacingGame>
     ],
     [
       MediaQuery.of(context).size.width * 0.70,
-      MediaQuery.of(context).size.width * 0.88
+      MediaQuery.of(context).size.width * 0.95
     ],
   ];
 
@@ -101,11 +102,15 @@ class _RacingGameState extends State<RacingGame>
   int playerLocation = 0;
   bool correct = false;
   bool test = true;
-  LeaderboardEntry player = LeaderboardEntry("alien", 0, "player");
+  late LeaderboardEntry player = LeaderboardEntry(playerAvatar, 0, "player");
+  late String playerAvatar = "";
+  late RocketAvatar rocketAvatar;
 
   // EnemyAI Data
-  LeaderboardEntry enemy1 = LeaderboardEntry("alien2", 0, "enemy");
-  LeaderboardEntry enemy2 = LeaderboardEntry("alien3", 0, "enemy");
+  LeaderboardEntry enemy1 =
+      LeaderboardEntry("assets/images/alien.svg", 0, "enemy");
+  LeaderboardEntry enemy2 =
+      LeaderboardEntry("assets/images/alien3.svg", 0, "enemy");
 
   // Leaderboard data
   late List<LeaderboardEntry> leaderboardData = [player, enemy1, enemy2];
@@ -123,7 +128,6 @@ class _RacingGameState extends State<RacingGame>
         player.incrementScore();
         test = !test;
       });
-      print(curChoices);
     }
     updateLeaderboard();
     checkGameEnd();
@@ -138,6 +142,17 @@ class _RacingGameState extends State<RacingGame>
     });
   }
 
+  int determinePlacement() {
+    if (player.score >= enemy1Location && player.score >= enemy2Location) {
+      return 1;
+    } else if ((player.score < enemy1Location) ||
+        (player.score < enemy2Location)) {
+      return 2;
+    } else {
+      return 3;
+    }
+  }
+
   void checkGameEnd() {
     if (playerLocation > 4 || enemy1Location > 4 || enemy2Location > 4) {
       timer.stop;
@@ -146,8 +161,9 @@ class _RacingGameState extends State<RacingGame>
         builder: (BuildContext context) => AlertDialog(
           title: Center(
             child: Text(
-              'Replace with player placement number',
+              '#${determinePlacement()}',
               style: const TextStyle(
+                fontSize: 50,
                 fontFamily: 'Fredoka',
               ),
             ),
@@ -170,6 +186,7 @@ class _RacingGameState extends State<RacingGame>
                           DeviceOrientation.portraitUp,
                           DeviceOrientation.portraitUp,
                         ]),
+                        Navigator.pop(context),
                         await Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -223,12 +240,12 @@ class _RacingGameState extends State<RacingGame>
         enemy1.incrementScore();
         enemy2.incrementScore();
       });
-    } else if (rng <= 70) {
+    } else if (rng <= 50) {
       setState(() {
         enemy1Location++;
         enemy1.incrementScore();
       });
-    } else if (rng > 70) {
+    } else if (rng > 40) {
       setState(() {
         enemy2Location++;
         enemy2.incrementScore();
@@ -268,9 +285,25 @@ class _RacingGameState extends State<RacingGame>
     parent: _controller,
     curve: Curves.easeIn,
   );
+
+  void repeatOnce() async {
+    await _controller.forward();
+    await _controller.reverse();
+  }
+
+  Future<void> _loadData() async {
+    try {
+      playerAvatar = RealmUtils().getAvatarPath();
+      rocketAvatar = RealmUtils().getRocketAvatar();
+    } catch (e) {
+      print('Error loading data: $e');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadData();
     timer.start();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
@@ -279,11 +312,6 @@ class _RacingGameState extends State<RacingGame>
       DeviceOrientation.portraitDown,
     ]);
     //repeatOnce();
-  }
-
-  void repeatOnce() async {
-    await _controller.forward();
-    await _controller.reverse();
   }
 
   @override
@@ -329,7 +357,11 @@ class _RacingGameState extends State<RacingGame>
             elevation: 0,
           ),
           body: MediaQuery.of(context).orientation == Orientation.portrait
-              ? racing_start_screen(theme: theme)
+              ? racing_start_screen(
+                  theme: theme,
+                  avatar: playerAvatar,
+                  rocketAvatar: rocketAvatar,
+                )
               : Container(
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
@@ -349,7 +381,7 @@ class _RacingGameState extends State<RacingGame>
                           children: [
                             // Equation and Solutions
                             Container(
-                              width: MediaQuery.of(context).size.width * 0.88,
+                              width: MediaQuery.of(context).size.width * 0.85,
                               padding: EdgeInsets.only(
                                   left:
                                       MediaQuery.of(context).size.width * 0.08),
@@ -387,7 +419,7 @@ class _RacingGameState extends State<RacingGame>
                                             style: TextStyle(
                                                 color: Color.fromARGB(
                                                     238, 31, 31, 31),
-                                                fontSize: 72,
+                                                fontSize: 55,
                                                 fontFamily: 'Fredoka'),
                                             //textAlign: TextAlign.center,
                                           ),
@@ -426,7 +458,7 @@ class _RacingGameState extends State<RacingGame>
                                                 style: TextStyle(
                                                     color: Color.fromARGB(
                                                         238, 31, 31, 31),
-                                                    fontSize: 55,
+                                                    fontSize: 50,
                                                     fontFamily: 'Fredoka'),
                                                 //textAlign: TextAlign.center,
                                               ),
@@ -437,7 +469,6 @@ class _RacingGameState extends State<RacingGame>
                                       GestureDetector(
                                         behavior: HitTestBehavior.opaque,
                                         onTap: () {
-                                          print("this is working");
                                           selectAnswer(1);
                                         },
                                         child: Container(
@@ -465,7 +496,7 @@ class _RacingGameState extends State<RacingGame>
                                                 style: TextStyle(
                                                     color: Color.fromARGB(
                                                         238, 31, 31, 31),
-                                                    fontSize: 55,
+                                                    fontSize: 50,
                                                     fontFamily: 'Fredoka'),
                                                 //textAlign: TextAlign.center,
                                               ),
@@ -503,7 +534,7 @@ class _RacingGameState extends State<RacingGame>
                                                 style: TextStyle(
                                                     color: Color.fromARGB(
                                                         238, 31, 31, 31),
-                                                    fontSize: 55,
+                                                    fontSize: 50,
                                                     fontFamily: 'Fredoka'),
                                                 //textAlign: TextAlign.center,
                                               ),
@@ -518,7 +549,7 @@ class _RacingGameState extends State<RacingGame>
                             ),
                             // Leaderboard
                             Container(
-                              width: MediaQuery.of(context).size.width * 0.11,
+                              width: MediaQuery.of(context).size.width * 0.15,
                               child: Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -539,7 +570,7 @@ class _RacingGameState extends State<RacingGame>
                                         Container(
                                           margin: EdgeInsets.only(left: 19),
                                           child: SvgPicture.asset(
-                                            'assets/images/${leaderboardData[0].sprite}.svg',
+                                            '${leaderboardData[0].sprite}',
                                             height: 50,
                                           ),
                                         )
@@ -562,7 +593,7 @@ class _RacingGameState extends State<RacingGame>
                                         Container(
                                           margin: EdgeInsets.only(left: 10),
                                           child: SvgPicture.asset(
-                                            'assets/images/${leaderboardData[1].sprite}.svg',
+                                            '${leaderboardData[1].sprite}',
                                             height: 50,
                                           ),
                                         )
@@ -585,7 +616,7 @@ class _RacingGameState extends State<RacingGame>
                                         Container(
                                           margin: EdgeInsets.only(left: 10),
                                           child: SvgPicture.asset(
-                                            'assets/images/${leaderboardData[2].sprite}.svg',
+                                            '${leaderboardData[2].sprite}',
                                             height: 50,
                                           ),
                                         )
@@ -602,7 +633,7 @@ class _RacingGameState extends State<RacingGame>
                         width: MediaQuery.of(context).size.width,
                       ),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.15,
+                        height: MediaQuery.of(context).size.height * 0.14,
                         width: MediaQuery.of(context).size.width,
                         margin: EdgeInsets.only(top: 5),
                         child: Stack(
@@ -631,7 +662,7 @@ class _RacingGameState extends State<RacingGame>
                         ),
                       ),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.14,
+                        height: MediaQuery.of(context).size.height * 0.13,
                         width: MediaQuery.of(context).size.width,
                         child: Stack(
                           children: <Widget>[
@@ -659,7 +690,7 @@ class _RacingGameState extends State<RacingGame>
                         ),
                       ),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.11,
+                        height: MediaQuery.of(context).size.height * 0.14,
                         width: MediaQuery.of(context).size.width,
                         child: Stack(
                           children: <Widget>[
@@ -678,14 +709,9 @@ class _RacingGameState extends State<RacingGame>
                                     });
                                   },
                                   child: Container(
-                                    margin: EdgeInsets.only(left: 10),
-                                    child: Transform(
-                                      alignment: Alignment.center,
-                                      transform: Matrix4.rotationY(3.14159),
-                                      child: SvgPicture.asset(
-                                        'assets/images/submarine.svg',
-                                        height: 47,
-                                      ),
+                                    child: SvgPicture.asset(
+                                      'assets/images/${theme.playerVehicle}.svg',
+                                      height: 65,
                                     ),
                                   ),
                                 )),
@@ -700,13 +726,15 @@ class _RacingGameState extends State<RacingGame>
 }
 
 class racing_start_screen extends StatefulWidget {
-  const racing_start_screen({
-    super.key,
-    required this.theme,
-  });
+  const racing_start_screen(
+      {super.key,
+      required this.theme,
+      required this.avatar,
+      required this.rocketAvatar});
 
   final RacingTheme theme;
-
+  final String avatar;
+  final RocketAvatar rocketAvatar;
   @override
   State<racing_start_screen> createState() => _racing_start_screenState();
 }
@@ -741,37 +769,64 @@ class _racing_start_screenState extends State<racing_start_screen>
             ),
           ),
         ),
-        Container(
-          margin: EdgeInsets.only(
-              left: MediaQuery.of(context).size.width * 0.35,
-              top: MediaQuery.of(context).size.height * 0.68),
-          child: Stack(
-            children: [
-              Container(
-                margin: EdgeInsets.only(left: 10),
-                child: Transform(
-                  alignment: Alignment.center,
-                  transform: Matrix4.rotationY(3.14159),
+        if (widget.theme.theme != 'saturn')
+          Container(
+            margin: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width * 0.35,
+                top: MediaQuery.of(context).size.height * 0.73),
+            child: Stack(
+              children: [
+                Container(
                   child: SvgPicture.asset(
-                    'assets/images/submarine.svg',
-                    height: 100,
+                    'assets/images/${widget.theme.playerVehicle}.svg',
+                    height: 150,
                   ),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 70, top: 60),
-                child: Transform(
-                  alignment: Alignment.center,
-                  transform: Matrix4.rotationY(3.14159),
-                  child: SvgPicture.asset(
-                    'assets/images/alien2.svg',
-                    height: 60,
+                Container(
+                  margin: EdgeInsets.only(left: 70, top: 60),
+                  child: Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.rotationY(3.14159),
+                    child: SvgPicture.asset(
+                      widget.avatar,
+                      height: 60,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+        if (widget.theme.theme == 'saturn')
+          Container(
+              margin: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.45,
+                  top: MediaQuery.of(context).size.height * 0.73),
+              child: Stack(
+                children: [
+                  // Rocket SVG
+                  SvgPicture.asset(
+                    widget.rocketAvatar.rocketPath,
+                    width: 80,
+                    fit: BoxFit.contain,
+                    // Path to your bottom SVG file Adjust the width as needed
+                  ),
+                  // Top SVG
+                  Positioned(
+                    left: 22,
+                    bottom: 75,
+                    child: ClipOval(
+                      child: Transform.scale(
+                        scale: 1.1,
+                        child: SvgPicture.asset(
+                          widget.rocketAvatar.avatarPath,
+                          width:
+                              37, // Path to your top SVG file Adjust the width as needed
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )),
         Center(
           child: FadeTransition(
             opacity: _animation,
