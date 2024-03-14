@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:explore/widgets/score_calculator.dart';
 import 'package:explore/widgets/sg_obstacle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,20 +13,24 @@ import 'package:explore/widgets/sg_info_bar.dart';
 import 'package:explore/widgets/sg_player_rocket.dart';
 
 class ShootingGameStateful extends StatefulWidget {
-  const ShootingGameStateful(
-      {super.key, required this.planet, required this.shootingProblem,});
+  const ShootingGameStateful({
+    super.key,
+    required this.planet,
+    required this.level,
+    required this.shootingProblem,
+  });
 
   // Stores the planet this game is themed to (coming soon) and
   // its associated problem set.
   final GameTheme planet;
   final ProblemGenerator shootingProblem;
+  final int level;
 
   @override
   State<ShootingGameStateful> createState() => _ShootingGameState();
 }
 
 class _ShootingGameState extends State<ShootingGameStateful> {
-
   // VARIABLES - Customizable Settings
 
   // How many problems does the player have to answer for this game?
@@ -46,7 +51,6 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   double obstaclePadding = 125;
   // How long should the correct/incorrect icon display for, in seconds?
   int resultIconDelay = 3;
-
 
   // VARIABLES - Game Statistics
 
@@ -75,7 +79,6 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   // Should the correct or incorrect indicator display? Updates at runtime.
   late bool showCorrectResult = false;
   late bool showIncorrectResult = false;
-
 
   // VARIABLES - Game Elements
 
@@ -109,7 +112,6 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   // Stores the indices of the active obstacles.
   late List<int> activeObstacleIndices = [];
 
-
   // VARIABLES - Theming (temporary until switching to shooting_themes.dart).
   late String skyImage;
   late String groundImage;
@@ -117,7 +119,6 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   late String rewardImage;
   late String destroyedImage;
   late BoxDecoration gameBackgroundColor;
-
 
   // METHODS - Setup
 
@@ -137,13 +138,11 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   }
 
   // Applies the themed image paths based on the planet.
-  void applyTheme()
-  {
+  void applyTheme() {
     // Switch planet, use based on shooting_themes.dart. Remove unused import;
     // In progress, will be finished early this week and use the other file.
 
-    switch (widget.planet)
-    {
+    switch (widget.planet) {
       case GameTheme.earth:
         skyImage = "assets/images/shooting_earth_sky_art.png";
         groundImage = "assets/images/shooting_earth_ground_art.png";
@@ -226,8 +225,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     return minHeight + random.nextDouble() * (maxHeight - minHeight);
   }
 
-  void setUpGame()
-  {
+  void setUpGame() {
     // Assign the instance.
     shootingGameStateInstance = this;
 
@@ -249,14 +247,12 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     double currentMaxHeight = initialHeight + obstacleRangeY;
 
     // Generate a list of obstacles which will be placed on the screen in build.
-    obstacles = List.generate(numObstacles, (index)
-    {
+    obstacles = List.generate(numObstacles, (index) {
       String col;
       double xPos;
 
       // Every set of 3 gets one left, one middle, and one right obstacle.
-      switch (index % 3)
-          {
+      switch (index % 3) {
         case 0:
           col = "left";
           xPos = leftX - 4;
@@ -274,8 +270,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
       double obstacleYVal = getRandomHeight(currentMinHeight, currentMaxHeight);
 
       // Update the current height range after every set of 3 obstacles
-      if ((index + 1) % 3 == 0)
-      {
+      if ((index + 1) % 3 == 0) {
         currentMinHeight = currentMaxHeight + obstaclePadding;
         currentMaxHeight = currentMinHeight + obstacleRangeY;
       }
@@ -293,21 +288,19 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     });
   }
 
-
-
   // METHODS - Interaction
 
   // Assign any passed-in parameters to the correct fields associated with the
   // obstacle we choose to update. All parameters are optional.
-  void updateObstacle(int index, {
+  void updateObstacle(
+    int index, {
     bool? isDestroyed,
     bool? isDropping,
     bool? alive,
     int? answerValue,
     bool? markForDeletion,
   }) {
-    setState(()
-    {
+    setState(() {
       final obstacle = obstacles[index];
       if (isDestroyed != null) obstacle.isDestroyed = isDestroyed;
       if (isDropping != null) obstacle.isDropping = isDropping;
@@ -319,15 +312,13 @@ class _ShootingGameState extends State<ShootingGameStateful> {
 
   // Called whenever we tap on a falling obstacle.
   // Moves the rocket to it and fires; calls the function to check the answer.
-  void shootObstacle(int obstacleID)
-  {
+  void shootObstacle(int obstacleID) {
     // Get a reference to this obstacle we tapped.
     SGObstacle thisObs = obstacles[obstacleID];
 
     // Don't shoot an asteroid that has already stopped moving or
     // if we aren't allowed to solve things yet.
-    if (!canSolve || !thisObs.isDropping)
-    {
+    if (!canSolve || !thisObs.isDropping) {
       return;
     }
 
@@ -336,8 +327,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     // do NOT shoot it.
     if (thisObs.answerValue == emptyObstacle ||
         thisObs.answerValue == filledObstacle ||
-        thisObs.answerValue == correctObstacle)
-    {
+        thisObs.answerValue == correctObstacle) {
       return;
     }
 
@@ -346,18 +336,13 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     canSolve = false;
 
     // Identify the obstacle we clicked on, move the rocket to it, and shoot.
-    if (thisObs.obstacleCol == "left")
-    {
+    if (thisObs.obstacleCol == "left") {
       // Move the rocket left.
       moveRocket("left");
-    }
-    else if (thisObs.obstacleCol == "center")
-    {
+    } else if (thisObs.obstacleCol == "center") {
       // Move the rocket center.
       moveRocket("center");
-    }
-    else
-    {
+    } else {
       // Move the rocket right.
       moveRocket("right");
     }
@@ -365,12 +350,9 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     // Check if we got the problem right or wrong.
     // Each function appropriately shows the icon and breaks any remaining
     // asteroids, updating associated variables and also checking if we lost.
-    if (thisObs.answerValue == correctAnswer)
-    {
+    if (thisObs.answerValue == correctAnswer) {
       answerCorrect(obstacleID);
-    }
-    else
-    {
+    } else {
       answerWrong(obstacleID);
     }
 
@@ -380,8 +362,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     nextProblem();
   }
 
-  void answerCorrect(int obstacleID)
-  {
+  void answerCorrect(int obstacleID) {
     // We answered a problem correctly.
 
     // Break the obstacle upon shooting it and show the reward.
@@ -401,8 +382,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     // Display the correct icon and set a timer so it hides itself.
     showCorrectResult = true;
     showIncorrectResult = false;
-    iconTimer = Timer(Duration(seconds: resultIconDelay), ()
-    {
+    iconTimer = Timer(Duration(seconds: resultIconDelay), () {
       setState(() {
         showCorrectResult = false;
         showIncorrectResult = false;
@@ -415,8 +395,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     // No need to check if we won; that's done every time nextProblem is called.
   }
 
-  void answerWrong(int obstacleID)
-  {
+  void answerWrong(int obstacleID) {
     // We answered a problem wrong.
 
     // Break the obstacle upon shooting it. Fill it so we can't use it again.
@@ -436,8 +415,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     // Display the incorrect icon and set a timer so it hides itself.
     showIncorrectResult = true;
     showCorrectResult = false;
-    iconTimer = Timer(Duration(seconds: resultIconDelay), ()
-    {
+    iconTimer = Timer(Duration(seconds: resultIconDelay), () {
       setState(() {
         showIncorrectResult = false;
         showCorrectResult = false;
@@ -454,12 +432,9 @@ class _ShootingGameState extends State<ShootingGameStateful> {
 
   // Break all active obstacles other than the one we already destroyed, with no
   // penalty to the user.
-  void breakRemaining()
-  {
-    for (int i = 0; i < activeObstacles; i++)
-    {
-      if (!obstacles[activeObstacleIndices[i]].isDestroyed)
-      {
+  void breakRemaining() {
+    for (int i = 0; i < activeObstacles; i++) {
+      if (!obstacles[activeObstacleIndices[i]].isDestroyed) {
         // We found an obstacle that has not been destroyed!
         updateObstacle(
           activeObstacleIndices[i],
@@ -479,26 +454,20 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   // Function to move the rocket (does not animate yet)
   void moveRocket(String column) {
     setState(() {
-      if (column == "left")
-      {
+      if (column == "left") {
         // Move left.
         rocketXPos = leftX;
         rocketColumn = "left";
       }
-      if (column == "center")
-      {
+      if (column == "center") {
         // Move center.
         rocketXPos = centerX;
         rocketColumn = "center";
-      }
-      else if (column == "right")
-      {
+      } else if (column == "right") {
         // Move right.
         rocketXPos = rightX;
         rocketColumn = "right";
-      }
-      else if (column == "up1")
-      {
+      } else if (column == "up1") {
         // Game starting, move rocket UP.
         rocketYPos -= (MediaQuery.of(context).size.height * 0.185);
       }
@@ -506,8 +475,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   }
 
   // If this is called, an obstacle has collided with our rocket.
-  void collideRocket(int obstacleID)
-  {
+  void collideRocket(int obstacleID) {
     // Because an obstacle has collided, we will break all obstacles associated
     // with the current problem and generate a new one if possible.
     // This is almost the same as answeredWrong.
@@ -533,8 +501,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     // Display the incorrect icon and set a timer so it hides itself.
     showIncorrectResult = true;
     showCorrectResult = false;
-    iconTimer = Timer(Duration(seconds: resultIconDelay), ()
-    {
+    iconTimer = Timer(Duration(seconds: resultIconDelay), () {
       setState(() {
         showIncorrectResult = false;
         showCorrectResult = false;
@@ -552,14 +519,11 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     nextProblem();
   }
 
-
-
   // METHODS - Game Loop
 
   // Start the game (turn rocket on and move it up, create first
   // question and answers, drop obstacles and show first problem.
-  void startGame()
-  {
+  void startGame() {
     // Start the game, move the rocket up, and load questions!
     setState(() {
       gameStarted = true;
@@ -569,8 +533,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     moveRocket("up1");
     rocketOn = true;
 
-    for (int i = 0; i < numObstacles; i++)
-    {
+    for (int i = 0; i < numObstacles; i++) {
       updateObstacle(i, isDropping: true);
     }
 
@@ -583,27 +546,23 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     gameTimer.start();
   }
 
-  void loseLife()
-  {
+  void loseLife() {
     // Update both the lives left and the lives indicator in the SGInfoBar.
     setState(() {
       livesLeft--;
     });
 
     // Check; if we have no lives left, we have lost.
-    if (livesLeft == 0)
-    {
+    if (livesLeft == 0) {
       loseGame();
       return;
     }
   }
 
-  void loseGame()
-  {
+  void loseGame() {
     // Stop the game and obstacles from continuing.
     canSolve = false;
-    for (int i = 0; i < numObstacles; i++)
-    {
+    for (int i = 0; i < numObstacles; i++) {
       updateObstacle(i, isDropping: false);
     }
 
@@ -631,7 +590,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
               icon: SvgPicture.asset(
                 'assets/images/reload.svg',
                 colorFilter:
-                const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                    const ColorFilter.mode(Colors.black, BlendMode.srcIn),
                 semanticsLabel: "arrow pointing in circle",
                 height: 50,
                 width: 50,
@@ -640,8 +599,10 @@ class _ShootingGameState extends State<ShootingGameStateful> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ShootingGameStateful(
+                    level: widget.level,
                     planet: widget.planet,
-                    shootingProblem: widget.shootingProblem,),
+                    shootingProblem: widget.shootingProblem,
+                  ),
                 ),
               ),
             ),
@@ -653,8 +614,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
 
   // Called if the user has solved all problems with at least 70% being correct.
   // When called, all obstacles will already be destroyed.
-  void winGame()
-  {
+  void winGame() {
     // Prevent clicking on anything. Note, all obstacles are destroyed, anyway.
     canSolve = false;
 
@@ -666,14 +626,16 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     // leak; even though we end the timer, we have to wait for the setState
     // to update before transitioning). This may be replaced with a little
     // rocket flying-up animation in the near future.
-    Timer(Duration(seconds: resultIconDelay), ()
-    {
+    Timer(Duration(seconds: resultIconDelay), () {
       // Navigate the user to the game results screen.
       // To do: Send amount of correct problems and timer to game result screen.
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => GameResultScreen(
+            game: Game.shooting,
+            level: widget.level,
+            planet: widget.planet,
             currency: problemsCorrect,
             time: finalTime,
           ),
@@ -683,20 +645,15 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   }
 
   // Generate a new problem.
-  void nextProblem()
-  {
+  void nextProblem() {
     // First, check. If the last problem we answered made us hit our limit,
     // we have reached the end of the game.
-    if (problemsAnswered == numProblems)
-    {
+    if (problemsAnswered == numProblems) {
       // The game is over. Win the game ONLY if we scored at least a 70%.
-      if (problemsCorrect / numProblems > 0.7)
-      {
+      if (problemsCorrect / numProblems > 0.7) {
         winGame();
         return;
-      }
-      else
-      {
+      } else {
         loseGame();
         return;
       }
@@ -719,15 +676,12 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     // will only ever check a maximum of 5 obstacles per cycle (assuming a
     // worst-case scenario where the user gets 2 obstacles wrong). It won't
     // check all 15 every time due to starting at lastBottomObs.
-    while (activeObstacles != 3)
-    {
+    while (activeObstacles != 3) {
       //print("activeObstacles: " + activeObstacles.toString() + ", ");
       // Always start at the last lowest index we left off and check for
       // open spaces.
-      for (int i = lastBottomObs; i < numObstacles; i++)
-      {
-        if (obstacles[i].answerValue == emptyObstacle)
-        {
+      for (int i = lastBottomObs; i < numObstacles; i++) {
+        if (obstacles[i].answerValue == emptyObstacle) {
           // Found an empty obstacle. Fill it in and update its state.
           updateObstacle(i, answerValue: possibleAnswers[activeObstacles]);
 
@@ -739,9 +693,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
           // and also break out of the for loop to move onto the next.
           lastBottomObs++;
           break;
-        }
-        else
-        {
+        } else {
           // If we didn't encounter an empty obstacle and still need more, just
           // increment the lowest index so the next loop always starts one higher.
           lastBottomObs++;
@@ -756,11 +708,8 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     canSolve = true;
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       // Transparent AppBar to store the back button.
@@ -799,7 +748,6 @@ class _ShootingGameState extends State<ShootingGameStateful> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-
           // Background sky gradient for the game (all art will
           // change soon to use shooting_themes.dart).
           Container(
@@ -853,8 +801,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
             ),
           ),
 
-          for (int i = 0; i < numObstacles; i++)
-            obstacles[i],
+          for (int i = 0; i < numObstacles; i++) obstacles[i],
 
           Center(
             child: Visibility(
@@ -902,7 +849,6 @@ class _ShootingGameState extends State<ShootingGameStateful> {
               ),
             ),
           ),
-
         ],
       ),
     );

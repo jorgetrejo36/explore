@@ -9,9 +9,9 @@ import 'package:get/get.dart';
 // Variables for planets, levels, and games
 
 // Enable to view level names and types beside each pin.
-const bool debugView = true;
+const bool debugView = false;
 // Enable to force all pins & planets to unlock, ignoring Realm status.
-const bool debugDisableLoading = true;
+const bool debugDisableLoading = false;
 
 // How many planets are there?
 // Update this and the code in pms_planet_page to add more planets.
@@ -26,7 +26,7 @@ enum GameType { geyser, shooting, mining, racing }
 int numGameTypes = 4;
 
 // Possible themes for games.
-// The order of this enum does matter and should remain: [earth, mars, saturn, neptune, space]
+// The order of this enum DOES matter and should remain: [earth, mars, saturn, neptune, space]
 enum GameTheme { earth, mars, saturn, neptune, space }
 
 // Test changing the seed per each planet below after updating

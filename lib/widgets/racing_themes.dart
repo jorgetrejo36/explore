@@ -2,6 +2,8 @@
 // to plug in use "${ThisClass.varible}.svg" for icons
 // or "${ThisClass.varible}.png" for backgrounds
 
+import 'package:explore/screens/planet_map_screen.dart';
+
 class RacingTheme {
   late String theme;
   late String racingStart;
@@ -9,32 +11,30 @@ class RacingTheme {
   late String playerVehicle;
   late String enemyVehicle;
 
-  RacingTheme(String inputTheme) {
-    theme = inputTheme.toLowerCase();
-
-    switch (theme) {
-      case "earth":
+  RacingTheme(GameTheme inputTheme) {
+    switch (inputTheme) {
+      case GameTheme.earth:
         playerVehicle = "car";
         enemyVehicle = "ufo";
         background = "EarthRacing";
         racingStart = "EarthRacingStart";
         break;
 
-      case "mars":
+      case GameTheme.mars:
         playerVehicle = "car";
         enemyVehicle = "ufo";
         background = "MarsRacing";
         racingStart = "MarsRacingStart";
         break;
 
-      case "neptune":
+      case GameTheme.neptune:
         playerVehicle = "car";
         enemyVehicle = "ufo";
         background = "NeptuneRacing";
         racingStart = "NeptuneRacingStart";
         break;
 
-      case "saturn":
+      case GameTheme.saturn:
         playerVehicle = "car";
         enemyVehicle = "ufo";
         background = "SaturnRacing";

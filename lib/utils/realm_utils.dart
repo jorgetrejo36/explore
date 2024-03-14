@@ -57,6 +57,130 @@ class RocketAvatar {
 }
 
 class RealmUtils {
+  void addUserScore({
+    required int currency,
+    required int score,
+    required int time,
+    required int level,
+    required GameTheme planet,
+  }) {
+    // get current logged in user
+    final UserController loggedInUser = Get.find();
+
+    // open local realm instance
+    final realm = Realm(config);
+
+    // get the current user that's being worked with
+    final ExploreUser user =
+        realm.find<ExploreUser>(loggedInUser.id) as ExploreUser;
+
+    // find the individual level that the user is on
+    final Level currLevel = user.planets
+        .firstWhere(
+          (currPlanet) => currPlanet.identifyingEnum == planet.index,
+        )
+        .levels
+        .firstWhere((currLevel) => currLevel.levelNumOnPlanet == level);
+
+    // check if the next level is locked
+    // if it is locked that means that level needs to be changed to
+    // CompletionStatus.current
+
+    // if this is true then that means the next level is on the same planet
+    Level? nextLevel;
+    Planet? currPlanet, nextPlanet;
+    if (level + 1 <= levelsPerPlanet) {
+      nextLevel = user.planets
+          .firstWhere(
+            (currPlanet) => currPlanet.identifyingEnum == planet.index,
+          )
+          .levels
+          .firstWhere((currLevel) => currLevel.levelNumOnPlanet == level + 1);
+      // this means that this is the last level in the entire game
+    } else if (planet.index == GameTheme.neptune.index &&
+        level == levelsPerPlanet) {
+      // this means the level must be the first on the next planet
+    } else {
+      currPlanet = user.planets.firstWhere(
+        (currPlanet) => currPlanet.identifyingEnum == planet.index,
+      );
+
+      nextPlanet = user.planets.firstWhere(
+        // move forward one planet
+        (currPlanet) => currPlanet.identifyingEnum == planet.index + 1,
+      );
+
+      nextLevel = nextPlanet.levels
+          // if on new planet the next level is guaranteed to be the first level
+          .firstWhere((currLevel) => currLevel.levelNumOnPlanet == 1);
+    }
+
+    realm.write(() {
+      // this means there is a next level
+      if (nextLevel != null) {
+        nextLevel.status = CompletionStatus.current.index;
+        // this means that planetStatuses need to be updated too
+        if (currPlanet != null && nextPlanet != null) {
+          currPlanet.status = CompletionStatus.complete.index;
+          nextPlanet.status = CompletionStatus.current.index;
+        }
+      }
+      currLevel.status = CompletionStatus.complete.index;
+
+      // if this new score is now the new highscore
+      if (score > currLevel.highscore) {
+        // with a new highscore that means the overall total for the user has
+        // updated both for score and items
+        // add the difference between old and new
+        user.totalScore += (score - currLevel.highscore);
+        user.totalItems += (currency - currLevel.questionsCorrect);
+
+        // now update the level information
+        currLevel.highscore = score;
+        currLevel.questionsCorrect = currency;
+      }
+    });
+
+    // close local realm instance
+    realm.close();
+  }
+
+  String getRocketPath() {
+    // get current logged in user
+    final UserController loggedInUser = Get.find();
+
+    // open local realm instance
+    final realm = Realm(config);
+
+    final ExploreUser user =
+        realm.find<ExploreUser>(loggedInUser.id) as ExploreUser;
+
+    final String rocketPath = user.rocketPath;
+
+    // close realm instance
+    realm.close();
+
+    return rocketPath;
+  }
+
+  String getAvatarPath() {
+    // get current logged in user
+    final UserController loggedInUser = Get.find();
+
+    // open local realm instance
+    final realm = Realm(config);
+
+    final ExploreUser user =
+        realm.find<ExploreUser>(loggedInUser.id) as ExploreUser;
+
+    final String avatarPath = user.avatarPath;
+
+    // close realm instance
+    realm.close();
+
+    return avatarPath;
+  }
+
   RocketAvatar getRocketAvatar() {
     // get current logged in user
     final UserController loggedInUser = Get.find();
@@ -89,6 +213,21 @@ class RealmUtils {
     realm.close();
 
     return userInfo;
+  }
+
+  void deleteUser(ObjectId id) {
+    // open local realm instance
+    final realm = Realm(config);
+
+    final ExploreUser userToDelete = realm.find<ExploreUser>(id) as ExploreUser;
+
+    // delete the user
+    realm.write(() {
+      realm.delete(userToDelete);
+    });
+
+    // close realm instance
+    realm.close();
   }
 
   List<KeyUserInfo> getAllUsers() {
@@ -254,6 +393,7 @@ class RealmUtils {
 
     return user;
   }
+
   List<PlayerData> getLeaderboardUsers() {
     // open local realm instance
     final realm = Realm(config);
@@ -268,11 +408,11 @@ class RealmUtils {
     final List<PlayerData> leaderboardUsers = users
         .map(
           (user) => PlayerData(
-        name: user.name,
-        score: user.totalScore.toString(),
-        imgName: user.avatarPath, // You may want to modify this
-      ),
-    )
+            name: user.name,
+            score: user.totalScore.toString(),
+            imgName: user.avatarPath, // You may want to modify this
+          ),
+        )
         .toList();
 
     // close realm instance

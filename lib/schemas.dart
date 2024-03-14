@@ -20,9 +20,9 @@ class _ExploreUser {
 class _Planet {
   @PrimaryKey()
   late final ObjectId id;
-  late int identifyingEnum; // enum
+  late int identifyingEnum; // enum: GameTheme
   late String name;
-  late int status; // enum
+  late int status; // enum: CompletionStatus
   late int totalItems;
   late int collectedItems;
   late List<_Level> levels;
@@ -34,7 +34,7 @@ class _Level {
   late final ObjectId id;
   late int levelNumOnPlanet;
   late int questionAmount;
-  late int status; // enum
+  late int status; // enum: CompletionStatus
   late double timeTaken;
   late int questionsCorrect;
   late int highscore;
