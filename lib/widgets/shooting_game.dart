@@ -45,10 +45,10 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   double obstacleRangeY = 150;
   // How high should the obstacles begin to be generated?
   // Currently, they begin off-screen. Leave as such.
-  double initialHeight = 75;
+  double initialHeight = 90;
   // How much space should there be between
   // every set of numObstaclesPerProblem?
-  double obstaclePadding = 125;
+  double obstaclePadding = 115;
   // How long should the correct/incorrect icon display for, in seconds?
   int resultIconDelay = 3;
 
@@ -180,11 +180,11 @@ class _ShootingGameState extends State<ShootingGameStateful> {
         break;
 
       case GameTheme.saturn:
-        skyImage = "assets/images/shooting_saturn_sky_art.png";
+        skyImage = "assets/images/transparency.png";
         groundImage = "assets/images/shooting_saturn_ground_art.png";
-        obstacleImage = "assets/images/ring-temp.svg";
-        rewardImage = "assets/images/lollipop.svg";
-        destroyedImage = "assets/images/ring-temp-faded.svg";
+        obstacleImage = "assets/images/ring.svg";
+        rewardImage = "assets/images/gem.svg";
+        destroyedImage = "assets/images/ring-faded.svg";
         gameBackgroundColor = const BoxDecoration(
           color: Color.fromARGB(255, 0, 9, 59),
           image: DecorationImage(
@@ -307,6 +307,9 @@ class _ShootingGameState extends State<ShootingGameStateful> {
       if (alive != null) obstacle.alive = alive;
       if (answerValue != null) obstacle.answerValue = answerValue;
       if (markForDeletion != null) obstacle.markForDeletion = markForDeletion;
+      // If we called updateObstacle, we must have changed at least one thing.
+      // So, the obstacle needs to be visually re-built.
+      obstacle.markForUpdate = true;
     });
   }
 
@@ -566,9 +569,6 @@ class _ShootingGameState extends State<ShootingGameStateful> {
       updateObstacle(i, isDropping: false);
     }
 
-    // Turn the rocket off.
-    rocketOn = false;
-
     // Stop tracking player time.
     gameTimer.stop();
 
@@ -712,39 +712,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      // Transparent AppBar to store the back button.
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        leading: Container(
-          // Circle around back button.
-          margin: const EdgeInsets.all(7),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            shape: BoxShape.rectangle,
-            color: const Color(0xFFCCCCCB),
-          ),
-
-          // Back button arrow and functionality. Will need to add a
-          // warning if you quit a game before it is complete!
-          child: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-
-            // Navigate back when the back button is pressed.
-            // Will be an issue on game end screen, update!
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                // Replace 0 with the int value of the planet attached to this
-                // shooting game instance.
-                builder: (context) => const PlanetMapScreen(selectedPlanet: 0),
-              ),
-            ),
-          ),
-        ),
-      ),
+      // No back buttons in games, so no app bar.
       body: Stack(
         fit: StackFit.expand,
         children: [
