@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class GeyserChoiceStateful extends StatefulWidget {
-  const GeyserChoiceStateful({
-    Key? key,
-    required this.handleState,
-    required this.choice,
-    required this.answer,
-    required this.correctAnswer,
-    required this.answeredQuestion,
-    required this.item,
-    required this.top,
-  }) : super(key: key);
+  const GeyserChoiceStateful(
+      {Key? key,
+      required this.handleState,
+      required this.choice,
+      required this.answer,
+      required this.correctAnswer,
+      required this.answeredQuestion,
+      required this.item,
+      required this.top,
+      required this.playerAvatar})
+      : super(key: key);
 
   final Function(int) handleState;
   final int choice;
@@ -20,6 +21,7 @@ class GeyserChoiceStateful extends StatefulWidget {
   final bool answeredQuestion;
   final String item;
   final String top;
+  final String playerAvatar;
   @override
   State<GeyserChoiceStateful> createState() => _GeyserChoiceState();
 }
@@ -73,7 +75,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
       turns: rotationAnimation,
       alignment: Alignment.center,
       child: SvgPicture.asset(
-        'assets/images/alien.svg',
+        widget.playerAvatar,
         width: double.infinity,
         height: MediaQuery.of(context).size.height / 6,
         fit: BoxFit.fill,
