@@ -347,7 +347,7 @@ class _RacingGameState extends State<RacingGame>
                 SystemChrome.setPreferredOrientations(
                   [
                     DeviceOrientation.portraitUp,
-                    DeviceOrientation.portraitDown
+                    DeviceOrientation.portraitDown,
                   ],
                 ),
                 Navigator.pop(context),
