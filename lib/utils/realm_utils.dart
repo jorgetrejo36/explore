@@ -339,43 +339,81 @@ class RealmUtils {
 
     final List<Planet> planets = [];
 
-    // create the 4 distinct planets
-    for (int i = 0; i < numPlanets; i++) {
-      final List<Level> levels = [];
-      // create all the levels that will be within the planet
-      for (int j = 0; j < levelsPerPlanet; j++) {
-        final ObjectId levelId = ObjectId();
+    // this is for testing purposes only
+    if (username == "ADMIN") {
+      // create the 4 distinct planets
+      for (int i = 0; i < numPlanets; i++) {
+        final List<Level> levels = [];
+        // create all the levels that will be within the planet
+        for (int j = 0; j < levelsPerPlanet; j++) {
+          final ObjectId levelId = ObjectId();
 
-        // this is the final version that needs to be implemented
-        levels.add(
-          Level(
-            levelId,
-            j + 1,
-            questionsPerLevel,
-            i == 0 && j == 0
-                ? CompletionStatus.current.index
-                : CompletionStatus.locked.index,
-            double.maxFinite,
+          levels.add(
+            Level(
+              levelId,
+              j + 1,
+              questionsPerLevel,
+              CompletionStatus.complete.index,
+              double.maxFinite,
+              0,
+              0,
+            ),
+          );
+        }
+
+        final ObjectId planetId = ObjectId();
+        planets.add(
+          Planet(
+            planetId,
+            i,
+            gameThemeToName[GameTheme.values[i]] ?? "unknown",
+            CompletionStatus.complete.index,
+            totalPlanetItems,
             0,
-            0,
+            levels: levels,
           ),
         );
       }
+      // this is the normal version of implementation
+    } else {
+      // create the 4 distinct planets
+      for (int i = 0; i < numPlanets; i++) {
+        final List<Level> levels = [];
+        // create all the levels that will be within the planet
+        for (int j = 0; j < levelsPerPlanet; j++) {
+          final ObjectId levelId = ObjectId();
 
-      final ObjectId planetId = ObjectId();
-      planets.add(
-        Planet(
-          planetId,
-          i,
-          gameThemeToName[GameTheme.values[i]] ?? "unknown",
-          i == 0
-              ? CompletionStatus.current.index
-              : CompletionStatus.locked.index,
-          totalPlanetItems,
-          0,
-          levels: levels,
-        ),
-      );
+          // this is the final version that needs to be implemented
+          levels.add(
+            Level(
+              levelId,
+              j + 1,
+              questionsPerLevel,
+              i == 0 && j == 0
+                  ? CompletionStatus.current.index
+                  : CompletionStatus.locked.index,
+              double.maxFinite,
+              0,
+              0,
+            ),
+          );
+        }
+
+        final ObjectId planetId = ObjectId();
+        planets.add(
+          Planet(
+            planetId,
+            i,
+            gameThemeToName[GameTheme.values[i]] ?? "unknown",
+            i == 0
+                ? CompletionStatus.current.index
+                : CompletionStatus.locked.index,
+            totalPlanetItems,
+            0,
+            levels: levels,
+          ),
+        );
+      }
     }
 
     final user = ExploreUser(
