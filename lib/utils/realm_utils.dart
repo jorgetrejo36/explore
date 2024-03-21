@@ -227,6 +227,13 @@ class RealmUtils {
 
     // delete the user
     realm.write(() {
+      // delete all the levels on each planet
+      for (Planet planet in userToDelete.planets) {
+        realm.deleteMany(planet.levels);
+      }
+      // delete all the planets associated with the user
+      realm.deleteMany(userToDelete.planets);
+      // delete the user
       realm.delete(userToDelete);
     });
 
