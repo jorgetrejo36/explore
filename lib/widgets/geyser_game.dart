@@ -7,6 +7,7 @@ import 'package:explore/widgets/life_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:explore/utils/problem_generator.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class GeyserGameStateful extends StatefulWidget {
   const GeyserGameStateful(
@@ -143,6 +144,25 @@ class _GeyserGameState extends State<GeyserGameStateful> {
     });
   }
 
+  Future<void> _loadData() async {
+    try {
+      playerAvatar = RealmUtils().getAvatarPath();
+      rocketAvatar = RealmUtils().getRocketAvatar();
+    } catch (e) {
+      print('Error loading data: $e');
+    }
+  }
+
+  Future playCorrectSound() async {
+    final player = AudioPlayer();
+    return player.play(AssetSource("sound/correct.mp3"));
+  }
+
+  Future playWrongSound() async {
+    final player = AudioPlayer();
+    return player.play(AssetSource("sound/wrong.mp3"));
+  }
+
   @override
   Widget build(BuildContext context) {
     GeyserRepo geyserRepo = new GeyserRepo();
@@ -200,7 +220,15 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                                       MediaQuery.of(context).size.height / 16,
                                 ),
                                 icon: const Icon(Icons.arrow_right_rounded),
-                                onPressed: () => {answerQuestion(answer)},
+                                onPressed: () {
+                                  answerQuestion(answer);
+
+                                  if (answer == correctAnswer) {
+                                    playCorrectSound();
+                                  } else {
+                                    playWrongSound();
+                                  }
+                                },
                               )
                             : null
                         : Column(
