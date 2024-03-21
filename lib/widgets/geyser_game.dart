@@ -179,15 +179,6 @@ class _GeyserGameState extends State<GeyserGameStateful> {
     }
   }
 
-  Future<void> _loadData() async {
-    try {
-      playerAvatar = RealmUtils().getAvatarPath();
-      rocketAvatar = RealmUtils().getRocketAvatar();
-    } catch (e) {
-      print('Error loading data: $e');
-    }
-  }
-
   Future playCorrectSound() async {
     final player = AudioPlayer();
     return player.play(AssetSource("sound/correct.mp3"));
