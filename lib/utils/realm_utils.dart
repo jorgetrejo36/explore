@@ -118,11 +118,15 @@ class RealmUtils {
     realm.write(() {
       // this means there is a next level
       if (nextLevel != null) {
-        nextLevel.status = CompletionStatus.current.index;
-        // this means that planetStatuses need to be updated too
-        if (currPlanet != null && nextPlanet != null) {
-          currPlanet.status = CompletionStatus.complete.index;
-          nextPlanet.status = CompletionStatus.current.index;
+        // check if the next level is locked because only then do statuses need
+        // to change
+        if (nextLevel.status == CompletionStatus.locked.index) {
+          nextLevel.status = CompletionStatus.current.index;
+          // this means that planetStatuses need to be updated too
+          if (currPlanet != null && nextPlanet != null) {
+            currPlanet.status = CompletionStatus.complete.index;
+            nextPlanet.status = CompletionStatus.current.index;
+          }
         }
       }
       currLevel.status = CompletionStatus.complete.index;
