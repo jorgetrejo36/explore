@@ -222,18 +222,23 @@ class PlanetInfo {
   final Planet planet;
   late String imagePath;
   late CompletionStatus completionStatus;
+  late GameTheme currPlanet;
 
   PlanetInfo(this.planet) {
     imagePath = planetSVGs[GameTheme.values[planet.identifyingEnum]] ?? "";
     completionStatus = CompletionStatus.values[planet.status];
+    currPlanet = GameTheme.values[planet.identifyingEnum];
   }
 }
 
 class IconGridWidget extends StatelessWidget {
   final int numPlanets;
   final List<Planet> planets;
-  const IconGridWidget(
-      {super.key, required this.numPlanets, required this.planets});
+  const IconGridWidget({
+    super.key,
+    required this.numPlanets,
+    required this.planets,
+  });
 
   // calculate the indices that need to have a planet in them
   // the calculation is based off if the numPlanets is odd or even
@@ -322,7 +327,8 @@ class IconGridWidget extends StatelessWidget {
               ? PlanetWidget(
                   completionStatus:
                       planetPaths[planetPathsIndex].completionStatus,
-                  planetPath: planetPaths[planetPathsIndex++].imagePath,
+                  planetPath: planetPaths[planetPathsIndex].imagePath,
+                  planetSelection: planetPaths[planetPathsIndex++].currPlanet,
                 )
               : null, // Display null for cells without a planet
         );
@@ -336,11 +342,13 @@ enum CompletionStatus { complete, current, locked }
 class PlanetWidget extends StatelessWidget {
   final CompletionStatus completionStatus;
   final String planetPath;
+  final GameTheme planetSelection;
 
   const PlanetWidget({
     super.key,
     required this.completionStatus,
     required this.planetPath,
+    required this.planetSelection,
   });
 
   @override
@@ -415,10 +423,9 @@ class PlanetWidget extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                // FIXME Pass in 0-3 when clicking Earth-Neptune to scroll to that planet.
-                // Currently, this line makes all planets scroll to 0 (Earth).
-                // Scroll is implemented but needs a dynamic parameter here.
-                builder: (context) => const PlanetMapScreen(selectedPlanet: 0),
+                // selectedPlanet will use planetselection to scroll to correct place
+                builder: (context) =>
+                    PlanetMapScreen(selectedPlanet: planetSelection.index),
               ),
             ),
             child: child,
