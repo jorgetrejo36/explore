@@ -108,7 +108,7 @@ class _MiningGameState extends State<MiningGame>
                           builder: (context) => GameResultScreen(
                             game: Game.mining,
                             level: widget.level,
-                            planet: GameTheme.earth,
+                            planet: widget.planet,
                             currency: score,
                             time: finalTime,
                           ),
