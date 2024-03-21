@@ -1,5 +1,7 @@
 import 'dart:math';
+import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/widgets/mining_themes.dart';
+import 'package:explore/widgets/score_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,10 +11,15 @@ import 'package:explore/screens/game_result_screen.dart';
 
 /// Creates instance of mining game given a specified theme and problem generator
 class MiningGame extends StatefulWidget {
-  final String planet;
+  final GameTheme planet;
+  final int level;
   final ProblemGenerator miningProblem;
-  const MiningGame(
-      {super.key, required this.planet, required this.miningProblem});
+  const MiningGame({
+    super.key,
+    required this.planet,
+    required this.level,
+    required this.miningProblem,
+  });
 
   @override
   State<MiningGame> createState() => _MiningGameState();
@@ -61,7 +68,7 @@ class _MiningGameState extends State<MiningGame>
       builder: (BuildContext context) => AlertDialog(
         title: Center(
           child: Text(
-            '${(timer.elapsedMilliseconds / 1000).round()} / 5',
+            '${score} / 5',
             style: const TextStyle(
               fontFamily: 'Fredoka',
             ),
@@ -84,8 +91,10 @@ class _MiningGameState extends State<MiningGame>
                       context,
                       MaterialPageRoute(
                         builder: (context) => MiningGame(
-                            planet: widget.planet,
-                            miningProblem: widget.miningProblem),
+                          planet: widget.planet,
+                          level: widget.level,
+                          miningProblem: widget.miningProblem,
+                        ),
                       ),
                     ),
                   )
@@ -97,7 +106,12 @@ class _MiningGameState extends State<MiningGame>
                         context,
                         MaterialPageRoute(
                           builder: (context) => GameResultScreen(
-                              currency: score, time: finalTime),
+                            game: Game.mining,
+                            level: widget.level,
+                            planet: widget.planet,
+                            currency: score,
+                            time: finalTime,
+                          ),
                         ),
                       ),
                     },

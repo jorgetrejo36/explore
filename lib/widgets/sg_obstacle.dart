@@ -28,6 +28,8 @@ class SGObstacle extends StatefulWidget {
   late bool isDropping;
   // Has this obstacle been marked for deletion (to disappear)?
   late bool markForDeletion;
+  // Has this obstacle been marked for an update (to re-build)?
+  late bool markForUpdate;
   // How many seconds should this obstacle exist before being deleted?
   int secondsToExist = 2;
 
@@ -59,6 +61,7 @@ class SGObstacle extends StatefulWidget {
     this.isDropping = false,
     this.alive = true,
     this.markForDeletion = false,
+    this.markForUpdate = false,
     required this.obstacleIndex,
     required this.obstacleX,
     required this.obstacleY,
@@ -79,53 +82,92 @@ class SGObstacleState extends State<SGObstacle> with TickerProviderStateMixin {
   // How fast should this obstacle drop?
   double dropRate = 0.75;
 
+  // Used for animation.
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
     // Initialize this obstacle's Y position and turn it on (make it visible).
     obstacleY = widget.obstacleY;
     widget.alive = true;
 
+    // Calculate the distance each obstacle needs to cover
+    double distanceToCover = MediaQuery.of(context).size.height + 100 - obstacleY;
+
+    // Calculate the duration based on the distance and drop rate
+    double durationInSeconds = ( distanceToCover / dropRate) / 40;
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: durationInSeconds.toInt()), // Adjust duration as needed
+    );
+
+    // Use Tween to animate the obstacleY from its initial position to the bottom of the screen
+    _animation = Tween<double>(
+      begin: obstacleY,
+      end: MediaQuery.of(context).size.height,
+      // Note that "end" does not matter as collisions occur before this.
+    ).animate(_controller);
+
     // Create a ticker and instruct it to move the obstacle and update
     // its visual information.
     dropTicker = createTicker((_) {
-      setState(() {
-        // Dirty fix because Flutter is a jerk about rebuilding state of
-        // a widget generated at runtime in a list from within another widget.
-        widget.isDestroyed = widget.isDestroyed;
-        widget.isDropping = widget.isDropping;
-        widget.answerValue = widget.answerValue;
-        widget.alive = widget.alive;
 
-        // Every tick, move the obstacle down.
-        if (widget.isDropping)
+      // Check if this obstacle needs an update; if so, set its state.
+      if (widget.markForUpdate)
+      {
+        // Update this widget's fields and rebuild it on the screen.
+        setState(() {
+          widget.markForUpdate = false;
+          widget.alive = widget.alive;
+          widget.isDestroyed = widget.isDestroyed;
+          widget.answerValue = widget.answerValue;
+          widget.isDropping = widget.isDropping;
+        });
+      }
+
+      // Check if we have invoked a deletion. If so, prime the obstacle to
+      // delete itself after X secondsToExist.
+      if (widget.markForDeletion)
+      {
+        widget.markForDeletion = false;
+        _controller.stop();
+
+        // Delete this obstacle after X secondsToExist.
+        Timer(Duration(seconds: widget.secondsToExist), () {
+          setState(() {
+            widget.alive = false;
+            widget.isDropping = false;
+            dropTicker.stop();
+          });
+        });
+      }
+
+      // Every tick, move the obstacle down.
+      if (widget.isDropping)
+      {
+        if (!_controller.isAnimating)
+          {
+            _controller.forward();
+          }
+
+        // Caused lag with setState; now updated in AnimatedBuilder widget.
+        //obstacleY += dropRate;
+
+        // Check if it has passed the yValue of the rocket.
+        if (obstacleY >= rocketYTop)
         {
-          obstacleY += dropRate;
-
-          // Check if it has passed the yValue of the rocket.
-          if (obstacleY >= rocketYTop)
-          {
-            // This obstacle has collided with the rocket.
-            shootingGameStateInstance?.collideRocket(widget.obstacleIndex);
-          }
+          // This obstacle has collided with the rocket.
+          shootingGameStateInstance?.collideRocket(widget.obstacleIndex);
         }
-
-        // Check if we have invoked a deletion. If so, prime the obstacle to
-        // delete itself after X secondsToExist.
-        if (widget.markForDeletion)
-          {
-            widget.markForDeletion = false;
-
-            // Delete this obstacle after X secondsToExist.
-            Timer(Duration(seconds: widget.secondsToExist), () {
-              setState(() {
-                widget.alive = false;
-                widget.isDropping = false;
-                dropTicker.stop();
-              });
-            });
-          }
-      });
+      }
+      else
+      {
+        _controller.stop();
+      }
     });
 
     dropTicker.start();
@@ -133,105 +175,108 @@ class SGObstacleState extends State<SGObstacle> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
     // Assign the same value as we did for the rocket so we know what height
     // a "collision" occurs in our dropTicker.
     rocketYTop = MediaQuery.of(context).size.height * 0.48;
 
     return Visibility(
       visible: widget.alive,
-      child: Positioned(
-        left: widget.obstacleX,
-        top: obstacleY,
-        child: GestureDetector(
-          onTap: () {
-            // Attempt to shoot the obstacle.
-            shootingGameStateInstance?.shootObstacle(widget.obstacleIndex);
-          },
-          child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: [
+      child: AnimatedBuilder(
+        animation: _animation,
+        builder: (BuildContext context, Widget? child) {
+          obstacleY = _animation.value;
+          return Positioned(
+            left: widget.obstacleX,
+            top: obstacleY,
+            child: GestureDetector(
+              onTap: () {
+                shootingGameStateInstance?.shootObstacle(widget.obstacleIndex);
+              },
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
 
-              // SVG image for reward (if answered correctly)
-              Visibility(
-                visible: widget.isDestroyed && widget.answerValue == correctObstacle,
-                child: Positioned(
-                  top: -54,
-                  child: SvgPicture.asset(
-                    widget.obstacleRewardImg,
-                    width: 56,
-                    height: 56,
-                  ),
-                ),
-              ),
-
-              // SVG image for obstacle (when not destroyed)
-              Visibility(
-                visible: !widget.isDestroyed,
-                child: SvgPicture.asset(
-                  widget.obstacleImg,
-                  width: 92,
-                  height: 92,
-                ),
-              ),
-
-              // SVG image for obstacle (when destroyed)
-              Visibility(
-                visible: widget.isDestroyed,
-                child: SvgPicture.asset(
-                  widget.obstacleDestroyedImg,
-                  width: 92,
-                  height: 92,
-                ),
-              ),
-
-              // Text overlay displaying value
-              Visibility(
-                visible: (widget.answerValue != emptyObstacle &&
-                          widget.answerValue != correctObstacle &&
-                          widget.answerValue != filledObstacle),
-                child: Stack(
-                  children: [
-                    // White text for answer value.
-                    Visibility(
-                      visible: !widget.isDestroyed,
-                      child: Text(
-                        widget.answerValue.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "Fredoka",
-                          shadows: [
-                              // Black outline around white text.
-                              // In order, the shadows display on the:
-                              // bottomLeft, bottomRight, topRight, topLeft.
-                              Shadow(
-                                  offset: Offset(-1.5, -1.5),
-                                  color: Colors.black,
-                              ),
-                              Shadow(
-                                  offset: Offset(1.5, -1.5),
-                                  color: Colors.black,
-                              ),
-                              Shadow(
-                                  offset: Offset(1.5, 1.5),
-                                  color: Colors.black,
-                              ),
-                              Shadow(
-                                  offset: Offset(-1.5, 1.5),
-                                  color: Colors.black,
-                              ),
-                            ],
-                        ),
+                  // SVG image for reward (if answered correctly)
+                  Visibility(
+                    visible: widget.isDestroyed && widget.answerValue == correctObstacle,
+                    child: Positioned(
+                      top: -54,
+                      child: SvgPicture.asset(
+                        widget.obstacleRewardImg,
+                        height: MediaQuery.of(context).size.height * 0.06,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+
+                  // SVG image for obstacle (when not destroyed)
+                  Visibility(
+                    visible: !widget.isDestroyed,
+                    child: SvgPicture.asset(
+                      widget.obstacleImg,
+                      height: MediaQuery.of(context).size.height * 0.1,
+                    ),
+                  ),
+
+                  // SVG image for obstacle (when destroyed)
+                  Visibility(
+                    visible: widget.isDestroyed,
+                    child: SvgPicture.asset(
+                      widget.obstacleDestroyedImg,
+                      height: MediaQuery.of(context).size.height * 0.1,
+                    ),
+                  ),
+
+                  // Text overlay displaying value
+                  Visibility(
+                    visible: (widget.answerValue != emptyObstacle &&
+                        widget.answerValue != correctObstacle &&
+                        widget.answerValue != filledObstacle),
+                    child: Stack(
+                      children: [
+                        // White text for answer value.
+                        Visibility(
+                          visible: !widget.isDestroyed,
+                          child: Text(
+                            widget.answerValue.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 48,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Fredoka",
+                              shadows: [
+                                // Black outline around white text.
+                                // In order, the shadows display on the:
+                                // bottomLeft, bottomRight, topRight, topLeft.
+                                Shadow(
+                                  offset: Offset(-1.5, -1.5),
+                                  color: Colors.black,
+                                ),
+                                Shadow(
+                                  offset: Offset(1.5, -1.5),
+                                  color: Colors.black,
+                                ),
+                                Shadow(
+                                  offset: Offset(1.5, 1.5),
+                                  color: Colors.black,
+                                ),
+                                Shadow(
+                                  offset: Offset(-1.5, 1.5),
+                                  color: Colors.black,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -240,6 +285,7 @@ class SGObstacleState extends State<SGObstacle> with TickerProviderStateMixin {
   @override
   void dispose() {
     dropTicker.dispose();
+    _controller.dispose();
     super.dispose();
   }
 }

@@ -2,6 +2,8 @@
 // to plug in use "${ThisClass.varible}.svg" for icons
 // or "${ThisClass.varible}.png" for backgrounds
 
+import 'package:explore/screens/planet_map_screen.dart';
+
 class RacingTheme {
   late String theme;
   late String racingStart;
@@ -9,36 +11,41 @@ class RacingTheme {
   late String playerVehicle;
   late String enemyVehicle;
 
-  RacingTheme(String inputTheme) {
-    theme = inputTheme.toLowerCase();
-
-    switch (theme) {
-      case "earth":
+  RacingTheme(GameTheme inputTheme) {
+    switch (inputTheme) {
+      case GameTheme.earth:
         playerVehicle = "car";
         enemyVehicle = "ufo";
         background = "EarthRacing";
         racingStart = "EarthRacingStart";
+        theme = 'earth';
         break;
 
-      case "mars":
+      case GameTheme.mars:
         playerVehicle = "car";
         enemyVehicle = "ufo";
         background = "MarsRacing";
         racingStart = "MarsRacingStart";
+        theme = 'mars';
+
         break;
 
-      case "neptune":
-        playerVehicle = "car";
+      case GameTheme.neptune:
+        playerVehicle = "submarine";
         enemyVehicle = "ufo";
         background = "NeptuneRacing";
         racingStart = "NeptuneRacingStart";
+        theme = 'neptune';
+
         break;
 
-      case "saturn":
-        playerVehicle = "car";
+      case GameTheme.saturn:
+        playerVehicle = "rocket";
         enemyVehicle = "ufo";
         background = "SaturnRacing";
         racingStart = "SaturnRacingStart";
+        theme = 'saturn';
+
         break;
 
       default:
@@ -46,6 +53,8 @@ class RacingTheme {
         enemyVehicle = "diamond";
         background = "EarthRacing";
         racingStart = "EarthRacingStart";
+        theme = 'earth';
+
         break;
     }
   }

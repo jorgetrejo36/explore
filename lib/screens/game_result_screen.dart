@@ -1,14 +1,49 @@
 import 'package:explore/app_colors.dart';
+import 'package:explore/screens/planet_map_screen.dart';
+import 'package:explore/utils/realm_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:explore/widgets/score_calculator.dart';
 
-class GameResultScreen extends StatelessWidget {
+class GameResultScreen extends StatefulWidget {
+  final Game game;
   final int currency;
+  final int level;
+  final GameTheme planet;
   final int time;
-  GameResultScreen({super.key, required this.currency, required this.time});
 
-  late int score = calculateScore(currency, time);
+  GameResultScreen({
+    super.key,
+    required this.currency,
+    required this.game,
+    required this.level,
+    required this.planet,
+    required this.time,
+  });
+
+  late int score = calculateScore(game, currency, time);
+
+  @override
+  State<GameResultScreen> createState() => _GameResultScreenState();
+}
+
+class _GameResultScreenState extends State<GameResultScreen> {
+  late RocketAvatar rocketAvatar;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    try {
+      rocketAvatar = RealmUtils().getRocketAvatar();
+    } catch (e) {
+      print('Error loading data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,19 +74,19 @@ class GameResultScreen extends StatelessWidget {
                         Expanded(
                           child: DataBoxWidget(
                             imagePath: "assets/images/diamond.svg",
-                            score: currency,
+                            score: widget.currency,
+                          ),
+                        ),
+                        Expanded(
+                          child: DataBoxWidget(
+                            imagePath: "clock",
+                            score: widget.time,
                           ),
                         ),
                         Expanded(
                           child: DataBoxWidget(
                             imagePath: "assets/images/star.svg",
-                            score: time,
-                          ),
-                        ),
-                        Expanded(
-                          child: DataBoxWidget(
-                            imagePath: "assets/images/star.svg",
-                            score: score,
+                            score: widget.score,
                           ),
                         ),
                       ],
@@ -61,7 +96,9 @@ class GameResultScreen extends StatelessWidget {
                 SizedBox(
                   height: MediaQuery.of(context).size.height *
                       0.35, // 45% of the screen (85/100),
-                  child: const AvatarWithRocketWidget(),
+                  child: AvatarWithRocketWidget(
+                    rocketAvatar: rocketAvatar,
+                  ),
                 ),
                 Expanded(
                   child:
@@ -81,7 +118,23 @@ class GameResultScreen extends StatelessWidget {
                         color: Colors.white, // Icon color
                         size: 40, // Icon size
                       ),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        // add the user score to the DB
+                        RealmUtils().addUserScore(
+                          level: widget.level,
+                          planet: widget.planet,
+                          time: widget.time,
+                          currency: widget.currency,
+                          score: widget.score,
+                        );
+                        // pop this pade to navigate back to the planet map screen
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  PlanetMapScreen(selectedPlanet: 1)),
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -111,7 +164,7 @@ class DataBoxWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
         color: AppColors.lightPurple,
         borderRadius: BorderRadius.circular(15),
@@ -127,9 +180,18 @@ class DataBoxWidget extends StatelessWidget {
             flex: 2,
             child: Container(
               alignment: Alignment.center,
-              child: SvgPicture.asset(
-                imagePath, // Replace 'assets/your_image.svg' with your SVG file path/ Adjust height as needed
-              ),
+              child: imagePath == "clock"
+                  ? const FittedBox(
+                      fit: BoxFit.fill,
+                      child: Icon(
+                        Icons.timelapse,
+                        color: Colors.white,
+                        size: 50,
+                      ),
+                    )
+                  : SvgPicture.asset(
+                      imagePath,
+                    ),
             ),
           ),
           // Second item taking 60% of the width
@@ -142,7 +204,7 @@ class DataBoxWidget extends StatelessWidget {
                 style: const TextStyle(
                   fontFamily: "Fredoka",
                   color: Colors.white,
-                  fontSize: 65,
+                  fontSize: 45,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -160,15 +222,45 @@ class DataBoxWidget extends StatelessWidget {
 }
 
 class AvatarWithRocketWidget extends StatelessWidget {
-  const AvatarWithRocketWidget({super.key});
+  final RocketAvatar rocketAvatar;
+
+  const AvatarWithRocketWidget({super.key, required this.rocketAvatar});
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SvgPicture.asset(
-        'assets/images/car.svg',
-        width: 200, // Set the width of the SvgPicture
-        height: 200, // Set the height of the SvgPicture
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return Stack(
+            children: [
+              // Rocket SVG
+              Transform.rotate(
+                angle: 1,
+                child: SvgPicture.asset(
+                  rocketAvatar.rocketPath,
+                  width: 100,
+                  fit: BoxFit.contain,
+                  // Path to your bottom SVG file Adjust the width as needed
+                ),
+              ),
+              // Top SVG
+              Positioned(
+                left: 53,
+                bottom: 85,
+                child: ClipOval(
+                  child: Transform.scale(
+                    scale: 1.5,
+                    child: SvgPicture.asset(
+                      rocketAvatar.avatarPath,
+                      width:
+                          37, // Path to your top SVG file Adjust the width as needed
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

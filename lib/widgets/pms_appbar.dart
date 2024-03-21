@@ -1,3 +1,4 @@
+import 'package:explore/screens/planet_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:explore/app_colors.dart';
@@ -48,7 +49,12 @@ class PMSAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 Icons.arrow_back,
                 color: Colors.white,
               ),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PlanetHomeScreen(),
+                ),
+              ),
             ),
           ),
 

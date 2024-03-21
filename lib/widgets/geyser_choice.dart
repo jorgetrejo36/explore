@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class GeyserChoiceStateful extends StatefulWidget {
-  const GeyserChoiceStateful({
-    Key? key,
-    required this.handleState,
-    required this.choice,
-    required this.answer,
-    required this.correctAnswer,
-    required this.answeredQuestion,
-    required this.item,
-    required this.top,
-  }) : super(key: key);
+  const GeyserChoiceStateful(
+      {Key? key,
+      required this.handleState,
+      required this.choice,
+      required this.answer,
+      required this.correctAnswer,
+      required this.answeredQuestion,
+      required this.item,
+      required this.top,
+      required this.playerAvatar})
+      : super(key: key);
 
   final Function(int) handleState;
   final int choice;
@@ -20,6 +21,7 @@ class GeyserChoiceStateful extends StatefulWidget {
   final bool answeredQuestion;
   final String item;
   final String top;
+  final String playerAvatar;
   @override
   State<GeyserChoiceStateful> createState() => _GeyserChoiceState();
 }
@@ -64,13 +66,16 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
   }
 
   Widget _buildAlienSvg() {
-    final Tween<double> rotationAnimation = Tween(begin: 0.0, end: 1.0);
+    final rotationAnimation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+          parent: _animationController2!, curve: Curves.linearToEaseOut),
+    );
 
     return RotationTransition(
-      turns: rotationAnimation.animate(_animationController2!),
+      turns: rotationAnimation,
       alignment: Alignment.center,
       child: SvgPicture.asset(
-        'assets/images/alien.svg',
+        widget.playerAvatar,
         width: double.infinity,
         height: MediaQuery.of(context).size.height / 6,
         fit: BoxFit.fill,
@@ -81,7 +86,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
   Widget _buildSmokeSvg() {
     final scaleAnimation = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-          parent: _animationController!, curve: Curves.fastOutSlowIn),
+          parent: _animationController!, curve: Curves.linearToEaseOut),
     );
 
     return ScaleTransition(
@@ -119,6 +124,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
       if (widget.choice != widget.correctAnswer) {
         _animationController?.reset(); // Reset the animation controller
         _animationController?.forward(); // Start the smoke animation
+        _animationController2?.reset(); // Reset the animation controller
         _animationController2?.forward(); // Start the smoke animation
 
         return widget.choice == widget.answer

@@ -1,18 +1,25 @@
 import 'package:explore/screens/game_result_screen.dart';
 import 'package:explore/screens/planet_map_screen.dart';
+import 'package:explore/utils/realm_utils.dart';
 import 'package:explore/widgets/geyser_choice.dart';
 import 'package:explore/widgets/geyser_data_repo.dart';
 import 'package:explore/widgets/life_app_bar.dart';
 import 'package:explore/widgets/life_counter.dart';
+import 'package:explore/widgets/score_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:explore/utils/problem_generator.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class GeyserGameStateful extends StatefulWidget {
-  const GeyserGameStateful(
-      {super.key, required this.planet, required this.geyserProblem});
+  const GeyserGameStateful({
+    super.key,
+    required this.level,
+    required this.planet,
+    required this.geyserProblem,
+  });
 
+  final int level;
   final GameTheme planet;
   final ProblemGenerator geyserProblem;
 
@@ -28,11 +35,24 @@ class _GeyserGameState extends State<GeyserGameStateful> {
   bool answeredQuestion = false;
   int questions = 5;
   int questionsAnswered = 0;
+  late String playerAvatar = "";
+  late RocketAvatar rocketAvatar;
 
   // Problem Generator Varibles
   late GeneratedProblem problem = widget.geyserProblem.generateProblem();
   late int correctAnswer = problem.answerChoices.getAnswers()[0];
   late List<dynamic> choices = problem.answerChoices.getAnswers();
+
+  // Timer
+  final timer = Stopwatch();
+  late int finalTime = (timer.elapsedMilliseconds / 1000).round();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+    timer.start();
+  }
 
   // For item counter
   void increment() {
@@ -67,6 +87,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
 
       // Pop up of retry or game results
       if ((questionsAnswered == questions) || (lives == 0)) {
+        timer.stop();
         showDialog<String>(
           context: context,
           builder: (BuildContext context) => AlertDialog(
@@ -95,8 +116,10 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => GeyserGameStateful(
-                                planet: widget.planet,
-                                geyserProblem: widget.geyserProblem),
+                              level: widget.level,
+                              planet: widget.planet,
+                              geyserProblem: widget.geyserProblem,
+                            ),
                           ),
                         ),
                       )
@@ -108,8 +131,11 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => GameResultScreen(
-                                currency: 0,
-                                time: 0,
+                                game: Game.geyser,
+                                level: widget.level,
+                                planet: widget.planet,
+                                currency: counter,
+                                time: finalTime,
                               ),
                             ),
                           ),
@@ -142,6 +168,15 @@ class _GeyserGameState extends State<GeyserGameStateful> {
       answer = choices[1];
       answeredQuestion = newAnsweredQuestion;
     });
+  }
+
+  Future<void> _loadData() async {
+    try {
+      playerAvatar = RealmUtils().getAvatarPath();
+      rocketAvatar = RealmUtils().getRocketAvatar();
+    } catch (e) {
+      print('Error loading data: $e');
+    }
   }
 
   Future<void> _loadData() async {
@@ -271,6 +306,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       GeyserChoiceStateful(
+                        playerAvatar: playerAvatar,
                         handleState: handleState,
                         choice: choices[0],
                         answer: answer,
@@ -298,6 +334,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       GeyserChoiceStateful(
+                        playerAvatar: playerAvatar,
                         handleState: handleState,
                         choice: choices[1],
                         answer: answer,
@@ -325,6 +362,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       GeyserChoiceStateful(
+                        playerAvatar: playerAvatar,
                         handleState: handleState,
                         choice: choices[2],
                         answer: answer,
