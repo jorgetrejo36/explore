@@ -9,6 +9,7 @@ import 'package:explore/widgets/score_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:explore/utils/problem_generator.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class GeyserGameStateful extends StatefulWidget {
   const GeyserGameStateful({
@@ -178,6 +179,16 @@ class _GeyserGameState extends State<GeyserGameStateful> {
     }
   }
 
+  Future playCorrectSound() async {
+    final player = AudioPlayer();
+    return player.play(AssetSource("sounds/correct.mp3"));
+  }
+
+  Future playWrongSound() async {
+    final player = AudioPlayer();
+    return player.play(AssetSource("sounds/wrong.mp3"));
+  }
+
   @override
   Widget build(BuildContext context) {
     GeyserRepo geyserRepo = new GeyserRepo();
@@ -235,7 +246,15 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                                       MediaQuery.of(context).size.height / 16,
                                 ),
                                 icon: const Icon(Icons.arrow_right_rounded),
-                                onPressed: () => {answerQuestion(answer)},
+                                onPressed: () {
+                                  answerQuestion(answer);
+
+                                  if (answer == correctAnswer) {
+                                    playCorrectSound();
+                                  } else {
+                                    playWrongSound();
+                                  }
+                                },
                               )
                             : null
                         : Column(

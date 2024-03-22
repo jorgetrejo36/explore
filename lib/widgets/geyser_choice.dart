@@ -149,6 +149,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
       _animationController?.forward();
     }
 
+    // Player answers correctly
     return widget.choice == widget.answer
         ? [_buildItemSvg(), _buildAlienSvg()]
         : [_buildSmokeSvg()];
