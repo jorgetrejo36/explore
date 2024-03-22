@@ -181,12 +181,12 @@ class _GeyserGameState extends State<GeyserGameStateful> {
 
   Future playCorrectSound() async {
     final player = AudioPlayer();
-    return player.play(AssetSource("sound/correct.mp3"));
+    return player.play(AssetSource("sounds/correct.mp3"));
   }
 
   Future playWrongSound() async {
     final player = AudioPlayer();
-    return player.play(AssetSource("sound/wrong.mp3"));
+    return player.play(AssetSource("sounds/wrong.mp3"));
   }
 
   @override

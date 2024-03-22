@@ -168,8 +168,8 @@ flutter:
     - assets/images/ship.svg
     - assets/images/rotate-smartphone.png
     - assets/images/transparency.png
-    - assets/sound/correct.mp3
-    - assets/sound/wrong.mp3
+    - assets/sounds/correct.mp3
+    - assets/sounds/wrong.mp3
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
