@@ -65,22 +65,24 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
         backgroundColor: Colors.transparent,
         title: Align(
           alignment: Alignment.centerRight,
-          child: IconButton(
-            icon: SvgPicture.asset(
-              'assets/images/trash-can.svg',
-              height: MediaQuery.of(context).size.height / 15,
-            ),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const DeleteAvatarScreen(),
-              ),
-            ).then(
-              (_) => setState(() {
-                _loadData();
-              }),
-            ),
-          ),
+          child: users.isNotEmpty
+              ? IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/images/trash-can.svg',
+                    height: MediaQuery.of(context).size.height / 15,
+                  ),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DeleteAvatarScreen(),
+                    ),
+                  ).then(
+                    (_) => setState(() {
+                      _loadData();
+                    }),
+                  ),
+                )
+              : null,
         ),
       ),
       extendBodyBehindAppBar: true,
@@ -101,7 +103,7 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                 ),
               ),
               Center(
-                child: Container(
+                child: SizedBox(
                   width: screenWidth * .65,
                   height: screenWidth * 1.15,
                   child: GridView.count(
