@@ -50,106 +50,16 @@ class _GameResultScreenState extends State<GameResultScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Image.asset(
-            'assets/images/StarsBackground.png',
-            fit: BoxFit.cover,
-            height: double.infinity,
-            width: double.infinity,
-          ),
-          SafeArea(
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    top:
-                        MediaQuery.of(context).size.height * 0.05, // 5% (5/100)
-                    bottom:
-                        MediaQuery.of(context).size.height * 0.05, // 5% (5/100)
-                  ),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height *
-                        0.35, // 35% of the screen (40/100)
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: DataBoxWidget(
-                            imagePath: "assets/images/diamond.svg",
-                            score: widget.currency,
-                          ),
-                        ),
-                        Expanded(
-                          child: DataBoxWidget(
-                            imagePath: "clock",
-                            score: widget.time,
-                          ),
-                        ),
-                        Expanded(
-                          child: DataBoxWidget(
-                            imagePath: "assets/images/star.svg",
-                            score: widget.score,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height *
-                      0.35, // 45% of the screen (85/100),
-                  child: AvatarWithRocketWidget(
-                    rocketAvatar: rocketAvatar,
-                  ),
-                ),
-                Expanded(
-                  child:
-                      Container(), // Empty container to take up remaining space
-                ),
-                Center(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle, // Shape of the container
-                      color: AppColors
-                          .lightPurple, // Background color of the button
-                    ),
-                    child: IconButton(
-                      padding: const EdgeInsets.all(15),
-                      icon: const Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white, // Icon color
-                        size: 40, // Icon size
-                      ),
-                      onPressed: () {
-                        // Button Sound
-                        playClick();
-                        playTitleMusic();
-
-                        // add the user score to the DB
-                        RealmUtils().addUserScore(
-                          level: widget.level,
-                          planet: widget.planet,
-                          time: widget.time,
-                          currency: widget.currency,
-                          score: widget.score,
-                        );
-                        // pop this pade to navigate back to the planet map screen
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  PlanetMapScreen(selectedPlanet: 1)),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child:
-                      Container(), // Empty container to take up remaining space
-                ),
-              ],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Image.asset(
+              'assets/images/StarsBackground.png',
+              fit: BoxFit.cover,
+              height: double.infinity,
+              width: double.infinity,
             ),
             SafeArea(
               child: Column(
@@ -214,6 +124,8 @@ class _GameResultScreenState extends State<GameResultScreen> {
                           size: 40, // Icon size
                         ),
                         onPressed: () {
+                          playClick();
+                          playTitleMusic();
                           // add the user score to the DB
                           GameTheme planetToNavigateTo =
                               RealmUtils().addUserScore(
