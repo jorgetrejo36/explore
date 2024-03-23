@@ -72,6 +72,7 @@ flutter:
     - assets/images/TestMonster2.png
     - assets/images/TestMonster3.png
     - assets/images/compass.svg
+    - assets/images/burning.svg
     - assets/images/right.svg
     - assets/images/wrong.svg
     - assets/images/locked.svg
