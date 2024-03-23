@@ -12,7 +12,6 @@ class _ExploreUser {
   late String rocketPath;
   late int totalScore;
   late int totalItems;
-  late int currentLevel;
   late List<_Planet> planets;
 }
 
@@ -35,7 +34,6 @@ class _Level {
   late int levelNumOnPlanet;
   late int questionAmount;
   late int status; // enum: CompletionStatus
-  late double timeTaken;
   late int questionsCorrect;
   late int highscore;
 }

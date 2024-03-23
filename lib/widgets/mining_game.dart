@@ -88,21 +88,28 @@ class _MiningGameState extends State<MiningGame>
                       height: 50,
                       width: 50,
                     ),
-                    onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MiningGame(
-                          planet: widget.planet,
-                          level: widget.level,
-                          miningProblem: widget.miningProblem,
+                    onPressed: () => {
+                      // pop the dialog window
+                      Navigator.pop(context),
+                      // replace the game page with the game again to retry it
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MiningGame(
+                            planet: widget.planet,
+                            level: widget.level,
+                            miningProblem: widget.miningProblem,
+                          ),
                         ),
                       ),
-                    ),
+                    },
                   )
                 : ElevatedButton(
                     // Game result screen
                     onPressed: () => {
+                      // this pops the dialog
                       Navigator.pop(context),
+                      // this replaces the game screen
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(

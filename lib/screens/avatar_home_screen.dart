@@ -73,7 +73,7 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => DeleteAvatarScreen(),
+                builder: (context) => const DeleteAvatarScreen(),
               ),
             ).then(
               (_) => setState(() {
@@ -125,12 +125,15 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => PlanetHomeScreen(),
+                                    builder: (context) =>
+                                        const PlanetHomeScreen(),
                                   ),
                                   // this is used so the page reloads when it comes back
-                                ).then((_) => setState(() {
-                                      _loadData();
-                                    }));
+                                ).then(
+                                  (_) => setState(() {
+                                    _loadData();
+                                  }),
+                                );
                               },
                               style: ElevatedButton.styleFrom(
                                 shape: const CircleBorder(),
@@ -175,7 +178,7 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            ChooseRocketScreen(),
+                                            const ChooseRocketScreen(),
                                       ),
                                       // this is used so the page reloads when it comes back
                                     ).then((_) => setState(() {

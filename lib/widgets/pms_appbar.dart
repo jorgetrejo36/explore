@@ -49,12 +49,7 @@ class PMSAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 Icons.arrow_back,
                 color: Colors.white,
               ),
-              onPressed: () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PlanetHomeScreen(),
-                ),
-              ),
+              onPressed: () => Navigator.pop(context),
             ),
           ),
 

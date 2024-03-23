@@ -151,8 +151,103 @@ class _GameResultScreenState extends State<GameResultScreen> {
                 ),
               ],
             ),
-          ),
-        ],
+            SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height *
+                          0.05, // 5% (5/100)
+                      bottom: MediaQuery.of(context).size.height *
+                          0.05, // 5% (5/100)
+                    ),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height *
+                          0.35, // 35% of the screen (40/100)
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: DataBoxWidget(
+                              imagePath: "assets/images/diamond.svg",
+                              score: widget.currency,
+                            ),
+                          ),
+                          Expanded(
+                            child: DataBoxWidget(
+                              imagePath: "assets/images/burning.svg",
+                              score: widget.time,
+                            ),
+                          ),
+                          Expanded(
+                            child: DataBoxWidget(
+                              imagePath: "assets/images/star.svg",
+                              score: widget.score,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height *
+                        0.35, // 45% of the screen (85/100),
+                    child: AvatarWithRocketWidget(
+                      rocketAvatar: rocketAvatar,
+                    ),
+                  ),
+                  Expanded(
+                    child:
+                        Container(), // Empty container to take up remaining space
+                  ),
+                  Center(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle, // Shape of the container
+                        color: AppColors
+                            .lightPurple, // Background color of the button
+                      ),
+                      child: IconButton(
+                        padding: const EdgeInsets.all(15),
+                        icon: const Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white, // Icon color
+                          size: 40, // Icon size
+                        ),
+                        onPressed: () {
+                          // add the user score to the DB
+                          GameTheme planetToNavigateTo =
+                              RealmUtils().addUserScore(
+                            level: widget.level,
+                            planet: widget.planet,
+                            time: widget.time,
+                            currency: widget.currency,
+                            score: widget.score,
+                          );
+                          // pop the game result screen
+                          Navigator.pop(context);
+                          // push and replace with the game result screen in the
+                          // correct selected planet location
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PlanetMapScreen(
+                                selectedPlanet: planetToNavigateTo.index,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child:
+                        Container(), // Empty container to take up remaining space
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -187,18 +282,9 @@ class DataBoxWidget extends StatelessWidget {
             flex: 2,
             child: Container(
               alignment: Alignment.center,
-              child: imagePath == "clock"
-                  ? const FittedBox(
-                      fit: BoxFit.fill,
-                      child: Icon(
-                        Icons.timelapse,
-                        color: Colors.white,
-                        size: 50,
-                      ),
-                    )
-                  : SvgPicture.asset(
-                      imagePath,
-                    ),
+              child: SvgPicture.asset(
+                imagePath,
+              ),
             ),
           ),
           // Second item taking 60% of the width

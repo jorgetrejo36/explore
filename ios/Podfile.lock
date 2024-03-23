@@ -1,4 +1,6 @@
 PODS:
+  - audioplayers_darwin (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
   - path_provider_foundation (0.0.1):
     - Flutter
@@ -7,11 +9,14 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
   - Flutter (from `Flutter`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - realm (from `.symlinks/plugins/realm/ios`)
 
 EXTERNAL SOURCES:
+  audioplayers_darwin:
+    :path: ".symlinks/plugins/audioplayers_darwin/ios"
   Flutter:
     :path: Flutter
   path_provider_foundation:
@@ -20,6 +25,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/realm/ios"
 
 SPEC CHECKSUMS:
+  audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   realm: c06946433789db52487112a37e068565d7406429

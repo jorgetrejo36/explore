@@ -57,7 +57,7 @@ class RocketAvatar {
 }
 
 class RealmUtils {
-  void addUserScore({
+  GameTheme addUserScore({
     required int currency,
     required int score,
     required int time,
@@ -115,6 +115,8 @@ class RealmUtils {
           .firstWhere((currLevel) => currLevel.levelNumOnPlanet == 1);
     }
 
+    GameTheme planetToNavigateTo = planet;
+
     realm.write(() {
       // this means there is a next level
       if (nextLevel != null) {
@@ -126,6 +128,8 @@ class RealmUtils {
           if (currPlanet != null && nextPlanet != null) {
             currPlanet.status = CompletionStatus.complete.index;
             nextPlanet.status = CompletionStatus.current.index;
+            // this will be used for map screen navigation
+            planetToNavigateTo = GameTheme.values[nextPlanet.identifyingEnum];
           }
         }
       }
@@ -147,6 +151,8 @@ class RealmUtils {
 
     // close local realm instance
     realm.close();
+
+    return planetToNavigateTo;
   }
 
   String getRocketPath() {
@@ -354,7 +360,6 @@ class RealmUtils {
               j + 1,
               questionsPerLevel,
               CompletionStatus.complete.index,
-              double.maxFinite,
               0,
               0,
             ),
@@ -392,7 +397,6 @@ class RealmUtils {
               i == 0 && j == 0
                   ? CompletionStatus.current.index
                   : CompletionStatus.locked.index,
-              double.maxFinite,
               0,
               0,
             ),
@@ -423,7 +427,6 @@ class RealmUtils {
       rocketImagePath,
       0, // this is a new user so total score is 0
       0, // this is a new user so total items is 0
-      1, // all users start at level 1
       planets: planets,
     );
 

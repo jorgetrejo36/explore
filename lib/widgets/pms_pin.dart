@@ -118,7 +118,7 @@ class PinWidget extends StatelessWidget {
       }
 
       // Load the game.
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => gameToLoad,

@@ -598,25 +598,30 @@ class _ShootingGameState extends State<ShootingGameStateful> {
         actions: <Widget>[
           Center(
             child: IconButton(
-              icon: SvgPicture.asset(
-                'assets/images/reload.svg',
-                colorFilter:
-                    const ColorFilter.mode(Colors.black, BlendMode.srcIn),
-                semanticsLabel: "arrow pointing in circle",
-                height: 50,
-                width: 50,
-              ),
-              onPressed: () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ShootingGameStateful(
-                    level: widget.level,
-                    planet: widget.planet,
-                    shootingProblem: widget.shootingProblem,
-                  ),
+                icon: SvgPicture.asset(
+                  'assets/images/reload.svg',
+                  colorFilter:
+                      const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                  semanticsLabel: "arrow pointing in circle",
+                  height: 50,
+                  width: 50,
                 ),
-              ),
-            ),
+                onPressed: () => {
+                      // pop the dialog window
+                      Navigator.pop(context),
+                      // replace the game page with another game page to reset it for
+                      // the user
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ShootingGameStateful(
+                            level: widget.level,
+                            planet: widget.planet,
+                            shootingProblem: widget.shootingProblem,
+                          ),
+                        ),
+                      ),
+                    }),
           ),
         ],
       ),
