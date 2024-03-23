@@ -79,7 +79,7 @@ class _GameResultScreenState extends State<GameResultScreen> {
                         ),
                         Expanded(
                           child: DataBoxWidget(
-                            imagePath: "clock",
+                            imagePath: "assets/images/burning.svg",
                             score: widget.time,
                           ),
                         ),
@@ -180,18 +180,9 @@ class DataBoxWidget extends StatelessWidget {
             flex: 2,
             child: Container(
               alignment: Alignment.center,
-              child: imagePath == "clock"
-                  ? const FittedBox(
-                      fit: BoxFit.fill,
-                      child: Icon(
-                        Icons.timelapse,
-                        color: Colors.white,
-                        size: 50,
-                      ),
-                    )
-                  : SvgPicture.asset(
-                      imagePath,
-                    ),
+              child: SvgPicture.asset(
+                imagePath,
+              ),
             ),
           ),
           // Second item taking 60% of the width
