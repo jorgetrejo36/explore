@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:realm/realm.dart';
+import 'package:explore/widgets/sound_library.dart';
 
 class PlanetHomeScreen extends StatefulWidget {
   const PlanetHomeScreen({Key? key}) : super(key: key);
@@ -69,7 +70,10 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
               color: Colors.white,
             ),
             // Navigate back when the back button is pressed
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => {
+              // Button Sound
+              playClick(), Navigator.pop(context)
+            },
           ),
         ),
       ),
@@ -420,14 +424,18 @@ class PlanetWidget extends StatelessWidget {
     return completionStatus == CompletionStatus.locked
         ? child
         : GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                // selectedPlanet will use planetselection to scroll to correct place
-                builder: (context) =>
-                    PlanetMapScreen(selectedPlanet: planetSelection.index),
+            onTap: () => {
+              // Button Sound
+              playClick(),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  // selectedPlanet will use planetselection to scroll to correct place
+                  builder: (context) =>
+                      PlanetMapScreen(selectedPlanet: planetSelection.index),
+                ),
               ),
-            ),
+            },
             child: child,
           );
   }
@@ -440,12 +448,16 @@ class LeaderboardIconWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: GestureDetector(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const LeaderboardScreen(),
+        onTap: () => {
+          // Button Sound
+          playClick(),
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LeaderboardScreen(),
+            ),
           ),
-        ),
+        },
         child: Container(
           width: 150,
           height: 150,

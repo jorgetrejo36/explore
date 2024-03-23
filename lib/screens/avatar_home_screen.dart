@@ -5,6 +5,7 @@ import 'package:explore/screens/leaderboard_screen.dart';
 import 'package:explore/screens/planet_home_screen.dart';
 import 'package:explore/utils/realm_utils.dart';
 import 'package:explore/utils/user_controller.dart';
+import 'package:explore/widgets/sound_library.dart';
 import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
 import 'package:flutter_svg/svg.dart';
@@ -112,6 +113,9 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                       (index) => index < users.length
                           ? ElevatedButton(
                               onPressed: () {
+                                // Button Sound
+                                playClick();
+
                                 // get the user controller
                                 final UserController loggedInUser = Get.find();
                                 // take the id of the user that was selected and assign it to the user
@@ -163,6 +167,9 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                           : index == users.length
                               ? ElevatedButton(
                                   onPressed: () {
+                                    // Button Sound
+                                    playClick();
+
                                     // Navigate to the choose rocket screen
                                     Navigator.push(
                                       context,

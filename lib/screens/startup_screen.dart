@@ -1,5 +1,6 @@
 import 'package:explore/screens/avatar_home_screen.dart';
 import 'package:explore/utils/user_controller.dart';
+import 'package:explore/widgets/sound_library.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +17,7 @@ class _StartupScreenState extends State<StartupScreen> {
   void initState() {
     super.initState();
     Get.put(UserController());
+    playTitleMusic();
   }
 
   @override
@@ -60,12 +62,15 @@ class _StartupScreenState extends State<StartupScreen> {
                       backgroundColor: Color(0xff9173f4),
                       minimumSize: Size(140, 40),
                     ),
-                    onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AvatarHomeScreen(),
+                    onPressed: () => {
+                      playClick(),
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AvatarHomeScreen(),
+                        ),
                       ),
-                    ),
+                    },
                     icon: const Icon(
                       Icons.play_arrow,
                       color: Color(0xfff6f6f6),

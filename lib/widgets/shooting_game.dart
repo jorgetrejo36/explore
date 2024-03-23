@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:explore/widgets/score_calculator.dart';
 import 'package:explore/widgets/sg_obstacle.dart';
+import 'package:explore/widgets/sound_library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../screens/game_result_screen.dart';
@@ -226,6 +227,10 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   }
 
   void setUpGame() {
+    // Adjust Music Player
+    stopMusic();
+    playRocketMusic();
+
     // Assign the instance.
     shootingGameStateInstance = this;
 
@@ -368,6 +373,9 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   void answerCorrect(int obstacleID) {
     // We answered a problem correctly.
 
+    // Sound Cue
+    playCorrectSound();
+
     // Break the obstacle upon shooting it and show the reward.
     updateObstacle(
       obstacleID,
@@ -400,6 +408,9 @@ class _ShootingGameState extends State<ShootingGameStateful> {
 
   void answerWrong(int obstacleID) {
     // We answered a problem wrong.
+
+    //Sound Cue
+    playWrongSound();
 
     // Break the obstacle upon shooting it. Fill it so we can't use it again.
     updateObstacle(

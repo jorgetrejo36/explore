@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:realm/realm.dart';
 import 'package:explore/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:explore/widgets/sound_library.dart';
 
 class CreateNameScreen extends StatelessWidget {
   final String selectedImage;
@@ -57,13 +58,15 @@ class CreateNameScreen extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           child: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColors.white,
-            ),
-            // Navigate back when the back button is pressed
-            onPressed: () => Navigator.pop(context),
-          ),
+              icon: const Icon(
+                Icons.arrow_back,
+                color: AppColors.white,
+              ),
+              // Navigate back when the back button is pressed
+              onPressed: () => {
+                    playClick(),
+                    Navigator.pop(context),
+                  }),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -129,10 +132,13 @@ class CreateNameScreen extends StatelessWidget {
                 child: IconButton(
                   icon: const Icon(Icons.check),
                   color: AppColors.white,
-                  onPressed: () => createNewUser(
-                    context: context,
-                    userName: _nameController.text,
-                  ),
+                  onPressed: () => {
+                    playClick(),
+                    createNewUser(
+                      context: context,
+                      userName: _nameController.text,
+                    ),
+                  },
                 ),
               ),
             ],

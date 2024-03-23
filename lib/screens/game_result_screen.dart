@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:explore/widgets/score_calculator.dart';
+import 'package:explore/widgets/sound_library.dart';
 
 class GameResultScreen extends StatefulWidget {
   final Game game;
@@ -34,10 +35,12 @@ class _GameResultScreenState extends State<GameResultScreen> {
   @override
   void initState() {
     super.initState();
+    stopMusic();
     _loadData();
   }
 
   Future<void> _loadData() async {
+    playLevelComplete();
     try {
       rocketAvatar = RealmUtils().getRocketAvatar();
     } catch (e) {
@@ -119,6 +122,10 @@ class _GameResultScreenState extends State<GameResultScreen> {
                         size: 40, // Icon size
                       ),
                       onPressed: () {
+                        // Button Sound
+                        playClick();
+                        playTitleMusic();
+
                         // add the user score to the DB
                         RealmUtils().addUserScore(
                           level: widget.level,

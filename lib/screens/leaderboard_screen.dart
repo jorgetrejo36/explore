@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
 import 'package:explore/utils/realm_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:explore/widgets/sound_library.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});
@@ -33,14 +34,16 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Color(0xfff6f6f6),
-            size: 35,
-          ),
-          // Navigate back when the back button is pressed
-          onPressed: () => Navigator.pop(context),
-        ),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Color(0xfff6f6f6),
+              size: 35,
+            ),
+            // Navigate back when the back button is pressed
+            onPressed: () => {
+                  playClick(),
+                  Navigator.pop(context),
+                }),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),

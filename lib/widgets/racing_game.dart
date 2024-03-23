@@ -11,6 +11,7 @@ import 'package:explore/utils/problem_generator.dart';
 import 'package:explore/screens/game_result_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:explore/utils/realm_utils.dart';
+import 'package:explore/widgets/sound_library.dart';
 
 /// Creates instance of mining game given a specified theme and problem generator
 class RacingGame extends StatefulWidget {
@@ -101,7 +102,7 @@ class _RacingGameState extends State<RacingGame>
   // Player variables
   int playerLocation = 0;
   bool correct = false;
-  bool test = true;
+  bool move = true;
   late LeaderboardEntry player = LeaderboardEntry(playerAvatar, 0, "player");
   late String playerAvatar = "";
   late RocketAvatar rocketAvatar;
@@ -122,13 +123,17 @@ class _RacingGameState extends State<RacingGame>
 
     if (curChoices[choiceNum] == curSolution) {
       setState(() {
-        test = !test;
+        move = !move;
         animationIterator++;
         playerLocation++;
         player.incrementScore();
-        test = !test;
+        playCorrectSound();
+        move = !move;
       });
+    } else {
+      playWrongSound();
     }
+
     updateLeaderboard();
     checkGameEnd();
   }
@@ -219,7 +224,11 @@ class _RacingGameState extends State<RacingGame>
                           ),
                         ),
                       },
-                      child: const Text("Game Complete"),
+                      child: const Icon(
+                        Icons.arrow_right_rounded,
+                        color: Colors.black,
+                        size: 60,
+                      ),
                     ),
             )
           ],
@@ -303,6 +312,8 @@ class _RacingGameState extends State<RacingGame>
   @override
   void initState() {
     super.initState();
+    stopMusic();
+    playRacingMusic();
     _loadData();
     timer.start();
     SystemChrome.setPreferredOrientations([
@@ -334,28 +345,6 @@ class _RacingGameState extends State<RacingGame>
           }
         },
         child: Scaffold(
-          extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Color(0xfff6f6f6),
-                size: 35,
-              ),
-              // Navigate back when the back button is pressed
-              onPressed: () => {
-                SystemChrome.setPreferredOrientations(
-                  [
-                    DeviceOrientation.portraitUp,
-                    DeviceOrientation.portraitDown,
-                  ],
-                ),
-                Navigator.pop(context),
-              },
-            ),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-          ),
           body: MediaQuery.of(context).orientation == Orientation.portrait
               ? racing_start_screen(
                   theme: theme,
@@ -639,7 +628,7 @@ class _RacingGameState extends State<RacingGame>
                         child: Stack(
                           children: <Widget>[
                             AnimatedPositioned(
-                              left: test
+                              left: move
                                   ? playerLocations[enemy1Location][0]
                                   : playerLocations[enemy1Location][1],
                               duration: const Duration(seconds: 2),
@@ -647,9 +636,9 @@ class _RacingGameState extends State<RacingGame>
                               child: GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    test = !test;
+                                    move = !move;
                                     currentProblem++;
-                                    test = !test;
+                                    move = !move;
                                   });
                                 },
                                 child: SvgPicture.asset(
@@ -667,7 +656,7 @@ class _RacingGameState extends State<RacingGame>
                         child: Stack(
                           children: <Widget>[
                             AnimatedPositioned(
-                              left: test
+                              left: move
                                   ? playerLocations[enemy2Location][0]
                                   : playerLocations[enemy2Location][1],
                               duration: const Duration(seconds: 2),
@@ -675,9 +664,9 @@ class _RacingGameState extends State<RacingGame>
                               child: GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    test = !test;
+                                    move = !move;
                                     currentProblem++;
-                                    test = !test;
+                                    move = !move;
                                   });
                                 },
                                 child: SvgPicture.asset(
@@ -695,7 +684,7 @@ class _RacingGameState extends State<RacingGame>
                         child: Stack(
                           children: <Widget>[
                             AnimatedPositioned(
-                                left: test
+                                left: move
                                     ? playerLocations[animationIterator][0]
                                     : playerLocations[animationIterator][1],
                                 duration: const Duration(seconds: 2),
@@ -703,9 +692,9 @@ class _RacingGameState extends State<RacingGame>
                                 child: GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      test = !test;
+                                      move = !move;
                                       currentProblem++;
-                                      test = !test;
+                                      move = !move;
                                     });
                                   },
                                   child: Container(
@@ -725,6 +714,7 @@ class _RacingGameState extends State<RacingGame>
       );
 }
 
+// Portrait Screen Builder
 class racing_start_screen extends StatefulWidget {
   const racing_start_screen(
       {super.key,
@@ -842,6 +832,7 @@ class _racing_start_screenState extends State<racing_start_screen>
   }
 }
 
+// Holds Leaderboard Data
 class LeaderboardEntry {
   late String sprite;
   late int score;

@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/widgets/mining_themes.dart';
 import 'package:explore/widgets/score_calculator.dart';
+import 'package:explore/widgets/sound_library.dart';
 import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -163,12 +164,14 @@ class _MiningGameState extends State<MiningGame>
   displayCorrect() {
     setState(() {
       correct = true;
+      playCorrectSound();
     });
     repeatOnce();
   }
 
   displayIncorrect() {
     setState(() {
+      playWrongSound();
       correct = false;
     });
     repeatOnce();
@@ -189,6 +192,8 @@ class _MiningGameState extends State<MiningGame>
   @override
   void initState() {
     super.initState();
+    stopMusic();
+    playMiningMusic();
     timer.start();
     //repeatOnce();
   }

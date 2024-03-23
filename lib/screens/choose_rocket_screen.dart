@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
 import 'package:explore/screens/choose_avatar_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:explore/widgets/sound_library.dart';
 
 class ChooseRocketScreen extends StatefulWidget {
   const ChooseRocketScreen({Key? key}) : super(key: key);
@@ -29,12 +30,14 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           child: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColors.white,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
+              icon: const Icon(
+                Icons.arrow_back,
+                color: AppColors.white,
+              ),
+              onPressed: () => {
+                    playClick(),
+                    Navigator.pop(context),
+                  }),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -95,6 +98,7 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
           ),
         ),
         onPressed: () {
+          playClick();
           selectRocket(svgPath);
           navigateToChooseAvatarScreen(svgPath);
         },

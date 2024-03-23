@@ -9,7 +9,7 @@ import 'package:explore/widgets/score_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:explore/utils/problem_generator.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:explore/widgets/sound_library.dart';
 
 class GeyserGameStateful extends StatefulWidget {
   const GeyserGameStateful({
@@ -50,6 +50,8 @@ class _GeyserGameState extends State<GeyserGameStateful> {
   @override
   void initState() {
     super.initState();
+    stopMusic();
+    playGeyserMusic();
     _loadData();
     timer.start();
   }
@@ -177,16 +179,6 @@ class _GeyserGameState extends State<GeyserGameStateful> {
     } catch (e) {
       print('Error loading data: $e');
     }
-  }
-
-  Future playCorrectSound() async {
-    final player = AudioPlayer();
-    return player.play(AssetSource("sounds/correct.mp3"));
-  }
-
-  Future playWrongSound() async {
-    final player = AudioPlayer();
-    return player.play(AssetSource("sounds/wrong.mp3"));
   }
 
   @override

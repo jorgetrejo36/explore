@@ -2,6 +2,7 @@ import 'package:explore/app_colors.dart';
 import 'package:explore/screens/create_name_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:explore/widgets/sound_library.dart';
 
 class ChooseAvatarScreen extends StatefulWidget {
   final String selectedRocketPath;
@@ -31,13 +32,15 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           child: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColors.white,
-              size: 35,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
+              icon: const Icon(
+                Icons.arrow_back,
+                color: AppColors.white,
+                size: 35,
+              ),
+              onPressed: () => {
+                    playClick(),
+                    Navigator.pop(context),
+                  }),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -124,15 +127,18 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
           width: size,
           height: size,
         ),
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CreateNameScreen(
-              selectedImage: svgPath,
-              selectedRocketPath: widget.selectedRocketPath,
+        onPressed: () => {
+          playClick(),
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CreateNameScreen(
+                selectedImage: svgPath,
+                selectedRocketPath: widget.selectedRocketPath,
+              ),
             ),
           ),
-        ),
+        },
       ),
     );
   }
