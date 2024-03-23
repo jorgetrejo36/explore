@@ -180,13 +180,14 @@ class _RacingGameState extends State<RacingGame>
                         height: 50,
                         width: 50,
                       ),
-                      // Navigate back when the back button is pressed
                       onPressed: () async => {
                         SystemChrome.setPreferredOrientations([
                           DeviceOrientation.portraitUp,
                           DeviceOrientation.portraitUp,
                         ]),
+                        // pop the dialog window
                         Navigator.pop(context),
+                        // replace the game page with the game again to retry it
                         await Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -206,6 +207,9 @@ class _RacingGameState extends State<RacingGame>
                             DeviceOrientation.portraitUp,
                           ],
                         ),
+                        // pop the dialog windown
+                        Navigator.pop(context),
+                        // replace the game page with the game result screen
                         await Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

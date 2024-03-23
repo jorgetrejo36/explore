@@ -112,21 +112,27 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                           height: 50,
                           width: 50,
                         ),
-                        onPressed: () => Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => GeyserGameStateful(
-                              level: widget.level,
-                              planet: widget.planet,
-                              geyserProblem: widget.geyserProblem,
-                            ),
-                          ),
-                        ),
-                      )
+                        onPressed: () => {
+                              // pop the dialog window
+                              Navigator.pop(context),
+                              // replace the game page with the game again to retry it
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => GeyserGameStateful(
+                                    level: widget.level,
+                                    planet: widget.planet,
+                                    geyserProblem: widget.geyserProblem,
+                                  ),
+                                ),
+                              ),
+                            })
                     : ElevatedButton(
                         // Game result screen
                         onPressed: () => {
+                          // pop the dialog window
                           Navigator.pop(context),
+                          // replace the game page with the game result screen
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
