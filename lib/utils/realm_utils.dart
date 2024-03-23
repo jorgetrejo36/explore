@@ -354,7 +354,6 @@ class RealmUtils {
               j + 1,
               questionsPerLevel,
               CompletionStatus.complete.index,
-              double.maxFinite,
               0,
               0,
             ),
@@ -392,7 +391,6 @@ class RealmUtils {
               i == 0 && j == 0
                   ? CompletionStatus.current.index
                   : CompletionStatus.locked.index,
-              double.maxFinite,
               0,
               0,
             ),
@@ -423,7 +421,6 @@ class RealmUtils {
       rocketImagePath,
       0, // this is a new user so total score is 0
       0, // this is a new user so total items is 0
-      1, // all users start at level 1
       planets: planets,
     );
 

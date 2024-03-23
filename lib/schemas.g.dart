@@ -15,8 +15,7 @@ class ExploreUser extends _ExploreUser
     String avatarPath,
     String rocketPath,
     int totalScore,
-    int totalItems,
-    int currentLevel, {
+    int totalItems, {
     Iterable<Planet> planets = const [],
   }) {
     RealmObjectBase.set(this, 'id', id);
@@ -25,7 +24,6 @@ class ExploreUser extends _ExploreUser
     RealmObjectBase.set(this, 'rocketPath', rocketPath);
     RealmObjectBase.set(this, 'totalScore', totalScore);
     RealmObjectBase.set(this, 'totalItems', totalItems);
-    RealmObjectBase.set(this, 'currentLevel', currentLevel);
     RealmObjectBase.set<RealmList<Planet>>(
         this, 'planets', RealmList<Planet>(planets));
   }
@@ -67,12 +65,6 @@ class ExploreUser extends _ExploreUser
   set totalItems(int value) => RealmObjectBase.set(this, 'totalItems', value);
 
   @override
-  int get currentLevel => RealmObjectBase.get<int>(this, 'currentLevel') as int;
-  @override
-  set currentLevel(int value) =>
-      RealmObjectBase.set(this, 'currentLevel', value);
-
-  @override
   RealmList<Planet> get planets =>
       RealmObjectBase.get<Planet>(this, 'planets') as RealmList<Planet>;
   @override
@@ -98,7 +90,6 @@ class ExploreUser extends _ExploreUser
       SchemaProperty('rocketPath', RealmPropertyType.string),
       SchemaProperty('totalScore', RealmPropertyType.int),
       SchemaProperty('totalItems', RealmPropertyType.int),
-      SchemaProperty('currentLevel', RealmPropertyType.int),
       SchemaProperty('planets', RealmPropertyType.object,
           linkTarget: 'Planet', collectionType: RealmCollectionType.list),
     ]);
@@ -198,7 +189,6 @@ class Level extends _Level with RealmEntity, RealmObjectBase, RealmObject {
     int levelNumOnPlanet,
     int questionAmount,
     int status,
-    double timeTaken,
     int questionsCorrect,
     int highscore,
   ) {
@@ -206,7 +196,6 @@ class Level extends _Level with RealmEntity, RealmObjectBase, RealmObject {
     RealmObjectBase.set(this, 'levelNumOnPlanet', levelNumOnPlanet);
     RealmObjectBase.set(this, 'questionAmount', questionAmount);
     RealmObjectBase.set(this, 'status', status);
-    RealmObjectBase.set(this, 'timeTaken', timeTaken);
     RealmObjectBase.set(this, 'questionsCorrect', questionsCorrect);
     RealmObjectBase.set(this, 'highscore', highscore);
   }
@@ -238,12 +227,6 @@ class Level extends _Level with RealmEntity, RealmObjectBase, RealmObject {
   set status(int value) => RealmObjectBase.set(this, 'status', value);
 
   @override
-  double get timeTaken =>
-      RealmObjectBase.get<double>(this, 'timeTaken') as double;
-  @override
-  set timeTaken(double value) => RealmObjectBase.set(this, 'timeTaken', value);
-
-  @override
   int get questionsCorrect =>
       RealmObjectBase.get<int>(this, 'questionsCorrect') as int;
   @override
@@ -271,7 +254,6 @@ class Level extends _Level with RealmEntity, RealmObjectBase, RealmObject {
       SchemaProperty('levelNumOnPlanet', RealmPropertyType.int),
       SchemaProperty('questionAmount', RealmPropertyType.int),
       SchemaProperty('status', RealmPropertyType.int),
-      SchemaProperty('timeTaken', RealmPropertyType.double),
       SchemaProperty('questionsCorrect', RealmPropertyType.int),
       SchemaProperty('highscore', RealmPropertyType.int),
     ]);
