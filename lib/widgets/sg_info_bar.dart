@@ -31,34 +31,45 @@ class _SGInfoBarState extends State<SGInfoBar> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
 
-            Text(
-              widget.problemText,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 96,
-                fontWeight: FontWeight.bold,
-                fontFamily: "Fredoka",
-                shadows: [
-                  // Black outline around white text.
-                  // In order, the shadows display on the:
-                  // bottomLeft, bottomRight, topRight, topLeft.
-                  Shadow(
-                    offset: Offset(-3, -3),
-                    color: Colors.black,
-                  ),
-                  Shadow(
-                    offset: Offset(3, -3),
-                    color: Colors.black,
-                  ),
-                  Shadow(
-                    offset: Offset(3, 3),
-                    color: Colors.black,
-                  ),
-                  Shadow(
-                    offset: Offset(-3, 3),
-                    color: Colors.black,
-                  ),
-                ],
+            // Cross-fade in new problems.
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 1000),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              child: Text(
+                widget.problemText,
+                key: UniqueKey(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 96,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "Fredoka",
+                  shadows: [
+                    // Black outline around white text.
+                    // In order, the shadows display on the:
+                    // bottomLeft, bottomRight, topRight, topLeft.
+                    Shadow(
+                      offset: Offset(-3, -3),
+                      color: Colors.black,
+                    ),
+                    Shadow(
+                      offset: Offset(3, -3),
+                      color: Colors.black,
+                    ),
+                    Shadow(
+                      offset: Offset(3, 3),
+                      color: Colors.black,
+                    ),
+                    Shadow(
+                      offset: Offset(-3, 3),
+                      color: Colors.black,
+                    ),
+                  ],
+                ),
               ),
             ),
 

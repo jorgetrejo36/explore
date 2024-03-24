@@ -80,7 +80,7 @@ class SGObstacleState extends State<SGObstacle> with TickerProviderStateMixin {
   // Gets assigned in build(); same as rocketYPos in shooting_game.dart.
   late double rocketYTop;
   // How fast should this obstacle drop?
-  double dropRate = 0.75;
+  double dropRate = 0.85;
 
   // Used for animation.
   late AnimationController _controller;

@@ -147,6 +147,7 @@ flutter:
     - assets/images/rocket.png
     - assets/images/sg_asteroid_earth.svg
     - assets/images/sg_asteroid_destroyed_earth.svg
+    - assets/images/sg_asteroid_neptune.svg
     - assets/images/ring.svg
     - assets/images/ring-faded.svg
     - assets/images/lollipop.svg

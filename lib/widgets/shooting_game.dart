@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../screens/game_result_screen.dart';
 import '../screens/planet_map_screen.dart';
-// ignore: unused_import
-import 'shooting_themes.dart';
 import 'package:explore/utils/problem_generator.dart';
 import 'package:explore/widgets/sg_info_bar.dart';
 import 'package:explore/widgets/sg_player_rocket.dart';
@@ -49,7 +47,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   double initialHeight = 90;
   // How much space should there be between
   // every set of numObstaclesPerProblem?
-  double obstaclePadding = 115;
+  double obstaclePadding = 80;
   // How long should the correct/incorrect icon display for, in seconds?
   int resultIconDelay = 3;
 
@@ -113,7 +111,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   // Stores the indices of the active obstacles.
   late List<int> activeObstacleIndices = [];
 
-  // VARIABLES - Theming (temporary until switching to shooting_themes.dart).
+  // VARIABLES - Theming
   late String skyImage;
   late String groundImage;
   late String obstacleImage;
@@ -140,9 +138,6 @@ class _ShootingGameState extends State<ShootingGameStateful> {
 
   // Applies the themed image paths based on the planet.
   void applyTheme() {
-    // Switch planet, use based on shooting_themes.dart. Remove unused import;
-    // In progress, will be finished early this week and use the other file.
-
     switch (widget.planet) {
       case GameTheme.earth:
         skyImage = "assets/images/shooting_earth_sky_art.png";
@@ -198,9 +193,9 @@ class _ShootingGameState extends State<ShootingGameStateful> {
       case GameTheme.neptune:
         skyImage = "assets/images/shooting_neptune_sky_art.png";
         groundImage = "assets/images/shooting_neptune_ground_art.png";
-        obstacleImage = "assets/images/blue-fish.svg";
+        obstacleImage = "assets/images/sg_asteroid_neptune.svg";
         rewardImage = "assets/images/pearl.svg";
-        destroyedImage = "assets/images/blue-fish.svg";
+        destroyedImage = "assets/images/bubbles.svg";
         gameBackgroundColor = const BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/images/shooting_neptune_sky_art.png"),
@@ -229,6 +224,8 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   void setUpGame() {
     // Adjust Music Player
     stopMusic();
+    // Possibly move game music to startGame, play ambience here until
+    // rocket takes off.
     playRocketMusic();
 
     // Assign the instance.
@@ -409,7 +406,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
   void answerWrong(int obstacleID) {
     // We answered a problem wrong.
 
-    //Sound Cue
+    // Sound Cue
     playWrongSound();
 
     // Break the obstacle upon shooting it. Fill it so we can't use it again.
@@ -485,6 +482,12 @@ class _ShootingGameState extends State<ShootingGameStateful> {
         // Game starting, move rocket UP.
         rocketYPos -= (MediaQuery.of(context).size.height * 0.185);
       }
+      else if (column == "up2") {
+        // Game ended, so we make the rocket fly up off the screen!
+        Timer(const Duration(milliseconds: 250), () {
+          rocketYPos = -300;
+        });
+      }
     });
   }
 
@@ -496,6 +499,9 @@ class _ShootingGameState extends State<ShootingGameStateful> {
 
     // Prevent clicking on anything until we're done.
     canSolve = false;
+
+    // Sound Cue
+    playWrongSound();
 
     // Hide the obstacle.
     updateObstacle(
@@ -547,17 +553,22 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     moveRocket("up1");
     rocketOn = true;
 
-    for (int i = 0; i < numObstacles; i++) {
-      updateObstacle(i, isDropping: true);
-    }
+    // Start the actual game in 3 seconds, giving us time to play the launch
+    // and fade animations.
+    Timer(const Duration(seconds: 3), () {
+      for (int i = 0; i < numObstacles; i++) {
+        updateObstacle(i, isDropping: true);
+      }
 
-    // Load the first problem (assign problem text and 3 answers to 3 obstacles).
-    // Note: This turns canSolve on and officially allows the game to begin.
-    nextProblem();
+      // Load the first problem (assign problem text and 3 answers to 3 obstacles).
+      // Note: This turns canSolve on and officially allows the game to begin.
+      nextProblem();
 
-    // Now that the game has started and the first problem is showing, start
-    // tracking how long a user spends in-game.
-    gameTimer.start();
+      // Now that the game has started and the first problem is showing, start
+      // tracking how long a user spends in-game.
+      gameTimer.start();
+    });
+
   }
 
   void loseLife() {
@@ -578,6 +589,12 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     canSolve = false;
     for (int i = 0; i < numObstacles; i++) {
       updateObstacle(i, isDropping: false);
+    }
+
+    if (livesLeft > 0)
+    {
+      // Make the rocket fly off the screen as we did answer all 5 questions.
+      moveRocket("up2");
     }
 
     // Stop tracking player time.
@@ -667,6 +684,8 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     if (problemsAnswered == numProblems) {
       // The game is over. Win the game ONLY if we scored at least a 70%.
       if (problemsCorrect / numProblems > 0.7) {
+        // We won, so make the rocket fly up!
+        moveRocket("up2");
         winGame();
         return;
       } else {
@@ -732,15 +751,17 @@ class _ShootingGameState extends State<ShootingGameStateful> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Background sky gradient for the game (all art will
-          // change soon to use shooting_themes.dart).
+          // Background sky gradient for the game. No gradient used in
+          // Saturn and Neptune.
           Container(
             decoration: gameBackgroundColor,
           ),
 
           // Clouds (sky_art) for the Earth shooting game.
-          Visibility(
-            visible: !gameStarted,
+          AnimatedOpacity(
+            opacity: gameStarted ? 0.0 : 1.0,
+            duration: const Duration(milliseconds: 3000),
+            curve: Curves.easeInOut,
             child: Positioned(
               top: 0,
               child: Image.asset(
@@ -753,16 +774,15 @@ class _ShootingGameState extends State<ShootingGameStateful> {
           ),
 
           // Ground (ground_art) for the shooting game.
-          Visibility(
-            visible: !gameStarted,
-            child: Positioned(
-              bottom: 0,
-              child: Image.asset(
-                groundImage,
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                fit: BoxFit.fill,
-              ),
+          AnimatedPositioned(
+            duration: const Duration(seconds: 10),
+            curve: Curves.easeInOut,
+            bottom: gameStarted ? -MediaQuery.of(context).size.height : 0,
+            child: Image.asset(
+              groundImage,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.fill,
             ),
           ),
 
@@ -778,10 +798,15 @@ class _ShootingGameState extends State<ShootingGameStateful> {
             bottom: 0,
             left: 0,
             right: 0,
-            child: SGInfoBar(
-              gameStarted: gameStarted,
-              livesLeft: livesLeft,
-              problemText: currentProblemText,
+            child: AnimatedOpacity(
+              opacity: gameStarted ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 3000),
+              curve: Curves.easeInOut,
+              child: SGInfoBar(
+                gameStarted: gameStarted,
+                livesLeft: livesLeft,
+                problemText: currentProblemText,
+              ),
             ),
           ),
 
@@ -805,12 +830,14 @@ class _ShootingGameState extends State<ShootingGameStateful> {
           ),
 
           // Indicator for getting the problem correct.
-          Visibility(
-            visible: showCorrectResult,
-            child: Positioned(
-              bottom: MediaQuery.of(context).size.height * 0.825,
-              left: 0,
-              right: 0,
+          Positioned(
+            bottom: MediaQuery.of(context).size.height * 0.825,
+            left: 0,
+            right: 0,
+            child: AnimatedOpacity(
+              opacity: showCorrectResult ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
               child: SvgPicture.asset(
                 "assets/images/right.svg",
                 width: 96,
@@ -820,12 +847,14 @@ class _ShootingGameState extends State<ShootingGameStateful> {
           ),
 
           // Indicator for getting the problem correct.
-          Visibility(
-            visible: showIncorrectResult,
-            child: Positioned(
-              bottom: MediaQuery.of(context).size.height * 0.825,
-              left: 0,
-              right: 0,
+          Positioned(
+            bottom: MediaQuery.of(context).size.height * 0.825,
+            left: 0,
+            right: 0,
+            child: AnimatedOpacity(
+              opacity: showIncorrectResult ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
               child: SvgPicture.asset(
                 "assets/images/wrong.svg",
                 width: 96,
