@@ -232,24 +232,27 @@ class PlanetPage extends StatelessWidget {
 
         // Evenly space the pins apart by height based on the number.
         // The randomLeftPadding moves them left and right randomly.
-        return Positioned(
-          top: ((levelsPerPlanet - 1) - pinIndex) *
-              (planetHeight / levelsPerPlanet + 0),
-          left: randomLeftPadding,
+        return Visibility(
+          visible: !isPlanetLocked,
+          child: Positioned(
+            top: ((levelsPerPlanet - 1) - pinIndex) *
+                (planetHeight / levelsPerPlanet + 0),
+            left: randomLeftPadding,
 
-          // Place a pin. Assign its name, the planet it belongs to,
-          // and load whether it's complete, locked, or the current level.
-          // Temporarily defaulting to all pins being complete.
-          child: PinWidget(
-            name: pinName,
-            level: pinIndex + 1,
-            pinColor: index,
-            status: isPlanetLocked
-                ? CompletionStatus.locked
-                : levelStatuses[pinIndex], // Load from DB
-            game: planetGames.removeLast(),
-            theme: gameTheme,
-            problemGenerator: problemGeneratorCurriculum[index - 1][pinIndex],
+            // Place a pin. Assign its name, the planet it belongs to,
+            // and load whether it's complete, locked, or the current level.
+            // Temporarily defaulting to all pins being complete.
+            child: PinWidget(
+              name: pinName,
+              level: pinIndex + 1,
+              pinColor: index,
+              status: isPlanetLocked
+                  ? CompletionStatus.locked
+                  : levelStatuses[pinIndex], // Load from DB
+              game: planetGames.removeLast(),
+              theme: gameTheme,
+              problemGenerator: problemGeneratorCurriculum[index - 1][pinIndex],
+            ),
           ),
         );
       },

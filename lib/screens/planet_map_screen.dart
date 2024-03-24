@@ -67,6 +67,18 @@ class _PlanetMapScreenState extends State<PlanetMapScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    double screenWidth = MediaQuery.of(context).size.width;
+    double planetAspectRatio = 360 / 620;
+    double planetHeight = screenWidth / planetAspectRatio;
+    // Calculate page height for accurate scroll position.
+    // This is the same calculation used in pms_planet_page for background art.
+    double pageHeight = planetHeight + (MediaQuery.of(context).size.height * 0.15);
+    if (widget.selectedPlanet == 3)
+      {
+        pageHeight -= 24;
+      }
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       // Use the custom AppBar for the Planet Map Screen.
@@ -83,12 +95,13 @@ class _PlanetMapScreenState extends State<PlanetMapScreen> {
             controller: ScrollController(
               // Calculate which page height to scroll to.
               initialScrollOffset:
-                  (widget.selectedPlanet) * MediaQuery.of(context).size.height,
+                  (widget.selectedPlanet) * pageHeight,
             ),
             child: Column(
               // Generate the planet pages in reverse order so
               // they grow in indices from bottom to top.
-              children: List.generate(numPlanets, (index) {
+              children:
+                List.generate(numPlanets, (index) {
                 return PlanetPage(
                     index: index + 1,
                     isPlanetLocked: (debugDisableLoading

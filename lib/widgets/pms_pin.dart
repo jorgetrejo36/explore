@@ -142,7 +142,6 @@ class PinWidget extends StatelessWidget {
         pinPath = planet4;
         break;
       // If adding more planets, add more cases here for pin colors.
-      // TODO add a pin color for space-themed (non-planet) pins?
       default:
         pinPath = planet1;
         break;
@@ -265,8 +264,8 @@ class PinWidget extends StatelessWidget {
 
                 // Display the rocket close to the pin (its own widget).
                 const Positioned(
-                  left: 16,
-                  bottom: -28,
+                  left: 20,
+                  bottom: -12,
                   child: PMSRocketWidget(),
                 ),
               ],
