@@ -264,7 +264,7 @@ class _MiningGameState extends State<MiningGame>
                 if (currentProblem >= 5)
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.15,
+                    height: MediaQuery.of(context).size.height * 0.14,
                     child: const Text(
                       "",
                       textAlign: TextAlign.center,

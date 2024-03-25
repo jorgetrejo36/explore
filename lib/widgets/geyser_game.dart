@@ -27,7 +27,8 @@ class GeyserGameStateful extends StatefulWidget {
   State<GeyserGameStateful> createState() => _GeyserGameState();
 }
 
-class _GeyserGameState extends State<GeyserGameStateful> {
+class _GeyserGameState extends State<GeyserGameStateful>
+    with SingleTickerProviderStateMixin {
   // Variables
   int counter = 0;
   int lives = 3;
@@ -35,6 +36,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
   bool answeredQuestion = false;
   int questions = 5;
   int questionsAnswered = 0;
+  bool correct = false;
   late String playerAvatar = "";
   late RocketAvatar rocketAvatar;
 
@@ -46,6 +48,16 @@ class _GeyserGameState extends State<GeyserGameStateful> {
   // Timer
   final timer = Stopwatch();
   late int finalTime = (timer.elapsedMilliseconds / 1000).round();
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 1000),
+    vsync: this,
+  );
+
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeIn,
+  );
 
   @override
   void initState() {
@@ -115,20 +127,21 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                           width: 50,
                         ),
                         onPressed: () => {
-                              // pop the dialog window
-                              Navigator.pop(context),
-                              // replace the game page with the game again to retry it
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => GeyserGameStateful(
-                                    level: widget.level,
-                                    planet: widget.planet,
-                                    geyserProblem: widget.geyserProblem,
-                                  ),
-                                ),
+                          // pop the dialog window
+                          Navigator.pop(context),
+                          // replace the game page with the game again to retry it
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => GeyserGameStateful(
+                                level: widget.level,
+                                planet: widget.planet,
+                                geyserProblem: widget.geyserProblem,
                               ),
-                            })
+                            ),
+                          ),
+                        },
+                      )
                     : ElevatedButton(
                         // Game result screen
                         onPressed: () => {
@@ -157,7 +170,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                           size: 60,
                         ),
                       ),
-              )
+              ),
             ],
           ),
         );
@@ -185,6 +198,27 @@ class _GeyserGameState extends State<GeyserGameStateful> {
     } catch (e) {
       print('Error loading data: $e');
     }
+  }
+
+  void repeatOnce() async {
+    await _controller.forward();
+    await _controller.reverse();
+  }
+
+  displayCorrect() {
+    setState(() {
+      correct = true;
+      playCorrectSound();
+    });
+    repeatOnce();
+  }
+
+  displayIncorrect() {
+    setState(() {
+      playWrongSound();
+      correct = false;
+    });
+    repeatOnce();
   }
 
   @override
@@ -248,22 +282,47 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                                   answerQuestion(answer);
 
                                   if (answer == correctAnswer) {
-                                    playCorrectSound();
+                                    displayCorrect();
                                   } else {
-                                    playWrongSound();
+                                    displayIncorrect();
                                   }
                                 },
                               )
                             : null
                         : Column(
                             children: [
-                              SvgPicture.asset(
-                                correctAnswer == answer
-                                    ? 'assets/images/right.svg'
-                                    : 'assets/images/wrong.svg',
-                                height: MediaQuery.of(context).size.height / 14,
-                                width: MediaQuery.of(context).size.height / 14,
-                              ),
+                              if (correct == true)
+                                FadeTransition(
+                                  opacity: _animation,
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.085,
+                                    margin: EdgeInsets.only(
+                                      top: MediaQuery.of(context).size.height *
+                                          0.005,
+                                    ),
+                                    child: SvgPicture.asset(
+                                      'assets/images/right.svg',
+                                    ),
+                                  ),
+                                ),
+                              if (correct == false)
+                                FadeTransition(
+                                  opacity: _animation,
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.085,
+                                    margin: EdgeInsets.only(
+                                      top: MediaQuery.of(context).size.height *
+                                          0.005,
+                                    ),
+                                    child: SvgPicture.asset(
+                                      'assets/images/wrong.svg',
+                                    ),
+                                  ),
+                                ),
                               Padding(
                                 padding: EdgeInsets.all(
                                     MediaQuery.of(context).size.height / 30),
@@ -277,7 +336,7 @@ class _GeyserGameState extends State<GeyserGameStateful> {
                                   onPressed: () =>
                                       {nextQuestion(!answeredQuestion)},
                                 ),
-                              )
+                              ),
                             ],
                           ),
                   ),
