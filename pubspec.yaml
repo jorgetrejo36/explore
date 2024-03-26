@@ -170,7 +170,8 @@ flutter:
     - assets/images/ship.svg
     - assets/images/rotate-smartphone.png
     - assets/images/transparency.png
-
+    - assets/images/racingRocket.svg
+    
     # Sounds
     - assets/sounds/correct.mp3
     - assets/sounds/wrong.mp3

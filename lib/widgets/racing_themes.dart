@@ -40,7 +40,7 @@ class RacingTheme {
         break;
 
       case GameTheme.saturn:
-        playerVehicle = "rocket";
+        playerVehicle = "racingRocket";
         enemyVehicle = "ufo";
         background = "SaturnRacing";
         racingStart = "SaturnRacingStart";
