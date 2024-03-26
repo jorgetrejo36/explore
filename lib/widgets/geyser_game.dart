@@ -28,7 +28,7 @@ class GeyserGameStateful extends StatefulWidget {
 }
 
 class _GeyserGameState extends State<GeyserGameStateful>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   // Variables
   int counter = 0;
   int lives = 3;
@@ -50,12 +50,27 @@ class _GeyserGameState extends State<GeyserGameStateful>
   late int finalTime = (timer.elapsedMilliseconds / 1000).round();
 
   late final AnimationController _controller = AnimationController(
-    duration: const Duration(milliseconds: 1000),
+    duration: const Duration(milliseconds: 2000),
     vsync: this,
-  );
+  )..addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        nextQuestion(!answeredQuestion);
+      }
+    });
 
   late final Animation<double> _animation = CurvedAnimation(
     parent: _controller,
+    curve: Curves.easeIn,
+    reverseCurve: Curves.easeOut,
+  );
+
+  // New controller for the fade-in animation of the problem string
+  late final AnimationController _fadeController = AnimationController(
+    duration: const Duration(seconds: 1), // Duration of the fade-in effect
+    vsync: this,
+  );
+  late final Animation<double> _fadeAnimation = CurvedAnimation(
+    parent: _fadeController,
     curve: Curves.easeIn,
   );
 
@@ -63,9 +78,17 @@ class _GeyserGameState extends State<GeyserGameStateful>
   void initState() {
     super.initState();
     stopMusic();
+    _fadeController.forward();
     playGeyserMusic();
     _loadData();
     timer.start();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _fadeController.dispose(); // Start the smoke animation
+    super.dispose();
   }
 
   // For item counter
@@ -182,10 +205,12 @@ class _GeyserGameState extends State<GeyserGameStateful>
   // Generates new question and choices, resets player position to the middle position
   void nextQuestion(bool newAnsweredQuestion) {
     setState(() {
+      _fadeController.reset();
       problem = widget.geyserProblem.generateProblem();
       choices = problem.answerChoices.getAnswers();
       correctAnswer = problem.answerChoices.getAnswers()[0];
       choices.shuffle();
+      repeatAgain();
       answer = choices[1];
       answeredQuestion = newAnsweredQuestion;
     });
@@ -203,6 +228,10 @@ class _GeyserGameState extends State<GeyserGameStateful>
   void repeatOnce() async {
     await _controller.forward();
     await _controller.reverse();
+  }
+
+  void repeatAgain() async {
+    await _fadeController.forward();
   }
 
   displayCorrect() {
@@ -256,12 +285,15 @@ class _GeyserGameState extends State<GeyserGameStateful>
                   flex: 1,
                   child: FittedBox(
                     alignment: Alignment.center,
-                    child: Text(
-                      problem.problem.getProblemString(),
-                      style:
-                          TextStyle(fontFamily: 'Fredoka', color: Colors.white),
-                      textAlign: TextAlign.center,
-                      softWrap: true, // Allows text wrapping
+                    child: FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: Text(
+                        problem.problem.getProblemString(),
+                        style: TextStyle(
+                            fontFamily: 'Fredoka', color: Colors.white),
+                        textAlign: TextAlign.center,
+                        softWrap: true, // Allows text wrapping
+                      ),
                     ),
                   ),
                 ),
@@ -323,20 +355,20 @@ class _GeyserGameState extends State<GeyserGameStateful>
                                     ),
                                   ),
                                 ),
-                              Padding(
-                                padding: EdgeInsets.all(
-                                    MediaQuery.of(context).size.height / 30),
-                                child: IconButton(
-                                  style: IconButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    iconSize:
-                                        MediaQuery.of(context).size.height / 17,
-                                  ),
-                                  icon: const Icon(Icons.arrow_right_rounded),
-                                  onPressed: () =>
-                                      {nextQuestion(!answeredQuestion)},
-                                ),
-                              ),
+                              // Padding(
+                              //   padding: EdgeInsets.all(
+                              //       MediaQuery.of(context).size.height / 30),
+                              //   child: IconButton(
+                              //     style: IconButton.styleFrom(
+                              //       backgroundColor: Colors.white,
+                              //       iconSize:
+                              //           MediaQuery.of(context).size.height / 17,
+                              //     ),
+                              //     icon: const Icon(Icons.arrow_right_rounded),
+                              //     onPressed: () =>
+                              //         {nextQuestion(!answeredQuestion)},
+                              //   ),
+                              // ),
                             ],
                           ),
                   ),
