@@ -44,6 +44,7 @@ class LeaderboardScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+<<<<<<< Updated upstream
                       Container(
                         margin: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.075,
@@ -53,6 +54,31 @@ class LeaderboardScreen extends StatelessWidget {
                           name: "Devin",
                           backgroundColor: Color(0xffa149f0),
                           imgName: "TestMonster",
+=======
+                      if (users.length > 1)
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.075,
+                          ),
+                          child: TopPlayer(
+                            outlineColor: Color.fromARGB(255, 201, 201, 201),
+                            name: users[0].name,
+                            backgroundColor: Color(0xffa149f0),
+                            imgName: users[0].imgName,
+                          ),
+                        ),
+                      if (users.isNotEmpty)
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          child: TopPlayer(
+                            outlineColor: Color(0xFFECBC14),
+                            name: users[1].name,
+                            backgroundColor: Color(0xffa149f0),
+                            imgName: users[1].imgName,
+                          ),
+>>>>>>> Stashed changes
                         ),
                       ),
                       Container(
