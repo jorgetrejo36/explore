@@ -70,28 +70,28 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (users.isNotEmpty)
+                      if (users.length > 1)
                         Container(
                           margin: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height * 0.075,
                           ),
                           child: TopPlayer(
                             outlineColor: Color.fromARGB(255, 201, 201, 201),
-                            name: users[0].name,
+                            name: users[1].name,
                             backgroundColor: Color(0xffa149f0),
-                            imgName: users[0].imgName,
+                            imgName: users[1].imgName,
                           ),
                         ),
-                      if (users.length > 1)
+                      if (users.isNotEmpty)
                         Container(
                           margin: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height * 0.02,
                           ),
                           child: TopPlayer(
                             outlineColor: Color(0xFFECBC14),
-                            name: users[1].name,
+                            name: users[0].name,
                             backgroundColor: Color(0xffa149f0),
-                            imgName: users[1].imgName,
+                            imgName: users[0].imgName,
                           ),
                         ),
                       if (users.length > 2)
