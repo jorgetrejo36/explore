@@ -9,6 +9,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stroke_text/stroke_text.dart';
 import 'package:explore/utils/problem_generator.dart';
 import 'package:explore/screens/game_result_screen.dart';
+import 'package:explore/widgets/item_counter.dart';
+import 'package:explore/widgets/life_app_bar.dart';
 
 /// Creates instance of mining game given a specified theme and problem generator
 class MiningGame extends StatefulWidget {
@@ -152,7 +154,9 @@ class _MiningGameState extends State<MiningGame>
   _updateQuestion(int level) {
     if (level == 0) {
       displayIncorrect();
-      currentProblem = currentProblem + 1;
+      setState(() {
+        currentProblem = currentProblem + 1;
+      });
     } else if (level == 1) {
       displayCorrect();
       setState(() {
@@ -220,18 +224,10 @@ class _MiningGameState extends State<MiningGame>
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Color(0xfff6f6f6),
-            size: 35,
-          ),
-          // Navigate back when the back button is pressed
-          onPressed: () => Navigator.pop(context),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+      appBar: LifeAppBar(
+        item: "assets/images/${theme.miningCurrency}.svg",
+        title: "App Bar",
+        counter: score,
       ),
       body: DecoratedBox(
         decoration: BoxDecoration(
@@ -251,7 +247,7 @@ class _MiningGameState extends State<MiningGame>
                 if (currentProblem < 5)
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.14,
+                    height: MediaQuery.of(context).size.height * 0.125,
                     child: Text(
                       problemList[currentProblem].problem.getProblemString(),
                       textAlign: TextAlign.center,
@@ -264,7 +260,7 @@ class _MiningGameState extends State<MiningGame>
                 if (currentProblem >= 5)
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.14,
+                    height: MediaQuery.of(context).size.height * 0.125,
                     child: const Text(
                       "",
                       textAlign: TextAlign.center,
@@ -281,7 +277,7 @@ class _MiningGameState extends State<MiningGame>
                         opacity: _animation,
                         child: Container(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.085,
+                            height: MediaQuery.of(context).size.height * 0.075,
                             margin: EdgeInsets.only(
                                 top:
                                     MediaQuery.of(context).size.height * 0.005),
@@ -292,7 +288,7 @@ class _MiningGameState extends State<MiningGame>
                         opacity: _animation,
                         child: Container(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.085,
+                            height: MediaQuery.of(context).size.height * 0.075,
                             margin: EdgeInsets.only(
                                 top:
                                     MediaQuery.of(context).size.height * 0.005),
@@ -365,6 +361,9 @@ class _MiningRowState extends State<MiningRow> {
         widget.update(1);
       } else {
         widget.update(0);
+        row.showNumber[0] = false;
+        row.showNumber[1] = false;
+        row.showNumber[2] = false;
       }
     });
   }
