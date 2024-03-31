@@ -1,8 +1,3 @@
-import 'package:explore/schemas.dart';
-import 'package:explore/screens/avatar_home_screen.dart';
-import 'package:explore/screens/choose_rocket_screen.dart';
-import 'package:explore/screens/leaderboard_screen.dart';
-import 'package:explore/screens/planet_home_screen.dart';
 import 'package:explore/utils/realm_utils.dart';
 import 'package:explore/utils/user_controller.dart';
 import 'package:flutter/material.dart';
@@ -110,50 +105,56 @@ class _DeleteAvatarScreenState extends State<DeleteAvatarScreen> {
                                     backgroundColor: Color(0xFF647F86),
                                     actions: <Widget>[
                                       Center(
-                                        child: Stack(
-                                          alignment: Alignment
-                                              .center, // Ensure stack contents are centered
-                                          children: [
-                                            SvgPicture.asset(
-                                              'assets/images/garbage-bin.svg',
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height /
-                                                  4,
-                                            ),
-                                            Positioned(
-                                              bottom: 150,
-                                              // Adjust this value to position the avatar.
-                                              // Adjust this value as needed to create the desired overlap
-                                              child: ClipRect(
-                                                child: Align(
-                                                  alignment: Alignment
-                                                      .topCenter, // Aligns the top part of the avatar to be visible
-                                                  heightFactor:
-                                                      0.8, // Adjusts this to control how much of the avatar is visible; 0.5 shows the top half
-                                                  child: SvgPicture.asset(
-                                                    users[index].avatar,
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height /
-                                                            9,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top: 10),
+                                          child: Stack(
+                                            alignment: Alignment
+                                                .center, // Ensure stack contents are centered
+                                            children: [
+                                              SvgPicture.asset(
+                                                'assets/images/garbage-bin.svg',
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height /
+                                                    4,
+                                              ),
+                                              Positioned(
+                                                bottom:
+                                                    MediaQuery.sizeOf(context)
+                                                            .height /
+                                                        6,
+                                                // Adjust this value to position the avatar.
+                                                // Adjust this value as needed to create the desired overlap
+                                                child: ClipRect(
+                                                  child: Align(
+                                                    alignment: Alignment
+                                                        .topCenter, // Aligns the top part of the avatar to be visible
+                                                    heightFactor:
+                                                        0.8, // Adjusts this to control how much of the avatar is visible; 0.5 shows the top half
+                                                    child: SvgPicture.asset(
+                                                      users[index].avatar,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height /
+                                                              9,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            Positioned(
-                                              bottom: 30,
-                                              child: Icon(
-                                                Icons.question_mark,
-                                                size: MediaQuery.of(context)
-                                                        .size
-                                                        .height /
-                                                    12,
-                                                color: Colors.purple,
+                                              Positioned(
+                                                bottom: 30,
+                                                child: Icon(
+                                                  Icons.question_mark,
+                                                  size: MediaQuery.of(context)
+                                                          .size
+                                                          .height /
+                                                      12,
+                                                  color: Colors.purple,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                       Center(
@@ -207,7 +208,7 @@ class _DeleteAvatarScreenState extends State<DeleteAvatarScreen> {
                                             ),
                                           )
                                         ],
-                                      )
+                                      ),
                                     ],
                                   ),
                                 );

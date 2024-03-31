@@ -43,38 +43,51 @@ class _StartupScreenState extends State<StartupScreen> {
                     ),
                     child: Image.asset(
                       "assets/images/AppIcon.png",
-                      height: 180,
+                      height: MediaQuery.of(context).size.height * 0.25,
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 225),
-                    child: const Text(
-                      "Explore",
-                      style: TextStyle(
-                        color: Color(0xfff6f6f6),
-                        fontSize: 70,
-                        fontFamily: 'Fredoka',
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xff9173f4),
-                      minimumSize: Size(140, 40),
-                    ),
-                    onPressed: () => {
-                      playClick(),
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AvatarHomeScreen(),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.70,
+                      child: FittedBox(
+                        child: Text(
+                          "Explore",
+                          style: TextStyle(
+                            color: Color(0xfff6f6f6),
+                            fontFamily: 'Fredoka',
+                          ),
                         ),
                       ),
-                    },
-                    icon: const Icon(
-                      Icons.play_arrow,
-                      color: Color(0xfff6f6f6),
-                      size: 45,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        bottom: MediaQuery.sizeOf(context).height * 0.16),
+                    alignment: Alignment.bottomCenter,
+                    child: IconButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xff9173f4),
+                        minimumSize: Size(140, 40),
+                      ),
+                      onPressed: () => {
+                        playClick(),
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AvatarHomeScreen(),
+                          ),
+                        ),
+                      },
+                      icon: const Icon(
+                        Icons.play_arrow,
+                        color: Color(0xfff6f6f6),
+                        size: 45,
+                      ),
                     ),
                   ),
                 ],

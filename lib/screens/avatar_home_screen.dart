@@ -226,7 +226,7 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                       child: Image.asset(
                         trophyImage,
                         width: 110,
-                        height: 130,
+                        height: MediaQuery.of(context).size.height / 7,
                       ),
                     ),
                   ),
