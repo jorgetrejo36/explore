@@ -132,6 +132,13 @@ class RealmUtils {
             planetToNavigateTo = GameTheme.values[nextPlanet.identifyingEnum];
           }
         }
+        // this means this is the very last level
+      } else {
+        // on the very last level we need to make sure to make the planet status
+        // complete still
+        for (int i = 0; i < user.planets.length; i++) {
+          user.planets[i].status = CompletionStatus.complete.index;
+        }
       }
       currLevel.status = CompletionStatus.complete.index;
 
