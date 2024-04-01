@@ -603,6 +603,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     // Show the retry window.
     showDialog<String>(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) => AlertDialog(
         title: Center(
           child: Text(

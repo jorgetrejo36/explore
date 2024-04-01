@@ -163,6 +163,7 @@ class _RacingGameState extends State<RacingGame>
       timer.stop;
       showDialog<String>(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext context) => AlertDialog(
           title: Center(
             child: Text(

@@ -7,7 +7,8 @@ class RetryWidget extends StatelessWidget {
       {super.key,
       required this.gameWidget,
       required this.correctAnswers,
-      required this.questions});
+      required this.questions,
+      });
 
   final Widget gameWidget;
   final int correctAnswers;
@@ -17,6 +18,7 @@ class RetryWidget extends StatelessWidget {
     return TextButton(
       onPressed: () => showDialog<String>(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext context) => AlertDialog(
           title: Center(
               child: Text(

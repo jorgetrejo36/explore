@@ -127,6 +127,7 @@ class _GeyserGameState extends State<GeyserGameStateful>
         timer.stop();
         showDialog<String>(
           context: context,
+          barrierDismissible: false,
           builder: (BuildContext context) => AlertDialog(
             title: Center(
               child: Text(
