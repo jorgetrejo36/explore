@@ -61,6 +61,7 @@ class PlanetPage extends StatelessWidget {
   final int index;
   final bool isPlanetLocked;
   final List<CompletionStatus> levelStatuses;
+  final int userID;
 
   // Constructor (requires planet index parameter).
   const PlanetPage({
@@ -68,6 +69,7 @@ class PlanetPage extends StatelessWidget {
     required this.index,
     required this.isPlanetLocked,
     required this.levelStatuses,
+    required this.userID,
   }) : super(key: key);
 
   // Function used to generate a list of games for a planet in a random
@@ -104,7 +106,7 @@ class PlanetPage extends StatelessWidget {
 
     // Shuffle this again so that the first and last game change
     // between planets. Not shuffling twice caused this.
-    games.shuffle(Random(gameListSeed));
+    games.shuffle(Random(gameListSeed + userID));
 
     // To view the games for each level, enable debugView in
     // the planet_map_screen.dart page.
@@ -183,7 +185,9 @@ class PlanetPage extends StatelessWidget {
     // this planet. We generate the list and then randomize the order;
     // this currently uses the same seed as above, which is unique per
     // planet. Works with any number of levels/game types.
-    List<GameType> planetGames = getRandomGamesList(seed);
+    print(userID);
+    // Note, userID allows us to cycle random games per user.
+    List<GameType> planetGames = getRandomGamesList(seed + userID);
 
     // Generate a list of pins to place on this planet, naming
     // them properly and placing them on the correct locations.

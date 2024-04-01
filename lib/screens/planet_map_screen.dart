@@ -117,7 +117,10 @@ class _PlanetMapScreenState extends State<PlanetMapScreen> {
                             return CompletionStatus.complete;
                           })
                         // Otherwise, load all pins from Realm.
-                        : lockStatuses[index].levelStatuses);
+                        : lockStatuses[index].levelStatuses,
+                    // Use a hash to get a unique int representing this user.
+                    userID: user.id.hashCode,
+                );
               }).reversed.toList(),
             ),
           ),

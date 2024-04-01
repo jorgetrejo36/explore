@@ -1,5 +1,4 @@
 import 'package:explore/schemas.dart';
-import 'package:explore/screens/avatar_home_screen.dart';
 import 'package:explore/screens/leaderboard_screen.dart';
 import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/utils/realm_utils.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:realm/realm.dart';
 import 'package:explore/widgets/sound_library.dart';
+import 'package:explore/widgets/pms_rocket.dart';
 
 class PlanetHomeScreen extends StatefulWidget {
   const PlanetHomeScreen({Key? key}) : super(key: key);
@@ -364,6 +364,7 @@ class PlanetWidget extends StatelessWidget {
     );
 
     final Stack child = Stack(
+      clipBehavior: Clip.none,
       children: [
         completionStatus == CompletionStatus.locked
             ? Opacity(opacity: 0.5, child: svg)
@@ -386,19 +387,11 @@ class PlanetWidget extends StatelessWidget {
             // show the rocket if this is the current level
             : completionStatus == CompletionStatus.current
                 ? Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      width: 20,
-                      height: 20,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.rocket,
-                        color: Colors.white,
-                        size: 40,
-                      ),
+                    bottom: -16,
+                    right: -16,
+                    child: Transform.rotate(
+                        angle: 20 * 3.14 / 180,
+                        child: const SizedBox(height: 60, child: PMSRocketWidget()),
                     ),
                   )
                 // show a lock symbol if the level is locked
