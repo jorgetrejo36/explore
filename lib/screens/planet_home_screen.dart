@@ -51,6 +51,14 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
     }
   }
 
+  // this function is used to pass down the widget tree and reload the screen
+  // when coming back from the planet map screen
+  void reloadScreen() {
+    setState(() {
+      _loadData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,6 +109,7 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
                 child: IconGridWidget(
                   planets: currentUser.planets,
                   numPlanets: 4,
+                  loadData: reloadScreen,
                 ),
               ),
               SizedBox(
@@ -238,10 +247,13 @@ class PlanetInfo {
 class IconGridWidget extends StatelessWidget {
   final int numPlanets;
   final List<Planet> planets;
+  final VoidCallback loadData;
+
   const IconGridWidget({
     super.key,
     required this.numPlanets,
     required this.planets,
+    required this.loadData,
   });
 
   // calculate the indices that need to have a planet in them
@@ -333,6 +345,7 @@ class IconGridWidget extends StatelessWidget {
                       planetPaths[planetPathsIndex].completionStatus,
                   planetPath: planetPaths[planetPathsIndex].imagePath,
                   planetSelection: planetPaths[planetPathsIndex++].currPlanet,
+                  loadData: loadData,
                 )
               : null, // Display null for cells without a planet
         );
@@ -343,22 +356,29 @@ class IconGridWidget extends StatelessWidget {
 
 enum CompletionStatus { complete, current, locked }
 
-class PlanetWidget extends StatelessWidget {
+class PlanetWidget extends StatefulWidget {
   final CompletionStatus completionStatus;
   final String planetPath;
   final GameTheme planetSelection;
+  final VoidCallback loadData;
 
   const PlanetWidget({
     super.key,
     required this.completionStatus,
     required this.planetPath,
     required this.planetSelection,
+    required this.loadData,
   });
 
   @override
+  State<PlanetWidget> createState() => _PlanetWidgetState();
+}
+
+class _PlanetWidgetState extends State<PlanetWidget> {
+  @override
   Widget build(BuildContext context) {
     final SvgPicture svg = SvgPicture.asset(
-      planetPath,
+      widget.planetPath,
       semanticsLabel: "A planet",
       width: 80,
     );
@@ -366,11 +386,11 @@ class PlanetWidget extends StatelessWidget {
     final Stack child = Stack(
       clipBehavior: Clip.none,
       children: [
-        completionStatus == CompletionStatus.locked
+        widget.completionStatus == CompletionStatus.locked
             ? Opacity(opacity: 0.5, child: svg)
             : svg,
         // show green check mark if the planet is complete
-        completionStatus == CompletionStatus.complete
+        widget.completionStatus == CompletionStatus.complete
             ? Positioned(
                 bottom: 0,
                 right: 0,
@@ -385,13 +405,14 @@ class PlanetWidget extends StatelessWidget {
                 ),
               )
             // show the rocket if this is the current level
-            : completionStatus == CompletionStatus.current
+            : widget.completionStatus == CompletionStatus.current
                 ? Positioned(
                     bottom: -16,
                     right: -16,
                     child: Transform.rotate(
-                        angle: 20 * 3.14 / 180,
-                        child: const SizedBox(height: 60, child: PMSRocketWidget()),
+                      angle: 20 * 3.14 / 180,
+                      child:
+                          const SizedBox(height: 60, child: PMSRocketWidget()),
                     ),
                   )
                 // show a lock symbol if the level is locked
@@ -414,7 +435,7 @@ class PlanetWidget extends StatelessWidget {
       ],
     );
 
-    return completionStatus == CompletionStatus.locked
+    return widget.completionStatus == CompletionStatus.locked
         ? child
         : GestureDetector(
             onTap: () => {
@@ -424,9 +445,16 @@ class PlanetWidget extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   // selectedPlanet will use planetselection to scroll to correct place
-                  builder: (context) =>
-                      PlanetMapScreen(selectedPlanet: planetSelection.index),
+                  builder: (context) => PlanetMapScreen(
+                    selectedPlanet: widget.planetSelection.index,
+                  ),
                 ),
+              ).then(
+                (_) => setState(() {
+                  // this will reload the data to properly show the current
+                  // score, planets unlocked, etc.
+                  widget.loadData();
+                }),
               ),
             },
             child: child,
