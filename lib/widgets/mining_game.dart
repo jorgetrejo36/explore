@@ -66,6 +66,7 @@ class _MiningGameState extends State<MiningGame>
     timer.stop();
     showDialog<String>(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) => AlertDialog(
         title: Center(
           child: Text(
