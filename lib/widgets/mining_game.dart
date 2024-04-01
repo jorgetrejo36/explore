@@ -266,9 +266,10 @@ class _MiningGameState extends State<MiningGame>
                       "",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: AppColors.white,
-                          fontFamily: 'Fredoka',
-                          fontSize: 102),
+                        color: AppColors.white,
+                        fontFamily: 'Fredoka',
+                        fontSize: 102,
+                      ),
                     ),
                   ),
                 Stack(
