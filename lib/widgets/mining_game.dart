@@ -302,7 +302,7 @@ class _MiningGameState extends State<MiningGame>
                     Container(
                       margin: EdgeInsets.only(
                         top: Platform.isIOS
-                            ? MediaQuery.of(context).size.height * 0.04
+                            ? MediaQuery.of(context).size.height * 0.025
                             : MediaQuery.of(context).size.height * 0.07,
                       ),
                       width: MediaQuery.of(context).size.width,
@@ -310,7 +310,7 @@ class _MiningGameState extends State<MiningGame>
                       child: Column(
                         children: <Widget>[
                           SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.725,
+                            height: MediaQuery.of(context).size.height * 0.8,
                             child: ListView.builder(
                                 physics: new NeverScrollableScrollPhysics(),
                                 itemCount: miningRowList.length,
