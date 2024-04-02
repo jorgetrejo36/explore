@@ -224,12 +224,6 @@ class _MiningGameState extends State<MiningGame>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: LifeAppBar(
-        item: "assets/images/${theme.miningCurrency}.svg",
-        title: "App Bar",
-        counter: score,
-      ),
       body: DecoratedBox(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -274,7 +268,7 @@ class _MiningGameState extends State<MiningGame>
                     if (currentProblem < 5)
                       Container(
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.125,
+                        height: MediaQuery.of(context).size.height * 0.13,
                         child: Text(
                           problemList[currentProblem]
                               .problem
@@ -289,7 +283,7 @@ class _MiningGameState extends State<MiningGame>
                     if (currentProblem >= 5)
                       Container(
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.125,
+                        height: MediaQuery.of(context).size.height * 0.13,
                         child: const Text(
                           "",
                           textAlign: TextAlign.center,
@@ -302,8 +296,8 @@ class _MiningGameState extends State<MiningGame>
                     Container(
                       margin: EdgeInsets.only(
                         top: Platform.isIOS
-                            ? MediaQuery.of(context).size.height * 0.025
-                            : MediaQuery.of(context).size.height * 0.07,
+                            ? MediaQuery.of(context).size.height * 0.092
+                            : MediaQuery.of(context).size.height * 0.157,
                       ),
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height * 0.725,
