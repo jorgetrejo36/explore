@@ -76,8 +76,7 @@ class _GeyserChoiceState extends State<GeyserChoiceStateful>
       alignment: Alignment.center,
       child: SvgPicture.asset(
         widget.playerAvatar,
-        width: double.infinity,
-        height: MediaQuery.of(context).size.height / 6,
+        width: MediaQuery.of(context).size.width * .30,
         fit: BoxFit.fill,
       ),
     );
