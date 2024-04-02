@@ -69,74 +69,78 @@ class _MiningGameState extends State<MiningGame>
     timer.stop();
     showDialog<String>(
       context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Center(
-          child: Text(
-            '${score} / 5',
-            style: const TextStyle(
-              fontFamily: 'Fredoka',
+      barrierDismissible: false,
+      builder: (BuildContext context) => PopScope(
+        canPop: false,
+        child: AlertDialog(
+          title: Center(
+            child: Text(
+              '${score} / 5',
+              style: const TextStyle(
+                fontFamily: 'Fredoka',
+              ),
             ),
           ),
+          actions: <Widget>[
+            Center(
+              child: score / 5 < 0.8
+                  // Retry game
+                  ? IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/images/reload.svg',
+                        colorFilter:
+                            ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                        semanticsLabel: "arrow pointing in circle",
+                        height: 50,
+                        width: 50,
+                      ),
+                      onPressed: () => {
+                        // pop the dialog window
+                        Navigator.pop(context),
+                        // replace the game page with the game again to retry it
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MiningGame(
+                              planet: widget.planet,
+                              level: widget.level,
+                              miningProblem: widget.miningProblem,
+                            ),
+                          ),
+                        ),
+                      },
+                    )
+                  : ElevatedButton(
+                      // Game result screen
+                      onPressed: () => {
+                        // this pops the dialog
+                        Navigator.pop(context),
+                        // this replaces the game screen
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GameResultScreen(
+                              game: Game.mining,
+                              level: widget.level,
+                              planet: widget.planet,
+                              currency: score,
+                              time: finalTime,
+                            ),
+                          ),
+                        ),
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                      ),
+                      child: const Icon(
+                        Icons.arrow_right_rounded,
+                        color: Colors.black,
+                        size: 60,
+                      ),
+                    ),
+            )
+          ],
         ),
-        actions: <Widget>[
-          Center(
-            child: score / 5 < 0.8
-                // Retry game
-                ? IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/images/reload.svg',
-                      colorFilter:
-                          ColorFilter.mode(Colors.black, BlendMode.srcIn),
-                      semanticsLabel: "arrow pointing in circle",
-                      height: 50,
-                      width: 50,
-                    ),
-                    onPressed: () => {
-                      // pop the dialog window
-                      Navigator.pop(context),
-                      // replace the game page with the game again to retry it
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MiningGame(
-                            planet: widget.planet,
-                            level: widget.level,
-                            miningProblem: widget.miningProblem,
-                          ),
-                        ),
-                      ),
-                    },
-                  )
-                : ElevatedButton(
-                    // Game result screen
-                    onPressed: () => {
-                      // this pops the dialog
-                      Navigator.pop(context),
-                      // this replaces the game screen
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => GameResultScreen(
-                            game: Game.mining,
-                            level: widget.level,
-                            planet: widget.planet,
-                            currency: score,
-                            time: finalTime,
-                          ),
-                        ),
-                      ),
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                    ),
-                    child: const Icon(
-                      Icons.arrow_right_rounded,
-                      color: Colors.black,
-                      size: 60,
-                    ),
-                  ),
-          )
-        ],
       ),
     );
   }

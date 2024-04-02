@@ -128,74 +128,77 @@ class _GeyserGameState extends State<GeyserGameStateful>
         showDialog<String>(
           context: context,
           barrierDismissible: false,
-          builder: (BuildContext context) => AlertDialog(
-            title: Center(
-              child: Text(
-                '$counter / $questions',
-                style: const TextStyle(
-                  fontFamily: 'Fredoka',
+          builder: (BuildContext context) => PopScope(
+            canPop: false,
+            child: AlertDialog(
+              title: Center(
+                child: Text(
+                  '$counter / $questions',
+                  style: const TextStyle(
+                    fontFamily: 'Fredoka',
+                  ),
                 ),
               ),
+              actions: <Widget>[
+                Center(
+                  child: counter / questions < 0.8
+                      // Retry game
+                      ? IconButton(
+                          icon: SvgPicture.asset(
+                            'assets/images/reload.svg',
+                            colorFilter:
+                                ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                            semanticsLabel: "arrow pointing in circle",
+                            height: 50,
+                            width: 50,
+                          ),
+                          onPressed: () => {
+                            // pop the dialog window
+                            Navigator.pop(context),
+                            // replace the game page with the game again to retry it
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => GeyserGameStateful(
+                                  level: widget.level,
+                                  planet: widget.planet,
+                                  geyserProblem: widget.geyserProblem,
+                                ),
+                              ),
+                            ),
+                          },
+                        )
+                      : ElevatedButton(
+                          // Game result screen
+                          onPressed: () => {
+                            // pop the dialog window
+                            Navigator.pop(context),
+                            // replace the game page with the game result screen
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => GameResultScreen(
+                                  game: Game.geyser,
+                                  level: widget.level,
+                                  planet: widget.planet,
+                                  currency: counter,
+                                  time: finalTime,
+                                ),
+                              ),
+                            ),
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: const CircleBorder(),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_right_rounded,
+                            color: Colors.black,
+                            size: 60,
+                          ),
+                        ),
+                ),
+              ],
             ),
-            actions: <Widget>[
-              Center(
-                child: counter / questions < 0.8
-                    // Retry game
-                    ? IconButton(
-                        icon: SvgPicture.asset(
-                          'assets/images/reload.svg',
-                          colorFilter:
-                              ColorFilter.mode(Colors.black, BlendMode.srcIn),
-                          semanticsLabel: "arrow pointing in circle",
-                          height: 50,
-                          width: 50,
-                        ),
-                        onPressed: () => {
-                          // pop the dialog window
-                          Navigator.pop(context),
-                          // replace the game page with the game again to retry it
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => GeyserGameStateful(
-                                level: widget.level,
-                                planet: widget.planet,
-                                geyserProblem: widget.geyserProblem,
-                              ),
-                            ),
-                          ),
-                        },
-                      )
-                    : ElevatedButton(
-                        // Game result screen
-                        onPressed: () => {
-                          // pop the dialog window
-                          Navigator.pop(context),
-                          // replace the game page with the game result screen
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => GameResultScreen(
-                                game: Game.geyser,
-                                level: widget.level,
-                                planet: widget.planet,
-                                currency: counter,
-                                time: finalTime,
-                              ),
-                            ),
-                          ),
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                        ),
-                        child: const Icon(
-                          Icons.arrow_right_rounded,
-                          color: Colors.black,
-                          size: 60,
-                        ),
-                      ),
-              ),
-            ],
           ),
         );
       }
