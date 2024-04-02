@@ -164,79 +164,82 @@ class _RacingGameState extends State<RacingGame>
       showDialog<String>(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context) => AlertDialog(
-          title: Center(
-            child: Text(
-              '#${determinePlacement()}',
-              style: const TextStyle(
-                fontSize: 50,
-                fontFamily: 'Fredoka',
+        builder: (BuildContext context) => PopScope(
+          canPop: false,
+          child: AlertDialog(
+            title: Center(
+              child: Text(
+                '#${determinePlacement()}',
+                style: const TextStyle(
+                  fontSize: 50,
+                  fontFamily: 'Fredoka',
+                ),
               ),
             ),
-          ),
-          actions: <Widget>[
-            Center(
-              child: (playerLocation <= 4)
-                  ? IconButton(
-                      icon: SvgPicture.asset(
-                        'assets/images/reload.svg',
-                        colorFilter:
-                            ColorFilter.mode(Colors.black, BlendMode.srcIn),
-                        semanticsLabel: "arrow pointing in circle",
-                        height: 50,
-                        width: 50,
-                      ),
-                      onPressed: () async => {
-                        SystemChrome.setPreferredOrientations([
-                          DeviceOrientation.portraitUp,
-                          DeviceOrientation.portraitUp,
-                        ]),
-                        // pop the dialog window
-                        Navigator.pop(context),
-                        // replace the game page with the game again to retry it
-                        await Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RacingGame(
-                              level: widget.level,
-                              planet: widget.planet,
-                              racingProblem: widget.racingProblem,
-                            ),
-                          ),
+            actions: <Widget>[
+              Center(
+                child: (playerLocation <= 4)
+                    ? IconButton(
+                        icon: SvgPicture.asset(
+                          'assets/images/reload.svg',
+                          colorFilter:
+                              ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                          semanticsLabel: "arrow pointing in circle",
+                          height: 50,
+                          width: 50,
                         ),
-                      },
-                    )
-                  : ElevatedButton(
-                      onPressed: () async => {
-                        SystemChrome.setPreferredOrientations(
-                          [
+                        onPressed: () async => {
+                          SystemChrome.setPreferredOrientations([
                             DeviceOrientation.portraitUp,
-                          ],
-                        ),
-                        // pop the dialog windown
-                        Navigator.pop(context),
-                        // replace the game page with the game result screen
-                        await Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => GameResultScreen(
-                              game: Game.racing,
-                              level: widget.level,
-                              planet: widget.planet,
-                              currency: player.score,
-                              time: finalTime,
+                            DeviceOrientation.portraitUp,
+                          ]),
+                          // pop the dialog window
+                          Navigator.pop(context),
+                          // replace the game page with the game again to retry it
+                          await Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RacingGame(
+                                level: widget.level,
+                                planet: widget.planet,
+                                racingProblem: widget.racingProblem,
+                              ),
                             ),
                           ),
+                        },
+                      )
+                    : ElevatedButton(
+                        onPressed: () async => {
+                          SystemChrome.setPreferredOrientations(
+                            [
+                              DeviceOrientation.portraitUp,
+                            ],
+                          ),
+                          // pop the dialog windown
+                          Navigator.pop(context),
+                          // replace the game page with the game result screen
+                          await Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => GameResultScreen(
+                                game: Game.racing,
+                                level: widget.level,
+                                planet: widget.planet,
+                                currency: player.score,
+                                time: finalTime,
+                              ),
+                            ),
+                          ),
+                        },
+                        child: const Icon(
+                          Icons.arrow_right_rounded,
+                          color: Colors.black,
+                          size: 60,
                         ),
-                      },
-                      child: const Icon(
-                        Icons.arrow_right_rounded,
-                        color: Colors.black,
-                        size: 60,
                       ),
-                    ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       );
     } else {

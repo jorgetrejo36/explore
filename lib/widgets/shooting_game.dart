@@ -481,8 +481,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
       } else if (column == "up1") {
         // Game starting, move rocket UP.
         rocketYPos -= (MediaQuery.of(context).size.height * 0.185);
-      }
-      else if (column == "up2") {
+      } else if (column == "up2") {
         // Game ended, so we make the rocket fly up off the screen!
         Timer(const Duration(milliseconds: 250), () {
           rocketYPos = -300;
@@ -568,7 +567,6 @@ class _ShootingGameState extends State<ShootingGameStateful> {
       // tracking how long a user spends in-game.
       gameTimer.start();
     });
-
   }
 
   void loseLife() {
@@ -591,8 +589,7 @@ class _ShootingGameState extends State<ShootingGameStateful> {
       updateObstacle(i, isDropping: false);
     }
 
-    if (livesLeft > 0)
-    {
+    if (livesLeft > 0) {
       // Make the rocket fly off the screen as we did answer all 5 questions.
       moveRocket("up2");
     }
@@ -604,44 +601,47 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     showDialog<String>(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) => AlertDialog(
-        title: Center(
-          child: Text(
-            '$problemsCorrect / $numProblems',
-            style: const TextStyle(
-              fontFamily: 'Fredoka',
+      builder: (BuildContext context) => PopScope(
+        canPop: false,
+        child: AlertDialog(
+          title: Center(
+            child: Text(
+              '$problemsCorrect / $numProblems',
+              style: const TextStyle(
+                fontFamily: 'Fredoka',
+              ),
             ),
           ),
-        ),
-        actions: <Widget>[
-          Center(
-            child: IconButton(
-                icon: SvgPicture.asset(
-                  'assets/images/reload.svg',
-                  colorFilter:
-                      const ColorFilter.mode(Colors.black, BlendMode.srcIn),
-                  semanticsLabel: "arrow pointing in circle",
-                  height: 50,
-                  width: 50,
-                ),
-                onPressed: () => {
-                      // pop the dialog window
-                      Navigator.pop(context),
-                      // replace the game page with another game page to reset it for
-                      // the user
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ShootingGameStateful(
-                            level: widget.level,
-                            planet: widget.planet,
-                            shootingProblem: widget.shootingProblem,
+          actions: <Widget>[
+            Center(
+              child: IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/images/reload.svg',
+                    colorFilter:
+                        const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                    semanticsLabel: "arrow pointing in circle",
+                    height: 50,
+                    width: 50,
+                  ),
+                  onPressed: () => {
+                        // pop the dialog window
+                        Navigator.pop(context),
+                        // replace the game page with another game page to reset it for
+                        // the user
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ShootingGameStateful(
+                              level: widget.level,
+                              planet: widget.planet,
+                              shootingProblem: widget.shootingProblem,
+                            ),
                           ),
                         ),
-                      ),
-                    }),
-          ),
-        ],
+                      }),
+            ),
+          ],
+        ),
       ),
     );
   }
