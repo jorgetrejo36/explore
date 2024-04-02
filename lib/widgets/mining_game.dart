@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/widgets/mining_themes.dart';
@@ -227,12 +228,6 @@ class _MiningGameState extends State<MiningGame>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: LifeAppBar(
-        item: "assets/images/${theme.miningCurrency}.svg",
-        title: "App Bar",
-        counter: score,
-      ),
       body: DecoratedBox(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -245,35 +240,8 @@ class _MiningGameState extends State<MiningGame>
             margin: EdgeInsets.only(
               top: MediaQuery.of(context).size.height * 0.0445,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+            child: Stack(
               children: [
-                if (currentProblem < 5)
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.125,
-                    child: Text(
-                      problemList[currentProblem].problem.getProblemString(),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: AppColors.white,
-                          fontFamily: 'Fredoka',
-                          fontSize: 102),
-                    ),
-                  ),
-                if (currentProblem >= 5)
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.125,
-                    child: const Text(
-                      "",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: AppColors.white,
-                          fontFamily: 'Fredoka',
-                          fontSize: 102),
-                    ),
-                  ),
                 Stack(
                   children: [
                     if (correct == true)
@@ -283,8 +251,7 @@ class _MiningGameState extends State<MiningGame>
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height * 0.075,
                             margin: EdgeInsets.only(
-                                top:
-                                    MediaQuery.of(context).size.height * 0.005),
+                                top: MediaQuery.of(context).size.height * 0.2),
                             child: SvgPicture.asset('assets/images/right.svg')),
                       ),
                     if (correct == false)
@@ -294,28 +261,65 @@ class _MiningGameState extends State<MiningGame>
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height * 0.075,
                             margin: EdgeInsets.only(
-                                top:
-                                    MediaQuery.of(context).size.height * 0.005),
+                                top: MediaQuery.of(context).size.height * 0.2),
                             child: SvgPicture.asset('assets/images/wrong.svg')),
                       ),
                   ],
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.725,
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.725,
-                        child: ListView.builder(
-                            physics: new NeverScrollableScrollPhysics(),
-                            itemCount: miningRowList.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return miningRowList[index];
-                            }),
-                      )
-                    ],
-                  ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    if (currentProblem < 5)
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.13,
+                        child: Text(
+                          problemList[currentProblem]
+                              .problem
+                              .getProblemString(),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              color: AppColors.white,
+                              fontFamily: 'Fredoka',
+                              fontSize: 102),
+                        ),
+                      ),
+                    if (currentProblem >= 5)
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.13,
+                        child: const Text(
+                          "",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: AppColors.white,
+                              fontFamily: 'Fredoka',
+                              fontSize: 102),
+                        ),
+                      ),
+                    Container(
+                      margin: EdgeInsets.only(
+                        top: Platform.isIOS
+                            ? MediaQuery.of(context).size.height * 0.092
+                            : MediaQuery.of(context).size.height * 0.157,
+                      ),
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.725,
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: ListView.builder(
+                                physics: new NeverScrollableScrollPhysics(),
+                                itemCount: miningRowList.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return miningRowList[index];
+                                }),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

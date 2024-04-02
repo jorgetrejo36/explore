@@ -167,7 +167,7 @@ class PlanetPage extends StatelessWidget {
         break;
       case "4":
         planetPath = planet4;
-        seed = 404;
+        seed = 410;
         break;
       // Add more cases here if adding more planets, with correct path.
       default:
@@ -278,21 +278,24 @@ class PlanetPage extends StatelessWidget {
         // Next, we should load the planet this page refers to.
 
         // Pad the planet so it's directly in the middle of the screen.
-        Padding(
-          padding: EdgeInsets.only(top: 100),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              // Size a box to store the correctly-sized planet
-              // based on the screen size; calculated above.
-              SizedBox(
-                width: screenWidth,
-                height: planetHeight,
+        Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // Size a box to store the correctly-sized planet
+            // based on the screen size; calculated above.
+            SizedBox(
+              width: screenWidth,
+              height: planetHeight + 100,
 
-                // Create a Stack to display the planet & its pins.
+              // Create a Stack to display the planet & its pins. Margin for above planet spacing
+              child: Container(
+                margin: EdgeInsets.only(
+                  top: 120,
+                ),
                 child: Stack(
                   children: [
                     // Show the planet image.
+
                     Visibility(
                       // This shows a normal, unlocked planet.
                       visible: !isPlanetLocked,
@@ -347,38 +350,38 @@ class PlanetPage extends StatelessWidget {
                   ],
                 ),
               ),
+            ),
 
-              // Display a locked icon on the planet itself if necessary.
-              Visibility(
-                visible: isPlanetLocked,
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: planetHeight / 4),
-                    child: SvgPicture.asset(
-                      "assets/images/locked.svg",
-                      height: planetHeight / 2,
-                      width: planetHeight / 2,
-                    ),
+            // Display a locked icon on the planet itself if necessary.
+            Visibility(
+              visible: isPlanetLocked,
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.only(top: planetHeight / 4),
+                  child: SvgPicture.asset(
+                    "assets/images/locked.svg",
+                    height: planetHeight / 2,
+                    width: planetHeight / 2,
                   ),
                 ),
               ),
+            ),
 
-              // Add the number below the planet. Use padding to
-              // place it slightly below and to the left of the planet.
-              Positioned(
-                left: (MediaQuery.of(context).size.width * 0.075),
-                bottom: 0,
-                child: Text(
-                  planetIndex, // Starting at 1
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: "Fredoka",
-                    fontSize: 70,
-                  ),
+            // Add the number below the planet. Use padding to
+            // place it slightly below and to the left of the planet.
+            Positioned(
+              left: (MediaQuery.of(context).size.width * 0.075),
+              bottom: 0,
+              child: Text(
+                planetIndex, // Starting at 1
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontFamily: "Fredoka",
+                  fontSize: 70,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
     );

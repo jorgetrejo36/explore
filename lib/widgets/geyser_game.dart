@@ -206,16 +206,18 @@ class _GeyserGameState extends State<GeyserGameStateful>
     });
   }
 
-  // Generates new question and choices, resets player position to the middle position
+  // Generates new question and choices
   void nextQuestion(bool newAnsweredQuestion) {
+    var avatarIndex = choices.indexOf(answer);
     setState(() {
       _fadeController.reset();
       problem = widget.geyserProblem.generateProblem();
       choices = problem.answerChoices.getAnswers();
       correctAnswer = problem.answerChoices.getAnswers()[0];
       choices.shuffle();
+      answer = choices[avatarIndex];
+
       repeatAgain();
-      answer = choices[1];
       answeredQuestion = newAnsweredQuestion;
     });
   }
@@ -282,7 +284,7 @@ class _GeyserGameState extends State<GeyserGameStateful>
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Expanded(
-                  flex: 1,
+                  flex: 2,
                   child: Container(),
                 ),
                 Expanded(
@@ -359,20 +361,6 @@ class _GeyserGameState extends State<GeyserGameStateful>
                                     ),
                                   ),
                                 ),
-                              // Padding(
-                              //   padding: EdgeInsets.all(
-                              //       MediaQuery.of(context).size.height / 30),
-                              //   child: IconButton(
-                              //     style: IconButton.styleFrom(
-                              //       backgroundColor: Colors.white,
-                              //       iconSize:
-                              //           MediaQuery.of(context).size.height / 17,
-                              //     ),
-                              //     icon: const Icon(Icons.arrow_right_rounded),
-                              //     onPressed: () =>
-                              //         {nextQuestion(!answeredQuestion)},
-                              //   ),
-                              // ),
                             ],
                           ),
                   ),
