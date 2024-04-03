@@ -250,7 +250,7 @@ class _RacingGameState extends State<RacingGame>
   void decideEnemyMovement() {
     int rng = Random().nextInt(100);
 
-    if (rng <= 10) {
+    if (rng <= 20) {
       setState(() {
         enemy1Location++;
         enemy2Location++;
@@ -262,7 +262,7 @@ class _RacingGameState extends State<RacingGame>
         enemy1Location++;
         enemy1.incrementScore();
       });
-    } else if (rng > 40) {
+    } else if (rng < 70) {
       setState(() {
         enemy2Location++;
         enemy2.incrementScore();
@@ -390,7 +390,7 @@ class _RacingGameState extends State<RacingGame>
                                           0.23,
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              0.226,
+                                              0.18,
                                       margin: EdgeInsets.symmetric(
                                         vertical:
                                             MediaQuery.of(context).size.height *
@@ -572,7 +572,7 @@ class _RacingGameState extends State<RacingGame>
                                             style: TextStyle(
                                                 color: Color.fromARGB(
                                                     239, 248, 248, 248),
-                                                fontSize: 46,
+                                                fontSize: 42,
                                                 fontFamily: 'Fredoka'),
                                           ),
                                         ),
@@ -580,7 +580,7 @@ class _RacingGameState extends State<RacingGame>
                                           margin: EdgeInsets.only(left: 19),
                                           child: SvgPicture.asset(
                                             '${leaderboardData[0].sprite}',
-                                            height: 50,
+                                            height: 45,
                                           ),
                                         )
                                       ],
@@ -595,7 +595,7 @@ class _RacingGameState extends State<RacingGame>
                                             style: TextStyle(
                                                 color: Color.fromARGB(
                                                     239, 248, 248, 248),
-                                                fontSize: 46,
+                                                fontSize: 42,
                                                 fontFamily: 'Fredoka'),
                                           ),
                                         ),
@@ -603,7 +603,7 @@ class _RacingGameState extends State<RacingGame>
                                           margin: EdgeInsets.only(left: 10),
                                           child: SvgPicture.asset(
                                             '${leaderboardData[1].sprite}',
-                                            height: 50,
+                                            height: 45,
                                           ),
                                         )
                                       ],
@@ -618,7 +618,7 @@ class _RacingGameState extends State<RacingGame>
                                             style: TextStyle(
                                                 color: Color.fromARGB(
                                                     239, 248, 248, 248),
-                                                fontSize: 46,
+                                                fontSize: 42,
                                                 fontFamily: 'Fredoka'),
                                           ),
                                         ),
@@ -626,7 +626,7 @@ class _RacingGameState extends State<RacingGame>
                                           margin: EdgeInsets.only(left: 10),
                                           child: SvgPicture.asset(
                                             '${leaderboardData[2].sprite}',
-                                            height: 50,
+                                            height: 45,
                                           ),
                                         )
                                       ],

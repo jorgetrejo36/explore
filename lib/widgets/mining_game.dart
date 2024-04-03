@@ -238,7 +238,7 @@ class _MiningGameState extends State<MiningGame>
         child: Center(
           child: Container(
             margin: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height * 0.0445,
+              top: MediaQuery.of(context).size.height * 0.115,
             ),
             child: Stack(
               children: [
@@ -266,60 +266,64 @@ class _MiningGameState extends State<MiningGame>
                       ),
                   ],
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    if (currentProblem < 5)
+                OverflowBox(
+                  maxHeight: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      if (currentProblem < 5)
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.13,
+                          child: Text(
+                            problemList[currentProblem]
+                                .problem
+                                .getProblemString(),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                color: AppColors.white,
+                                fontFamily: 'Fredoka',
+                                fontSize: 102),
+                          ),
+                        ),
+                      if (currentProblem >= 5)
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.13,
+                          child: const Text(
+                            "",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: AppColors.white,
+                                fontFamily: 'Fredoka',
+                                fontSize: 102),
+                          ),
+                        ),
                       Container(
+                        margin: EdgeInsets.only(
+                          top: Platform.isIOS
+                              ? MediaQuery.of(context).size.height * 0.092
+                              : MediaQuery.of(context).size.height * 0.157,
+                        ),
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.13,
-                        child: Text(
-                          problemList[currentProblem]
-                              .problem
-                              .getProblemString(),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              color: AppColors.white,
-                              fontFamily: 'Fredoka',
-                              fontSize: 102),
+                        height: MediaQuery.of(context).size.height * 0.725,
+                        child: Column(
+                          children: <Widget>[
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.72,
+                              child: ListView.builder(
+                                  physics: new NeverScrollableScrollPhysics(),
+                                  itemCount: miningRowList.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return miningRowList[index];
+                                  }),
+                            )
+                          ],
                         ),
                       ),
-                    if (currentProblem >= 5)
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.13,
-                        child: const Text(
-                          "",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: AppColors.white,
-                              fontFamily: 'Fredoka',
-                              fontSize: 102),
-                        ),
-                      ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: Platform.isIOS
-                            ? MediaQuery.of(context).size.height * 0.092
-                            : MediaQuery.of(context).size.height * 0.157,
-                      ),
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height * 0.725,
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child: ListView.builder(
-                                physics: new NeverScrollableScrollPhysics(),
-                                itemCount: miningRowList.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return miningRowList[index];
-                                }),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
