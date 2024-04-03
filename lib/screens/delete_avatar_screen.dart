@@ -86,7 +86,7 @@ class _DeleteAvatarScreenState extends State<DeleteAvatarScreen> {
               ),
               Center(
                 child: Container(
-                  width: screenWidth * .65,
+                  width: screenWidth * .60,
                   height: screenWidth * 1.15,
                   child: GridView.count(
                     crossAxisCount: 2,

@@ -104,7 +104,7 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
               ),
               Center(
                 child: SizedBox(
-                  width: screenWidth * .65,
+                  width: screenWidth * .60,
                   height: screenWidth * 1.15,
                   child: GridView.count(
                     crossAxisCount: 2,
@@ -220,6 +220,9 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                     style: ElevatedButton.styleFrom(
                       shape: const CircleBorder(),
                       primary: Color(0xFF647F86),
+                      shadowColor:
+                          Colors.black, //specify the button's elevation color
+                      elevation: 5.0,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
