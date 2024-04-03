@@ -12,6 +12,16 @@ Future playWrongSound() async {
   return player.play(AssetSource("sounds/wrong.mp3"));
 }
 
+Future playShootSound() async {
+  final player = AudioPlayer();
+  return player.play(AssetSource("sounds/shoot.mp3"));
+}
+
+Future playTakeoffSound() async {
+  final player = AudioPlayer();
+  return player.play(AssetSource("sounds/takeoff.mp3"));
+}
+
 Future playLevelComplete() async {
   final player = AudioPlayer();
   await player.setVolume(10);

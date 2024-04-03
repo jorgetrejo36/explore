@@ -175,6 +175,8 @@ flutter:
     # Sounds
     - assets/sounds/correct.mp3
     - assets/sounds/wrong.mp3
+    - assets/sounds/takeoff.mp3
+    - assets/sounds/shoot.mp3
     - assets/sounds/levelComplete.wav
     - assets/sounds/titleScreen.wav  
     - assets/sounds/buttonClick.wav  

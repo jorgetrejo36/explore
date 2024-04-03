@@ -340,6 +340,11 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     // we complete this operation (and animation).
     canSolve = false;
 
+    // Play a shooting sound. Turned off because I need to add a delay between
+    // the shot fired and the rock breaking which needs a small code rewrite
+    // (else this plays at the same time as the correct/incorrect sound).
+    // playShootSound();
+
     // Identify the obstacle we clicked on, move the rocket to it, and shoot.
     if (thisObs.obstacleCol == "left") {
       // Move the rocket left.
@@ -551,6 +556,9 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     // Move rocket up and turn it on so it's ready.
     moveRocket("up1");
     rocketOn = true;
+
+    // Sound Cue
+    playTakeoffSound();
 
     // Start the actual game in 3 seconds, giving us time to play the launch
     // and fade animations.
@@ -835,31 +843,37 @@ class _ShootingGameState extends State<ShootingGameStateful> {
             bottom: MediaQuery.of(context).size.height * 0.825,
             left: 0,
             right: 0,
-            child: AnimatedOpacity(
-              opacity: showCorrectResult ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeInOut,
-              child: SvgPicture.asset(
-                "assets/images/right.svg",
-                width: 96,
-                height: 96,
+            child: IgnorePointer(
+              ignoring: true,
+              child: AnimatedOpacity(
+                opacity: showCorrectResult ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+                child: SvgPicture.asset(
+                  "assets/images/right.svg",
+                  width: 96,
+                  height: 96,
+                ),
               ),
             ),
           ),
 
-          // Indicator for getting the problem correct.
+          // Indicator for getting the problem incorrect.
           Positioned(
             bottom: MediaQuery.of(context).size.height * 0.825,
             left: 0,
             right: 0,
-            child: AnimatedOpacity(
-              opacity: showIncorrectResult ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeInOut,
-              child: SvgPicture.asset(
-                "assets/images/wrong.svg",
-                width: 96,
-                height: 96,
+            child: IgnorePointer(
+              ignoring: true,
+              child: AnimatedOpacity(
+                opacity: showIncorrectResult ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+                child: SvgPicture.asset(
+                  "assets/images/wrong.svg",
+                  width: 96,
+                  height: 96,
+                ),
               ),
             ),
           ),
