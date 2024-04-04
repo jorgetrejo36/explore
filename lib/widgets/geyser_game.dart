@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:explore/utils/problem_generator.dart';
 import 'package:explore/widgets/sound_library.dart';
+import 'package:explore/utils/music_controller.dart';
+import 'package:get/get.dart';
 
 class GeyserGameStateful extends StatefulWidget {
   const GeyserGameStateful({
@@ -79,7 +81,10 @@ class _GeyserGameState extends State<GeyserGameStateful>
     super.initState();
     stopMusic();
     _fadeController.forward();
-    playGeyserMusic();
+    final MusicController musicController = Get.find();
+    if(musicController.music == true) {
+      playGeyserMusic();
+    }
     _loadData();
     timer.start();
   }

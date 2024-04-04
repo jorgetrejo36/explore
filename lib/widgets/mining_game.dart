@@ -12,6 +12,8 @@ import 'package:explore/utils/problem_generator.dart';
 import 'package:explore/screens/game_result_screen.dart';
 import 'package:explore/widgets/item_counter.dart';
 import 'package:explore/widgets/life_app_bar.dart';
+import 'package:explore/utils/music_controller.dart';
+import 'package:get/get.dart';
 
 /// Creates instance of mining game given a specified theme and problem generator
 class MiningGame extends StatefulWidget {
@@ -209,7 +211,10 @@ class _MiningGameState extends State<MiningGame>
   void initState() {
     super.initState();
     stopMusic();
-    playMiningMusic();
+    final MusicController musicController = Get.find();
+    if(musicController.music == true) {
+      playMiningMusic();
+    }
     timer.start();
     //repeatOnce();
   }

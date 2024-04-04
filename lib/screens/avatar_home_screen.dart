@@ -5,6 +5,7 @@ import 'package:explore/screens/leaderboard_screen.dart';
 import 'package:explore/screens/planet_home_screen.dart';
 import 'package:explore/utils/realm_utils.dart';
 import 'package:explore/utils/user_controller.dart';
+import 'package:explore/utils/music_controller.dart';
 import 'package:explore/widgets/sound_library.dart';
 import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
@@ -63,27 +64,44 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Align(
-          alignment: Alignment.centerRight,
-          child: users.isNotEmpty
-              ? IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/images/trash-can.svg',
-                    height: MediaQuery.of(context).size.height / 15,
+        title:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.settings, // Your icon for center-left
+                    size: MediaQuery.of(context).size.width * 0.06, // Adjust the size of the icon
+                    color: Colors.white, // Set the color of the icon
                   ),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const DeleteAvatarScreen(),
+                  onPressed: () {
+                    final MusicController music = Get.find();
+                    music.toggleMusic(); // Toggle music state first
+                  },
+                ),
+              ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: users.isNotEmpty
+                ? IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/images/trash-can.svg',
+                      height: MediaQuery.of(context).size.height / 15,
                     ),
-                  ).then(
-                    (_) => setState(() {
-                      _loadData();
-                    }),
-                  ),
-                )
-              : null,
-        ),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const DeleteAvatarScreen(),
+                      ),
+                    ).then(
+                      (_) => setState(() {
+                        _loadData();
+                      }),
+                    ),
+                  )
+                : null,
+          ),
+        ]),
       ),
       extendBodyBehindAppBar: true,
       body: DecoratedBox(

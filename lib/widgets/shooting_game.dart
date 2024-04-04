@@ -10,6 +10,8 @@ import '../screens/planet_map_screen.dart';
 import 'package:explore/utils/problem_generator.dart';
 import 'package:explore/widgets/sg_info_bar.dart';
 import 'package:explore/widgets/sg_player_rocket.dart';
+import 'package:explore/utils/music_controller.dart';
+import 'package:get/get.dart';
 
 class ShootingGameStateful extends StatefulWidget {
   const ShootingGameStateful({
@@ -226,7 +228,10 @@ class _ShootingGameState extends State<ShootingGameStateful> {
     stopMusic();
     // Possibly move game music to startGame, play ambience here until
     // rocket takes off.
-    playRocketMusic();
+    final MusicController musicController = Get.find();
+    if(musicController.music == true) {
+      playRocketMusic();
+    }
 
     // Assign the instance.
     shootingGameStateInstance = this;

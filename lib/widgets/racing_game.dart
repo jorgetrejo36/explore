@@ -12,6 +12,9 @@ import 'package:explore/screens/game_result_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:explore/utils/realm_utils.dart';
 import 'package:explore/widgets/sound_library.dart';
+import 'package:explore/utils/music_controller.dart';
+import 'package:get/get.dart';
+
 
 /// Creates instance of mining game given a specified theme and problem generator
 class RacingGame extends StatefulWidget {
@@ -321,7 +324,10 @@ class _RacingGameState extends State<RacingGame>
   void initState() {
     super.initState();
     stopMusic();
-    playRacingMusic();
+    final MusicController musicController = Get.find();
+    if(musicController.music == true) {
+      playRacingMusic();
+    }
     _loadData();
     timer.start();
     SystemChrome.setPreferredOrientations([
