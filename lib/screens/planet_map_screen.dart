@@ -38,8 +38,10 @@ class PlanetMapScreen extends StatefulWidget {
   // Used to scroll to the planet we selected on the previous page.
   final int selectedPlanet;
 
-  const PlanetMapScreen({Key? key, required this.selectedPlanet})
-      : super(key: key);
+  const PlanetMapScreen({
+    Key? key,
+    required this.selectedPlanet,
+  }) : super(key: key);
 
   @override
   State<PlanetMapScreen> createState() => _PlanetMapScreenState();
@@ -67,17 +69,16 @@ class _PlanetMapScreenState extends State<PlanetMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     double screenWidth = MediaQuery.of(context).size.width;
     double planetAspectRatio = 360 / 620;
     double planetHeight = screenWidth / planetAspectRatio;
     // Calculate page height for accurate scroll position.
     // This is the same calculation used in pms_planet_page for background art.
-    double pageHeight = planetHeight + (MediaQuery.of(context).size.height * 0.15);
-    if (widget.selectedPlanet == 3)
-      {
-        pageHeight -= 24;
-      }
+    double pageHeight =
+        planetHeight + (MediaQuery.of(context).size.height * 0.15);
+    if (widget.selectedPlanet == 3) {
+      pageHeight -= 24;
+    }
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -94,32 +95,30 @@ class _PlanetMapScreenState extends State<PlanetMapScreen> {
             reverse: true,
             controller: ScrollController(
               // Calculate which page height to scroll to.
-              initialScrollOffset:
-                  (widget.selectedPlanet) * pageHeight,
+              initialScrollOffset: (widget.selectedPlanet) * pageHeight,
             ),
             child: Column(
               // Generate the planet pages in reverse order so
               // they grow in indices from bottom to top.
-              children:
-                List.generate(numPlanets, (index) {
+              children: List.generate(numPlanets, (index) {
                 return PlanetPage(
-                    index: index + 1,
-                    isPlanetLocked: (debugDisableLoading
-                        ?
-                        // Show planets regardless of Realm status.
-                        false
-                        // Otherwise, load all planets from Realm.
-                        : !lockStatuses[index].planetStatus),
-                    levelStatuses: debugDisableLoading
-                        ?
-                        // Show pins regardless of Realm status.
-                        List.generate(levelsPerPlanet, (index) {
-                            return CompletionStatus.complete;
-                          })
-                        // Otherwise, load all pins from Realm.
-                        : lockStatuses[index].levelStatuses,
-                    // Use a hash to get a unique int representing this user.
-                    userID: user.id.hashCode,
+                  index: index + 1,
+                  isPlanetLocked: (debugDisableLoading
+                      ?
+                      // Show planets regardless of Realm status.
+                      false
+                      // Otherwise, load all planets from Realm.
+                      : !lockStatuses[index].planetStatus),
+                  levelStatuses: debugDisableLoading
+                      ?
+                      // Show pins regardless of Realm status.
+                      List.generate(levelsPerPlanet, (index) {
+                          return CompletionStatus.complete;
+                        })
+                      // Otherwise, load all pins from Realm.
+                      : lockStatuses[index].levelStatuses,
+                  // Use a hash to get a unique int representing this user.
+                  userID: user.id.hashCode,
                 );
               }).reversed.toList(),
             ),
