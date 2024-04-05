@@ -39,6 +39,7 @@ dependencies:
   realm: ^1.6.1
   path_provider: ^2.1.2
   get: ^4.6.6
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +55,11 @@ dev_dependencies:
   flutter_svg_provider: ^1.0.7
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/AppIcon.png"
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -171,20 +177,20 @@ flutter:
     - assets/images/rotate-smartphone.png
     - assets/images/transparency.png
     - assets/images/racingRocket.svg
-    
+
     # Sounds
     - assets/sounds/correct.mp3
     - assets/sounds/wrong.mp3
     - assets/sounds/takeoff.mp3
     - assets/sounds/shoot.mp3
     - assets/sounds/levelComplete.wav
-    - assets/sounds/titleScreen.wav  
-    - assets/sounds/buttonClick.wav  
-    - assets/sounds/racingMusic.wav  
-    - assets/sounds/miningMusic.wav  
-    - assets/sounds/geyserMusic.wav  
-    - assets/sounds/rocketMusic.wav      
-    
+    - assets/sounds/titleScreen.wav
+    - assets/sounds/buttonClick.wav
+    - assets/sounds/racingMusic.wav
+    - assets/sounds/miningMusic.wav
+    - assets/sounds/geyserMusic.wav
+    - assets/sounds/rocketMusic.wav
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
