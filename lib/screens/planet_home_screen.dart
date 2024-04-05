@@ -327,29 +327,32 @@ class IconGridWidget extends StatelessWidget {
 
     int planetPathsIndex = 0;
 
-    return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(), // disable scrolling
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: numPlanets,
-      ),
-      itemCount: numPlanets * 2,
-      itemBuilder: (context, index) {
-        // Check if the current index is in the list of planet indices
-        bool isPlanetIndex = planetIndices.contains(index);
+    return Padding(
+      padding: const EdgeInsets.only(left: 15, right: 15),
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(), // disable scrolling
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: numPlanets,
+        ),
+        itemCount: numPlanets * 2,
+        itemBuilder: (context, index) {
+          // Check if the current index is in the list of planet indices
+          bool isPlanetIndex = planetIndices.contains(index);
 
-        return Container(
-          alignment: Alignment.center,
-          child: isPlanetIndex
-              ? PlanetWidget(
-                  completionStatus:
-                      planetPaths[planetPathsIndex].completionStatus,
-                  planetPath: planetPaths[planetPathsIndex].imagePath,
-                  planetSelection: planetPaths[planetPathsIndex++].currPlanet,
-                  loadData: loadData,
-                )
-              : null, // Display null for cells without a planet
-        );
-      },
+          return Container(
+            alignment: Alignment.center,
+            child: isPlanetIndex
+                ? PlanetWidget(
+                    completionStatus:
+                        planetPaths[planetPathsIndex].completionStatus,
+                    planetPath: planetPaths[planetPathsIndex].imagePath,
+                    planetSelection: planetPaths[planetPathsIndex++].currPlanet,
+                    loadData: loadData,
+                  )
+                : null, // Display null for cells without a planet
+          );
+        },
+      ),
     );
   }
 }
@@ -453,6 +456,8 @@ class _PlanetWidgetState extends State<PlanetWidget> {
                 (_) => setState(() {
                   // this will reload the data to properly show the current
                   // score, planets unlocked, etc.
+                  // this only works if you finish one level, still need to be 
+                  // fixed for more levels
                   widget.loadData();
                 }),
               ),
