@@ -280,10 +280,11 @@ class _MiningGameState extends State<MiningGame>
                                 .problem
                                 .getProblemString(),
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                color: AppColors.white,
-                                fontFamily: 'Fredoka',
-                                fontSize: 102),
+                            style: TextStyle(
+                              color: AppColors.white,
+                              fontFamily: 'Fredoka',
+                              fontSize: Platform.isIOS ? 95 : 102,
+                            ),
                           ),
                         ),
                       if (currentProblem >= 5)
