@@ -55,7 +55,7 @@ class CreateNameScreen extends StatelessWidget {
         leading: Container(
           decoration: BoxDecoration(
             color: AppColors.darkPurple,
-            borderRadius: BorderRadius.all(Radius.circular(20)),
+            borderRadius: BorderRadius.all(Radius.circular(50)),
           ),
           child: IconButton(
               icon: const Icon(
@@ -112,6 +112,12 @@ class CreateNameScreen extends StatelessWidget {
                   ),
                 ),
                 child: TextFormField(
+                  onFieldSubmitted: (_) => {
+                    createNewUser(
+                      context: context,
+                      userName: _nameController.text,
+                    ),
+                  },
                   controller: _nameController,
                   style: TextStyle(color: Colors.black), // Text color
                   decoration: const InputDecoration(
@@ -125,7 +131,7 @@ class CreateNameScreen extends StatelessWidget {
                   height:
                       screenHeight * 0.03), // 3% of the screen height spacing
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: AppColors.darkPurple,
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                 ),
