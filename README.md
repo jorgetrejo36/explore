@@ -53,7 +53,7 @@ This guide will walk you through the steps to set up and run a Flutter app proje
 
 1. **Clone the Repository:**
 
-git clone https://github.com/your_username/your_flutter_realm_app.git	
+git clone [https://github.com/jorgetrejo36/explore.git]
 
 
 3. **Open the Project in Android Studio:**
