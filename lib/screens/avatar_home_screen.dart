@@ -1,4 +1,3 @@
-import 'package:explore/schemas.dart';
 import 'package:explore/screens/choose_rocket_screen.dart';
 import 'package:explore/screens/delete_avatar_screen.dart';
 import 'package:explore/screens/leaderboard_screen.dart';
@@ -7,7 +6,6 @@ import 'package:explore/utils/realm_utils.dart';
 import 'package:explore/utils/user_controller.dart';
 import 'package:explore/widgets/sound_library.dart';
 import 'package:flutter/material.dart';
-import 'package:explore/app_colors.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
@@ -17,10 +15,10 @@ class AvatarHomeScreen extends StatefulWidget {
   const AvatarHomeScreen({Key? key}) : super(key: key);
 
   @override
-  _AvatarHomeScreenState createState() => _AvatarHomeScreenState();
+  AvatarHomeScreenState createState() => AvatarHomeScreenState();
 }
 
-class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
+class AvatarHomeScreenState extends State<AvatarHomeScreen> {
   late List<KeyUserInfo> users;
 
   @override
@@ -40,7 +38,6 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double avatarSize = screenWidth * 0.25;
     double spacing = screenWidth * 0.06;
 
     // Image path for the circle buttons
@@ -93,150 +90,149 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Positioned(
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Image.asset(
-                  rocketImage, // Rocket image
-                  fit: BoxFit.contain,
-                ),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                rocketImage, // Rocket image
+                fit: BoxFit.contain,
               ),
-              Center(
-                child: SizedBox(
-                  width: screenWidth * .60,
-                  height: screenWidth * 1.15,
-                  child: GridView.count(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 20,
-                    childAspectRatio: 1.5,
-                    children: List.generate(
-                      maxUsers,
-                      (index) => index < users.length
-                          ? ElevatedButton(
-                              onPressed: () {
-                                // Button Sound
-                                playClick();
+            ),
+            Center(
+              child: SizedBox(
+                width: screenWidth * .60,
+                height: screenWidth * 1.15,
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 20,
+                  childAspectRatio: 1.5,
+                  children: List.generate(
+                    maxUsers,
+                    (index) => index < users.length
+                        ? ElevatedButton(
+                            onPressed: () {
+                              // Button Sound
+                              playClick();
 
-                                // get the user controller
-                                final UserController loggedInUser = Get.find();
-                                // take the id of the user that was selected and assign it to the user
-                                // controller
-                                loggedInUser.updateId(users[index].id);
-                                // Navigate to the planet home screen for this user
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const PlanetHomeScreen(),
-                                  ),
-                                  // this is used so the page reloads when it comes back
-                                ).then(
-                                  (_) => setState(() {
-                                    _loadData();
-                                  }),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shape: const CircleBorder(),
-                                backgroundColor: buttonColors[index + 1],
-                              ),
-                              child: Stack(
-                                children: [
-                                  SvgPicture.asset(
-                                    users[index].avatar,
-                                    width: 450,
-                                    height: 450,
-                                  ),
-                                  Positioned(
-                                    bottom: -1,
-                                    left: 0,
-                                    right: 0,
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 0, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFAC6FE3),
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Text(
-                                        users[index].name,
-                                        style: TextStyle(color: Colors.white),
-                                        textAlign: TextAlign.center,
-                                      ),
+                              // get the user controller
+                              final UserController loggedInUser = Get.find();
+                              // take the id of the user that was selected and assign it to the user
+                              // controller
+                              loggedInUser.updateId(users[index].id);
+                              // Navigate to the planet home screen for this user
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const PlanetHomeScreen(),
+                                ),
+                                // this is used so the page reloads when it comes back
+                              ).then(
+                                (_) => setState(() {
+                                  _loadData();
+                                }),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: const CircleBorder(),
+                              backgroundColor: buttonColors[index + 1],
+                            ),
+                            child: Stack(
+                              children: [
+                                SvgPicture.asset(
+                                  users[index].avatar,
+                                  width: 450,
+                                  height: 450,
+                                ),
+                                Positioned(
+                                  bottom: -1,
+                                  left: 0,
+                                  right: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 0, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFAC6FE3),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text(
+                                      users[index].name,
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
-                                ],
-                              ),
-                            )
-                          : index == users.length
-                              ? ElevatedButton(
-                                  onPressed: () {
-                                    // Button Sound
-                                    playClick();
+                                ),
+                              ],
+                            ),
+                          )
+                        : index == users.length
+                            ? ElevatedButton(
+                                onPressed: () {
+                                  // Button Sound
+                                  playClick();
 
-                                    // Navigate to the choose rocket screen
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ChooseRocketScreen(),
-                                      ),
-                                      // this is used so the page reloads when it comes back
-                                    ).then((_) => setState(() {
-                                          _loadData();
-                                        }));
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    shape: const CircleBorder(),
-                                    backgroundColor: buttonColors[index + 1],
-                                  ),
-                                  child: Image.asset(
-                                    buttonImage,
-                                    width: 40,
-                                    height: 40,
-                                  ),
-                                )
-                              : const SizedBox
-                                  .shrink(), // this is an emtpy widget intended to show nothing
-                    ),
+                                  // Navigate to the choose rocket screen
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ChooseRocketScreen(),
+                                    ),
+                                    // this is used so the page reloads when it comes back
+                                  ).then((_) => setState(() {
+                                        _loadData();
+                                      }));
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  shape: const CircleBorder(),
+                                  backgroundColor: buttonColors[index + 1],
+                                ),
+                                child: Image.asset(
+                                  buttonImage,
+                                  width: 40,
+                                  height: 40,
+                                ),
+                              )
+                            : const SizedBox
+                                .shrink(), // this is an emtpy widget intended to show nothing
                   ),
                 ),
               ),
-              Positioned(
-                top: spacing * 3,
-                right: screenWidth * 0.15,
-                left: screenWidth * 0.15,
-                child: Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LeaderboardScreen(),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                      backgroundColor: Color(0xFF647F86),
-                      shadowColor:
-                          Colors.black, //specify the button's elevation color
-                      elevation: 5.0,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Image.asset(
-                        trophyImage,
-                        width: 110,
-                        height: MediaQuery.of(context).size.height / 7,
+            ),
+            Positioned(
+              top: spacing * 3,
+              right: screenWidth * 0.15,
+              left: screenWidth * 0.15,
+              child: Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LeaderboardScreen(),
                       ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    backgroundColor: Color(0xFF647F86),
+                    shadowColor:
+                        Colors.black, //specify the button's elevation color
+                    elevation: 5.0,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Image.asset(
+                      trophyImage,
+                      width: 110,
+                      height: MediaQuery.of(context).size.height / 7,
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

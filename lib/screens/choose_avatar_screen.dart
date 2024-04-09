@@ -27,7 +27,7 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: AppColors.darkPurple,
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),

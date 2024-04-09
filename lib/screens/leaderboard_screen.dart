@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:explore/app_colors.dart';
 import 'package:explore/utils/realm_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:explore/widgets/sound_library.dart';
@@ -62,7 +61,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.22,
                   // Start of TopPlayer widget
@@ -76,9 +75,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                             top: MediaQuery.of(context).size.height * 0.075,
                           ),
                           child: TopPlayer(
-                            outlineColor: Color.fromARGB(255, 201, 201, 201),
+                            outlineColor:
+                                const Color.fromARGB(255, 201, 201, 201),
                             name: users[1].name,
-                            backgroundColor: Color(0xffa149f0),
+                            backgroundColor: const Color(0xffa149f0),
                             imgName: users[1].imgName,
                           ),
                         ),
@@ -152,13 +152,13 @@ class TopPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 115,
-      height: 140,
-      margin: EdgeInsets.symmetric(horizontal: 10),
+      width: MediaQuery.of(context).size.width * 0.25,
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Stack(
         children: [
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 10),
+            //margin: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.all(10),
             width: 95,
             height: 95,
             decoration: BoxDecoration(
@@ -178,11 +178,10 @@ class TopPlayer extends StatelessWidget {
               ],
             ),
             child: Align(
-              alignment: AlignmentDirectional(0, 0),
+              alignment: const AlignmentDirectional(0, 0),
               child: SvgPicture.asset(
                 imgName,
                 fit: BoxFit.contain,
-                height: 75,
               ),
             ),
           ),
@@ -247,11 +246,11 @@ class ScoreBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width * 0.18,
             child: SvgPicture.asset(imgName),
           ),
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width * 0.6,
             child: Align(
               alignment: Alignment.centerLeft,
