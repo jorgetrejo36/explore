@@ -219,7 +219,7 @@ class _AvatarHomeScreenState extends State<AvatarHomeScreen> {
                     },
                     style: ElevatedButton.styleFrom(
                       shape: const CircleBorder(),
-                      primary: Color(0xFF647F86),
+                      backgroundColor: Color(0xFF647F86),
                       shadowColor:
                           Colors.black, //specify the button's elevation color
                       elevation: 5.0,
