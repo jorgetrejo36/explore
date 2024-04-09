@@ -157,6 +157,7 @@ class AvatarHomeScreenState extends State<AvatarHomeScreen> {
                                     ),
                                     child: Text(
                                       users[index].name,
+                                      overflow: TextOverflow.ellipsis,
                                       style:
                                           const TextStyle(color: Colors.white),
                                       textAlign: TextAlign.center,

@@ -162,12 +162,17 @@ class UserInfo extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                user.name,
-                style: const TextStyle(
-                  fontSize: 40,
-                  color: Colors.white,
-                  fontFamily: "Fredoka",
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  user.name,
+                  style: const TextStyle(
+                    fontSize: 40,
+                    color: Colors.white,
+                    fontFamily: "Fredoka",
+                  ),
                 ),
               ),
             ],
@@ -456,7 +461,7 @@ class _PlanetWidgetState extends State<PlanetWidget> {
                 (_) => setState(() {
                   // this will reload the data to properly show the current
                   // score, planets unlocked, etc.
-                  // this only works if you finish one level, still need to be 
+                  // this only works if you finish one level, still need to be
                   // fixed for more levels
                   widget.loadData();
                 }),

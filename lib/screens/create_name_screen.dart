@@ -112,6 +112,7 @@ class CreateNameScreen extends StatelessWidget {
                   ),
                 ),
                 child: TextFormField(
+                  maxLength: 35,
                   onFieldSubmitted: (_) => {
                     createNewUser(
                       context: context,
@@ -121,6 +122,7 @@ class CreateNameScreen extends StatelessWidget {
                   controller: _nameController,
                   style: TextStyle(color: Colors.black), // Text color
                   decoration: const InputDecoration(
+                      counterText: "",
                       filled: true,
                       fillColor:
                           AppColors.lightGrey, // Light gray background color
