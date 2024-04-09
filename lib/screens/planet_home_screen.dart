@@ -166,6 +166,7 @@ class UserInfo extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 width: MediaQuery.of(context).size.width,
                 child: Text(
+                  textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                   user.name,
                   style: const TextStyle(
