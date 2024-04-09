@@ -771,14 +771,11 @@ class _ShootingGameState extends State<ShootingGameStateful> {
             opacity: gameStarted ? 0.0 : 1.0,
             duration: const Duration(milliseconds: 3000),
             curve: Curves.easeInOut,
-            child: Positioned(
-              top: 0,
-              child: Image.asset(
-                skyImage,
-                height: MediaQuery.of(context).size.height * 1.05,
-                width: MediaQuery.of(context).size.width,
-                fit: BoxFit.fitWidth,
-              ),
+            child: Image.asset(
+              skyImage,
+              height: MediaQuery.of(context).size.height * 1.05,
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.fitWidth,
             ),
           ),
 

@@ -2,7 +2,7 @@ import 'package:explore/app_colors.dart';
 import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/utils/realm_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:explore/widgets/score_calculator.dart';
 import 'package:explore/widgets/sound_library.dart';
@@ -75,6 +75,7 @@ class _GameResultScreenState extends State<GameResultScreen> {
                       height: MediaQuery.of(context).size.height *
                           0.35, // 35% of the screen (40/100)
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Expanded(
                             child: DataBoxWidget(
@@ -100,7 +101,7 @@ class _GameResultScreenState extends State<GameResultScreen> {
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height *
-                        0.35, // 45% of the screen (85/100),
+                        0.25, // 45% of the screen (85/100),
                     child: AvatarWithRocketWidget(
                       rocketAvatar: rocketAvatar,
                     ),

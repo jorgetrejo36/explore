@@ -1,12 +1,9 @@
-import 'dart:ffi';
 import 'dart:math';
 import 'package:explore/screens/planet_map_screen.dart';
 import 'package:explore/widgets/racing_themes.dart';
 import 'package:explore/widgets/score_calculator.dart';
 import 'package:flutter/material.dart';
-import 'package:explore/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:stroke_text/stroke_text.dart';
 import 'package:explore/utils/problem_generator.dart';
 import 'package:explore/screens/game_result_screen.dart';
 import 'package:flutter/services.dart';
@@ -210,15 +207,13 @@ class _RacingGameState extends State<RacingGame>
                       )
                     : ElevatedButton(
                         onPressed: () async => {
-                          SystemChrome.setPreferredOrientations(
-                            [
-                              DeviceOrientation.portraitUp,
-                            ],
-                          ),
                           // pop the dialog windown
                           Navigator.pop(context),
+                          // poping the game which will trigger the dispose method
+                          // and fix the screen orientation
+                          Navigator.pop(context),
                           // replace the game page with the game result screen
-                          await Navigator.pushReplacement(
+                          await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => GameResultScreen(
@@ -293,15 +288,7 @@ class _RacingGameState extends State<RacingGame>
   // Correctness Animations
   double startingOpacity = 0;
 
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(milliseconds: 1000),
-    vsync: this,
-  );
-
-  late final Animation<double> _animation = CurvedAnimation(
-    parent: _controller,
-    curve: Curves.easeIn,
-  );
+  late AnimationController _controller;
 
   void repeatOnce() async {
     await _controller.forward();
@@ -320,6 +307,11 @@ class _RacingGameState extends State<RacingGame>
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+
     stopMusic();
     playRacingMusic();
     _loadData();
@@ -386,45 +378,44 @@ class _RacingGameState extends State<RacingGame>
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.23,
-                                      height:
+                                    width: MediaQuery.of(context).size.width *
+                                        0.23,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.18,
+                                    margin: EdgeInsets.symmetric(
+                                      vertical:
                                           MediaQuery.of(context).size.height *
-                                              0.18,
-                                      margin: EdgeInsets.symmetric(
-                                        vertical:
-                                            MediaQuery.of(context).size.height *
-                                                0.05,
-                                      ),
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20)),
-                                        color:
-                                            Color.fromARGB(239, 248, 248, 248),
-                                      ),
-                                      child: Center(
-                                        child: AnimatedSwitcher(
-                                          duration: Duration(milliseconds: 800),
-                                          child: FittedBox(
-                                            fit: BoxFit.scaleDown,
-                                            child: Text(
-                                              problemList[currentProblem]
-                                                  .problem
-                                                  .getProblemString(),
-                                              key: ValueKey(
-                                                  problemList[currentProblem]
-                                                      .problem
-                                                      .getProblemString()),
-                                              style: TextStyle(
-                                                  color: Color.fromARGB(
-                                                      238, 31, 31, 31),
-                                                  fontSize: 55,
-                                                  fontFamily: 'Fredoka'),
-                                              //textAlign: TextAlign.center,
-                                            ),
+                                              0.05,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      color: Color.fromARGB(239, 248, 248, 248),
+                                    ),
+                                    child: Center(
+                                      child: AnimatedSwitcher(
+                                        duration: Duration(milliseconds: 800),
+                                        child: FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Text(
+                                            problemList[currentProblem]
+                                                .problem
+                                                .getProblemString(),
+                                            key: ValueKey(
+                                                problemList[currentProblem]
+                                                    .problem
+                                                    .getProblemString()),
+                                            style: const TextStyle(
+                                                color: Color.fromARGB(
+                                                    238, 31, 31, 31),
+                                                fontSize: 55,
+                                                fontFamily: 'Fredoka'),
+                                            //textAlign: TextAlign.center,
                                           ),
                                         ),
-                                      )),
+                                      ),
+                                    ),
+                                  ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -450,14 +441,14 @@ class _RacingGameState extends State<RacingGame>
                                           ),
                                           child: Center(
                                             child: AnimatedSwitcher(
-                                              duration:
-                                                  Duration(milliseconds: 800),
+                                              duration: const Duration(
+                                                  milliseconds: 800),
                                               child: FittedBox(
                                                 fit: BoxFit.scaleDown,
                                                 child: Text(
                                                   "${curChoices[0]}",
                                                   key: ValueKey(curChoices[0]),
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       color: Color.fromARGB(
                                                           238, 31, 31, 31),
                                                       fontSize: 38,

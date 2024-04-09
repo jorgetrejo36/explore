@@ -64,7 +64,7 @@ class PinWidget extends StatelessWidget {
     // Loads a game based on its type and sends theme information.
     void loadGame(String name, GameType game, CompletionStatus status) {
       // Notify which level is selected. Can remove when no longer nec.
-      print("Loading level $name. Game: $game. Status: $status.");
+      //print("Loading level $name. Game: $game. Status: $status.");
 
       // If the level is locked, do not load a game.
       if (status == CompletionStatus.locked) {

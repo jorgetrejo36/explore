@@ -185,7 +185,7 @@ class PlanetPage extends StatelessWidget {
     // this planet. We generate the list and then randomize the order;
     // this currently uses the same seed as above, which is unique per
     // planet. Works with any number of levels/game types.
-    print(userID);
+    // print(userID);
     // Note, userID allows us to cycle random games per user.
     List<GameType> planetGames = getRandomGamesList(seed + userID);
 
