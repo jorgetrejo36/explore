@@ -2,6 +2,29 @@
 
 A new Flutter project.
 
+## Gameplay GIFs
+GIFS are all sped up between 150-300%.
+<div style="display: flex">
+  <img src="https://github.com/jorgetrejo36/explore/blob/master/screenshots-gifs/planet-map-screen-ezgif.com-speed.gif" width="200" />
+<img src="https://github.com/jorgetrejo36/explore/blob/master/screenshots-gifs/shooting-game-ezgif.com-speed.gif" width="200" />
+
+<img src="https://github.com/jorgetrejo36/explore/blob/master/screenshots-gifs/mining-game-ezgif.com-speed.gif" width="200" />
+<img src="https://github.com/jorgetrejo36/explore/blob/master/screenshots-gifs/geyser-game-ezgif.com-speed.gif" width="200" />
+<img src="https://github.com/jorgetrejo36/explore/blob/master/screenshots-gifs/racing-game-ezgif.com-speed.gif" width="600" />
+</div>
+
+## In-App Screenshots
+<div style="display: flex">
+  <img src="https://github.com/jorgetrejo36/explore/blob/master/screenshots-gifs/start-screen.PNG" width="200" />
+  <img src="https://github.com/jorgetrejo36/explore/blob/master/screenshots-gifs/planet-home-screen.PNG" width="200" />
+  <img src="https://github.com/jorgetrejo36/explore/blob/master/screenshots-gifs/leaderboard.PNG" width="200" />
+  <img src="https://github.com/jorgetrejo36/explore/blob/master/screenshots-gifs/game-result-screen.PNG" width="200" />
+  <img src="https://github.com/jorgetrejo36/explore/blob/master/screenshots-gifs/avatar-home-screen.PNG" width="200" />
+  <img src="https://github.com/jorgetrejo36/explore/blob/master/screenshots-gifs/choose-rocket.PNG" width="200" />
+  <img src="https://github.com/jorgetrejo36/explore/blob/master/screenshots-gifs/choose-avatar.PNG" width="200" />
+  <img src="https://github.com/jorgetrejo36/explore/blob/master/screenshots-gifs/create-name.PNG" width="200" />
+</div>
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
