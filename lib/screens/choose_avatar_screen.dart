@@ -2,11 +2,12 @@ import 'package:explore/app_colors.dart';
 import 'package:explore/screens/create_name_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:explore/widgets/sound_library.dart';
 
 class ChooseAvatarScreen extends StatefulWidget {
-  final int selectedRocket;
+  final String selectedRocketPath;
 
-  const ChooseAvatarScreen({Key? key, required this.selectedRocket})
+  const ChooseAvatarScreen({Key? key, required this.selectedRocketPath})
       : super(key: key);
 
   @override
@@ -14,6 +15,8 @@ class ChooseAvatarScreen extends StatefulWidget {
 }
 
 class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
+  String stringAvatar = "";
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -24,18 +27,20 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: AppColors.darkPurple,
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           child: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColors.white,
-              size: 35,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
+              icon: const Icon(
+                Icons.arrow_back,
+                color: AppColors.white,
+                size: 35,
+              ),
+              onPressed: () => {
+                    playClick(),
+                    Navigator.pop(context),
+                  }),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -72,7 +77,7 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
                       context, avatarSize, 'assets/images/alien3.svg'),
                   SizedBox(width: spacing),
                   buildAvatarIconButton(
-                      context, avatarSize, 'assets/images/alien.svg'),
+                      context, avatarSize, 'assets/images/alien4.svg'),
                 ],
               ),
               SizedBox(height: spacing),
@@ -80,10 +85,10 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buildAvatarIconButton(
-                      context, avatarSize, 'assets/images/alien2.svg'),
+                      context, avatarSize, 'assets/images/astronaut.svg'),
                   SizedBox(width: spacing),
                   buildAvatarIconButton(
-                      context, avatarSize, 'assets/images/alien3.svg'),
+                      context, avatarSize, 'assets/images/astronaut2.svg'),
                 ],
               ),
               SizedBox(height: spacing),
@@ -91,10 +96,10 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buildAvatarIconButton(
-                      context, avatarSize, 'assets/images/alien.svg'),
+                      context, avatarSize, 'assets/images/astronaut3.svg'),
                   SizedBox(width: spacing),
                   buildAvatarIconButton(
-                      context, avatarSize, 'assets/images/alien.svg'),
+                      context, avatarSize, 'assets/images/astronaut4.svg'),
                 ],
               ),
             ],
@@ -109,7 +114,9 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColors.lightGrey,
+        //color: AppColors.lightGrey,
+        color:
+            stringAvatar == svgPath ? AppColors.darkGrey : AppColors.lightGrey,
       ),
       width: size,
       height: size,
@@ -120,13 +127,18 @@ class _ChooseAvatarScreenState extends State<ChooseAvatarScreen> {
           width: size,
           height: size,
         ),
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CreateNameScreen(
-                selectedImage: svgPath, selectedRocket: widget.selectedRocket),
+        onPressed: () => {
+          playClick(),
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CreateNameScreen(
+                selectedImage: svgPath,
+                selectedRocketPath: widget.selectedRocketPath,
+              ),
+            ),
           ),
-        ),
+        },
       ),
     );
   }

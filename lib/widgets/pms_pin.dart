@@ -1,3 +1,4 @@
+import 'package:explore/widgets/racing_game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:explore/screens/game_screen.dart';
@@ -20,6 +21,8 @@ import 'pms_rocket.dart';
 class PinWidget extends StatelessWidget {
   // The level's (pin's) name (1-1, 1-2, 1-3, 2-1, etc.).
   final String name;
+  // The level, respective to the planet, for this pin
+  final int level;
   // Determines the color pin to use based on the planet.
   final int pinColor;
   // Is this level pin complete (checked), current (rocket), or locked?
@@ -29,6 +32,8 @@ class PinWidget extends StatelessWidget {
   // What is the theme of this pin? Assigned based on levelName
   // currently, so there are no space themes yet.
   final GameTheme theme;
+  // problem generator object
+  final ProblemGenerator problemGenerator;
 
   // Constructor.
   // Refer to "name" (i.e. "1-4") to determine the theme type.
@@ -36,9 +41,11 @@ class PinWidget extends StatelessWidget {
     Key? key,
     required this.pinColor,
     required this.name,
+    required this.level,
     required this.status,
     required this.game,
     required this.theme,
+    required this.problemGenerator,
   }) : super(key: key);
 
   @override
@@ -57,7 +64,7 @@ class PinWidget extends StatelessWidget {
     // Loads a game based on its type and sends theme information.
     void loadGame(String name, GameType game, CompletionStatus status) {
       // Notify which level is selected. Can remove when no longer nec.
-      print("Loading level $name. Game: $game. Status: $status.");
+      //print("Loading level $name. Game: $game. Status: $status.");
 
       // If the level is locked, do not load a game.
       if (status == CompletionStatus.locked) {
@@ -74,23 +81,33 @@ class PinWidget extends StatelessWidget {
       switch (game) {
         case GameType.geyser:
           gameToLoad = GeyserGameStateful(
-            planet: 'neptune',
-            geyserProblem: ProblemGenerator(1, true),
+            level: level,
+            planet: theme,
+            geyserProblem: problemGenerator,
           );
 
         case GameType.shooting:
           gameToLoad = ShootingGameStateful(
+            level: level,
             planet: theme,
+            shootingProblem: problemGenerator,
           );
 
         case GameType.mining:
           // Add mining game with theme
           gameToLoad = MiningGame(
-              planet: 'neptune', miningProblem: ProblemGenerator(1, true));
+            level: level,
+            planet: theme,
+            miningProblem: problemGenerator,
+          );
 
         case GameType.racing:
           // Add racing game w/ theme. Temp GameScreen until it's made.
-          gameToLoad = GameScreen();
+          gameToLoad = RacingGame(
+            level: level,
+            planet: theme,
+            racingProblem: problemGenerator,
+          );
 
         // Add GameType.scrolling if we make a fifth game.
 
@@ -125,7 +142,6 @@ class PinWidget extends StatelessWidget {
         pinPath = planet4;
         break;
       // If adding more planets, add more cases here for pin colors.
-      // TODO add a pin color for space-themed (non-planet) pins?
       default:
         pinPath = planet1;
         break;
@@ -248,8 +264,8 @@ class PinWidget extends StatelessWidget {
 
                 // Display the rocket close to the pin (its own widget).
                 const Positioned(
-                  left: 16,
-                  bottom: -28,
+                  left: 20,
+                  bottom: -12,
                   child: PMSRocketWidget(),
                 ),
               ],

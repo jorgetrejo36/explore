@@ -27,8 +27,8 @@ class _LifeCounterStatefulState extends State<LifeCounterStateful> {
               child: SvgPicture.asset(
                 'assets/images/life.svg',
                 semanticsLabel: 'heart',
-                height: 50,
-                width: 50,
+                height: MediaQuery.of(context).size.width / 9,
+                width: MediaQuery.of(context).size.width / 9,
               ),
             )
         ],

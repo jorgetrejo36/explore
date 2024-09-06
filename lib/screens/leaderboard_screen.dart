@@ -1,8 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:explore/app_colors.dart';
+import 'package:explore/utils/realm_utils.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:explore/widgets/sound_library.dart';
 
-class LeaderboardScreen extends StatelessWidget {
+class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});
+
+  @override
+  _LeaderboardScreenState createState() => _LeaderboardScreenState();
+}
+
+class _LeaderboardScreenState extends State<LeaderboardScreen> {
+  late List<PlayerData> users;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    try {
+      users = RealmUtils().getLeaderboardUsers();
+    } catch (e) {
+      print('Error loading data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,14 +33,16 @@ class LeaderboardScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Color(0xfff6f6f6),
-            size: 35,
-          ),
-          // Navigate back when the back button is pressed
-          onPressed: () => Navigator.pop(context),
-        ),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Color(0xfff6f6f6),
+              size: 35,
+            ),
+            // Navigate back when the back button is pressed
+            onPressed: () => {
+                  playClick(),
+                  Navigator.pop(context),
+                }),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -36,45 +61,51 @@ class LeaderboardScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.22,
-                  //Start of TopPlayer widget
+                  // Start of TopPlayer widget
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        margin: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.075,
+                      if (users.length > 1)
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.075,
+                          ),
+                          child: TopPlayer(
+                            outlineColor:
+                                const Color.fromARGB(255, 201, 201, 201),
+                            name: users[1].name,
+                            backgroundColor: const Color(0xffa149f0),
+                            imgName: users[1].imgName,
+                          ),
                         ),
-                        child: const TopPlayer(
-                          outlineColor: Color.fromARGB(255, 201, 201, 201),
-                          name: "Devin",
-                          backgroundColor: Color(0xffa149f0),
-                          imgName: "TestMonster",
+                      if (users.isNotEmpty)
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          child: TopPlayer(
+                            outlineColor: Color(0xFFECBC14),
+                            name: users[0].name,
+                            backgroundColor: Color(0xffa149f0),
+                            imgName: users[0].imgName,
+                          ),
                         ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.02),
-                        child: const TopPlayer(
-                          outlineColor: Color(0xFFECBC14),
-                          name: "Kevin",
-                          backgroundColor: Color(0xffa149f0),
-                          imgName: "TestMonster2",
+                      if (users.length > 2)
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.09,
+                          ),
+                          child: TopPlayer(
+                            outlineColor: Color.fromARGB(255, 197, 98, 12),
+                            name: users[2].name,
+                            backgroundColor: Color(0xffa149f0),
+                            imgName: users[2].imgName,
+                          ),
                         ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.09),
-                        child: const TopPlayer(
-                          outlineColor: Color.fromARGB(255, 197, 98, 12),
-                          name: "Smevin",
-                          backgroundColor: Color(0xffa149f0),
-                          imgName: "TestMonster3",
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -84,58 +115,17 @@ class LeaderboardScreen extends StatelessWidget {
                   margin: EdgeInsets.only(
                     top: MediaQuery.of(context).size.height * 0.0225,
                   ),
-                  child: const Column(
-                    children: [
-                      // Start of Score Bar Widget
-                      ScoreBar(
+                  child: ListView.builder(
+                    itemCount: users.length,
+                    itemBuilder: (context, index) {
+                      final player = users[index];
+                      return ScoreBar(
                         barColor: Color(0xffa149f0),
-                        imgName: "TestMonster",
-                        name: "Bevin",
-                        score: "201",
-                      ),
-                      ScoreBar(
-                        barColor: Color(0xff8c74ec),
-                        imgName: "TestMonster2",
-                        name: "Smevin",
-                        score: "198",
-                      ),
-                      ScoreBar(
-                        barColor: Color(0xff3e7cda),
-                        imgName: "TestMonster3",
-                        name: "Kevin",
-                        score: "153",
-                      ),
-                      ScoreBar(
-                        barColor: Color(0xff2ab2d7),
-                        imgName: "TestMonster",
-                        name: "Evan",
-                        score: "124",
-                      ),
-                      ScoreBar(
-                        barColor: Color(0xffa149f0),
-                        imgName: "TestMonster2",
-                        name: "Devon",
-                        score: "117",
-                      ),
-                      ScoreBar(
-                        barColor: Color(0xff8c74ec),
-                        imgName: "TestMonster3",
-                        name: "Slevin",
-                        score: "98",
-                      ),
-                      ScoreBar(
-                        barColor: Color(0xff3e7cda),
-                        imgName: "TestMonster",
-                        name: "Grevin",
-                        score: "24",
-                      ),
-                      ScoreBar(
-                        barColor: Color(0xff2ab2d7),
-                        imgName: "TestMonster2",
-                        name: "Steve",
-                        score: "12",
-                      ),
-                    ],
+                        imgName: player.imgName,
+                        name: player.name,
+                        score: player.score,
+                      );
+                    },
                   ),
                 ),
               ],
@@ -162,13 +152,13 @@ class TopPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 115,
-      height: 140,
-      margin: EdgeInsets.symmetric(horizontal: 10),
+      width: MediaQuery.of(context).size.width * 0.25,
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Stack(
         children: [
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 10),
+            //margin: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.all(10),
             width: 95,
             height: 95,
             decoration: BoxDecoration(
@@ -188,11 +178,10 @@ class TopPlayer extends StatelessWidget {
               ],
             ),
             child: Align(
-              alignment: AlignmentDirectional(0, 0),
-              child: Image.asset(
-                "assets/images/$imgName.png",
+              alignment: const AlignmentDirectional(0, 0),
+              child: SvgPicture.asset(
+                imgName,
                 fit: BoxFit.contain,
-                height: 75,
               ),
             ),
           ),
@@ -257,11 +246,11 @@ class ScoreBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width * 0.18,
-            child: Image.asset("assets/images/$imgName.png"),
+            child: SvgPicture.asset(imgName),
           ),
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width * 0.6,
             child: Align(
               alignment: Alignment.centerLeft,

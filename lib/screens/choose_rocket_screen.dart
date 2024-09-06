@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:explore/app_colors.dart';
 import 'package:explore/screens/choose_avatar_screen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:explore/widgets/sound_library.dart';
 
 class ChooseRocketScreen extends StatefulWidget {
   const ChooseRocketScreen({Key? key}) : super(key: key);
@@ -28,12 +30,14 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           child: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColors.white,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
+              icon: const Icon(
+                Icons.arrow_back,
+                color: AppColors.white,
+              ),
+              onPressed: () => {
+                    playClick(),
+                    Navigator.pop(context),
+                  }),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -52,19 +56,18 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildRocketAvatar(Icons.rocket_launch_outlined, rocketSize, 1),
+                  buildRocketAvatar('assets/images/rocket1.svg', rocketSize),
                   SizedBox(width: spacing),
-
-                  buildRocketAvatar(Icons.rocket_outlined, rocketSize, 2),
+                  buildRocketAvatar('assets/images/rocket2.svg', rocketSize),
                 ],
               ),
               SizedBox(height: spacing),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildRocketAvatar(Icons.rocket_launch, rocketSize, 3),
+                  buildRocketAvatar('assets/images/rocket3.svg', rocketSize),
                   SizedBox(width: spacing),
-                  buildRocketAvatar(Icons.rocket, rocketSize, 4),
+                  buildRocketAvatar('assets/images/rocket4.svg', rocketSize),
                 ],
               ),
             ],
@@ -74,20 +77,30 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
     );
   }
 
-  Widget buildRocketAvatar(IconData icon, double size, int id) {
+  Widget buildRocketAvatar(
+    String svgPath,
+    double size,
+  ) {
     return Container(
       height: size,
       width: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: stringRocket == icon.toString() ? AppColors.lightGrey : AppColors.darkBlue,
+        color:
+            stringRocket == svgPath ? AppColors.darkGrey : AppColors.lightGrey,
       ),
       margin: const EdgeInsets.all(10.0),
       child: IconButton(
-        icon: Icon(icon),
+        icon: Transform.rotate(
+          angle: 30 * (3.1415926535 / 180), // Rotate 30 degrees to the right
+          child: SvgPicture.asset(
+            svgPath, // Replace with your SVG file path
+          ),
+        ),
         onPressed: () {
-          selectRocket(icon.toString());
-          navigateToChooseAvatarScreen(id);
+          playClick();
+          selectRocket(svgPath);
+          navigateToChooseAvatarScreen(svgPath);
         },
       ),
     );
@@ -99,11 +112,12 @@ class _ChooseRocketScreenState extends State<ChooseRocketScreen> {
     });
   }
 
-  void navigateToChooseAvatarScreen(int selectedRocket) {
+  void navigateToChooseAvatarScreen(String selectedRocketPath) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ChooseAvatarScreen(selectedRocket: selectedRocket),
+        builder: (context) =>
+            ChooseAvatarScreen(selectedRocketPath: selectedRocketPath),
       ),
     );
   }

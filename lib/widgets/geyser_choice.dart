@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class GeyserChoice extends StatelessWidget {
-  const GeyserChoice({
-    Key? key,
-    required this.handleState,
-    required this.choice,
-    required this.answer,
-    required this.correctAnswer,
-    required this.answeredQuestion,
-    required this.item,
-    required this.top,
-  }) : super(key: key);
+class GeyserChoiceStateful extends StatefulWidget {
+  const GeyserChoiceStateful(
+      {Key? key,
+      required this.handleState,
+      required this.choice,
+      required this.answer,
+      required this.correctAnswer,
+      required this.answeredQuestion,
+      required this.item,
+      required this.top,
+      required this.playerAvatar})
+      : super(key: key);
 
   final Function(int) handleState;
   final int choice;
@@ -20,40 +21,80 @@ class GeyserChoice extends StatelessWidget {
   final bool answeredQuestion;
   final String item;
   final String top;
+  final String playerAvatar;
+  @override
+  State<GeyserChoiceStateful> createState() => _GeyserChoiceState();
+}
+
+class _GeyserChoiceState extends State<GeyserChoiceStateful>
+    with TickerProviderStateMixin {
+  AnimationController? _animationController;
+  AnimationController? _animationController2;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+    _animationController2 = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController?.dispose();
+    _animationController2?.dispose(); // Start the smoke animation
+    super.dispose();
+  }
 
   Widget _buildChoiceButton() {
     return Center(
       child: TextButton(
         onPressed: () {
-          handleState(choice);
+          widget.handleState(widget.choice);
         },
         style: TextButton.styleFrom(
             foregroundColor: Colors.white,
             textStyle: const TextStyle(fontFamily: 'Fredoka', fontSize: 40)),
-        child: Text("$choice"),
+        child: Text('${widget.choice}'),
       ),
     );
   }
 
   Widget _buildAlienSvg() {
-    return Align(
-      alignment: Alignment.bottomLeft,
+    final rotationAnimation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+          parent: _animationController2!, curve: Curves.linearToEaseOut),
+    );
+
+    return RotationTransition(
+      turns: rotationAnimation,
+      alignment: Alignment.center,
       child: SvgPicture.asset(
-        'assets/images/alien.svg',
-        width: double.infinity,
-        height: 150,
+        widget.playerAvatar,
+        width: MediaQuery.of(context).size.width * .30,
         fit: BoxFit.fill,
       ),
     );
   }
 
   Widget _buildSmokeSvg() {
-    return Align(
-      alignment: Alignment.bottomLeft,
+    final scaleAnimation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+          parent: _animationController!, curve: Curves.linearToEaseOut),
+    );
+
+    return ScaleTransition(
+      scale: scaleAnimation,
+      alignment: Alignment.bottomCenter, // Grow from the bottom
       child: SvgPicture.asset(
-        top,
+        widget.top,
         width: double.infinity,
-        height: 250,
+        height: MediaQuery.of(context).size.height / 4, // Fixed height
         fit: BoxFit.fill,
       ),
     );
@@ -63,33 +104,38 @@ class GeyserChoice extends StatelessWidget {
     return Align(
       alignment: Alignment.center,
       child: SvgPicture.asset(
-        item,
+        widget.item,
         width: double.infinity,
-        height: 75,
+        height: MediaQuery.of(context).size.height / 12,
         fit: BoxFit.fill,
       ),
     );
   }
 
   List<Widget> correctWidget() {
-    if (!answeredQuestion) {
-      return choice == answer
+    if (!widget.answeredQuestion) {
+      return widget.choice == widget.answer
           ? [_buildChoiceButton(), _buildAlienSvg()]
           : [_buildChoiceButton()];
     }
 
-    if (correctAnswer != answer) {
-      if (choice != correctAnswer) {
-        return choice == answer
+    if (widget.correctAnswer != widget.answer) {
+      if (widget.choice != widget.correctAnswer) {
+        _animationController?.reset(); // Reset the animation controller
+        _animationController?.forward(); // Start the smoke animation
+        _animationController2?.reset(); // Reset the animation controller
+        _animationController2?.forward(); // Start the smoke animation
+
+        return widget.choice == widget.answer
             ? [
-                Container(
+                SizedBox(
                   width: double.infinity,
-                  height: 250,
-                  child: Stack(
-                    children: [
-                      Positioned.fill(child: _buildSmokeSvg()),
-                      Positioned.fill(child: _buildAlienSvg()),
-                    ],
+                  height: MediaQuery.of(context).size.height / 4,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Stack(
+                      children: [_buildSmokeSvg(), _buildAlienSvg()],
+                    ),
                   ),
                 ),
               ]
@@ -97,9 +143,13 @@ class GeyserChoice extends StatelessWidget {
       } else {
         return [_buildItemSvg()];
       }
+    } else {
+      _animationController?.reset(); // Reset the animation controller
+      _animationController?.forward();
     }
 
-    return choice == answer
+    // Player answers correctly
+    return widget.choice == widget.answer
         ? [_buildItemSvg(), _buildAlienSvg()]
         : [_buildSmokeSvg()];
   }

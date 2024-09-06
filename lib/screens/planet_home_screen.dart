@@ -1,20 +1,25 @@
 import 'package:explore/schemas.dart';
 import 'package:explore/screens/leaderboard_screen.dart';
 import 'package:explore/screens/planet_map_screen.dart';
+import 'package:explore/utils/realm_utils.dart';
+import 'package:explore/utils/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:realm/realm.dart';
+import 'package:explore/widgets/sound_library.dart';
+import 'package:explore/widgets/pms_rocket.dart';
 
 class PlanetHomeScreen extends StatefulWidget {
-  final ObjectId userId;
-  const PlanetHomeScreen({Key? key, required this.userId}) : super(key: key);
+  const PlanetHomeScreen({Key? key}) : super(key: key);
 
   @override
   State<PlanetHomeScreen> createState() => _PlanetHomeScreenState();
 }
 
 class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
-  ExploreUser? currentUser;
+  late ExploreUser currentUser;
+  final UserController loggedInUser = Get.find();
 
   @override
   void initState() {
@@ -24,16 +29,16 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
 
   Future<void> _loadData() async {
     try {
+      final UserController loggedInUser = Get.find();
+      final ObjectId currentUserId = loggedInUser.id;
       // Open a Realm instance
-      final realm = Realm(
-        Configuration.local([ExploreUser.schema, Planet.schema, Level.schema]),
-      );
+      final realm = Realm(config);
 
-      // Read all instances of the Person model
-      // Read the user with the provided userId
-      final user = realm.all<ExploreUser>().where((user) => user.id == widget.userId).firstOrNull;
+      // find the user with the currentUserId
+      final ExploreUser user =
+          realm.find<ExploreUser>(currentUserId) as ExploreUser;
 
-      // Store the retrieved instances in the list
+      // Store this user in a seperate variable
       setState(() {
         currentUser = user;
       });
@@ -44,6 +49,14 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
     } catch (e) {
       print('Error loading data: $e');
     }
+  }
+
+  // this function is used to pass down the widget tree and reload the screen
+  // when coming back from the planet map screen
+  void reloadScreen() {
+    setState(() {
+      _loadData();
+    });
   }
 
   @override
@@ -65,7 +78,10 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
               color: Colors.white,
             ),
             // Navigate back when the back button is pressed
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => {
+              // Button Sound
+              playClick(), Navigator.pop(context)
+            },
           ),
         ),
       ),
@@ -89,13 +105,15 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
                 ),
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.35,
-                child: const IconGridWidget(
+                height: MediaQuery.of(context).size.height * 0.40,
+                child: IconGridWidget(
+                  planets: currentUser.planets,
                   numPlanets: 4,
+                  loadData: reloadScreen,
                 ),
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.30,
+                height: MediaQuery.of(context).size.height * 0.25,
                 child: const LeaderboardIconWidget(),
               ),
             ],
@@ -107,7 +125,7 @@ class _PlanetHomeScreenState extends State<PlanetHomeScreen> {
 }
 
 class UserInfo extends StatelessWidget {
-  final ExploreUser? user;
+  final ExploreUser user;
 
   const UserInfo({Key? key, required this.user}) : super(key: key);
 
@@ -116,36 +134,50 @@ class UserInfo extends StatelessWidget {
     // Check if there is at least one user in the list
     // Check if there is a user
     if (user != null) {
-
       return Column(
         children: [
           // First Row: Circle with Image
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color(0xFF9443DC),
-                    ),
+              Container(
+                width: MediaQuery.of(context).size.height * 0.1,
+                height: MediaQuery.of(context).size.height * 0.1,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xFF9443DC),
+                ),
+                child: Center(
+                  // db pull the svg
+                  child: SvgPicture.asset(
+                    user.avatarPath,
+                    // width: 70,
                   ),
-                  Center(
-                    //db pull the svg
-                    child: SvgPicture.asset(
-                      user!.avatar,
-                      width: 70,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+          // Second Row: Text
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  user.name,
+                  style: const TextStyle(
+                    fontSize: 40,
+                    color: Colors.white,
+                    fontFamily: "Fredoka",
+                  ),
+                ),
+              ),
+            ],
+          ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           // Third Row: Rectangular Chip
           Row(
@@ -158,14 +190,14 @@ class UserInfo extends StatelessWidget {
                   color: const Color(0xFF9443DC),
                   borderRadius: BorderRadius.circular(30),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // Text on the left end
                     //db pull score
                     Text(
-                      '117',
-                      style: TextStyle(
+                      '${user.totalScore}',
+                      style: const TextStyle(
                         color: Colors.white,
                         fontFamily: "Fredoka",
                         fontSize: 20,
@@ -173,7 +205,7 @@ class UserInfo extends StatelessWidget {
                     ),
 
                     // Icon on the right end
-                    Padding(
+                    const Padding(
                       padding: EdgeInsets.only(left: 2.0),
                       child: Icon(
                         Icons.star,
@@ -188,7 +220,7 @@ class UserInfo extends StatelessWidget {
         ],
       );
     } else {
-      return Center(
+      return const Center(
         child: Text(
           'No user data available',
           style: TextStyle(color: Colors.white),
@@ -198,9 +230,37 @@ class UserInfo extends StatelessWidget {
   }
 }
 
+const Map<GameTheme, String> planetSVGs = {
+  GameTheme.earth: "assets/images/earth.svg",
+  GameTheme.mars: "assets/images/mars.svg",
+  GameTheme.saturn: "assets/images/saturn.svg",
+  GameTheme.neptune: "assets/images/neptune.svg",
+};
+
+class PlanetInfo {
+  final Planet planet;
+  late String imagePath;
+  late CompletionStatus completionStatus;
+  late GameTheme currPlanet;
+
+  PlanetInfo(this.planet) {
+    imagePath = planetSVGs[GameTheme.values[planet.identifyingEnum]] ?? "";
+    completionStatus = CompletionStatus.values[planet.status];
+    currPlanet = GameTheme.values[planet.identifyingEnum];
+  }
+}
+
 class IconGridWidget extends StatelessWidget {
   final int numPlanets;
-  const IconGridWidget({super.key, required this.numPlanets});
+  final List<Planet> planets;
+  final VoidCallback loadData;
+
+  const IconGridWidget({
+    super.key,
+    required this.numPlanets,
+    required this.planets,
+    required this.loadData,
+  });
 
   // calculate the indices that need to have a planet in them
   // the calculation is based off if the numPlanets is odd or even
@@ -230,15 +290,27 @@ class IconGridWidget extends StatelessWidget {
 
   // organize the planets from the DB (which should be stored in proper order)
   // into the order which the grid will read
-  List<String> reorganizePlanetPaths() {
+  List<PlanetInfo> reorganizePlanetPaths() {
+    // Create a shallow copy of the original list
+    final List<Planet> sortedPlanets = [...planets];
+    // sort sortedPlanets (which is not yet sorted)
+    sortedPlanets
+        .sort((a, b) => a.identifyingEnum.compareTo(b.identifyingEnum));
+
+    // now with sorted planets
+    List<PlanetInfo> planetPaths =
+        planets.map((planet) => PlanetInfo(planet)).toList();
+
     // FIXME: these paths will eventually be from the DB
-    List<String> planetPaths = [
-      "assets/images/earth.svg",
-      "assets/images/mars.svg",
-      "assets/images/saturn.svg",
-      "assets/images/neptune.svg",
-    ];
-    List<String> newPlanetPaths = List<String>.filled(numPlanets, "");
+    // List<String> planetPaths = [
+    //   "assets/images/earth.svg",
+    //   "assets/images/mars.svg",
+    //   "assets/images/saturn.svg",
+    //   "assets/images/neptune.svg",
+    // ];
+
+    List<PlanetInfo> newPlanetPaths =
+        List<PlanetInfo>.filled(numPlanets, PlanetInfo(planets[0]));
 
     int indexForEvenIndices = numPlanets ~/ 2;
     int indexForOddIndices = 0;
@@ -257,118 +329,147 @@ class IconGridWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<int> planetIndices = calculatePlanetIndices();
-    List<String> planetPaths = reorganizePlanetPaths();
+    List<PlanetInfo> planetPaths = reorganizePlanetPaths();
+
     int planetPathsIndex = 0;
 
-    return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(), // disable scrolling
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: numPlanets,
-      ),
-      itemCount: numPlanets * 2,
-      itemBuilder: (context, index) {
-        // Check if the current index is in the list of planet indices
-        bool isPlanetIndex = planetIndices.contains(index);
+    return Padding(
+      padding: const EdgeInsets.only(left: 15, right: 15),
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(), // disable scrolling
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: numPlanets,
+        ),
+        itemCount: numPlanets * 2,
+        itemBuilder: (context, index) {
+          // Check if the current index is in the list of planet indices
+          bool isPlanetIndex = planetIndices.contains(index);
 
-        return Container(
-          alignment: Alignment.center,
-          child: isPlanetIndex
-              ? PlanetWidget(
-                  completionStatus: CompletionStatus.complete,
-                  planetPath: planetPaths[planetPathsIndex++],
-                )
-              : null, // Display null for cells without a planet
-        );
-      },
+          return Container(
+            alignment: Alignment.center,
+            child: isPlanetIndex
+                ? PlanetWidget(
+                    completionStatus:
+                        planetPaths[planetPathsIndex].completionStatus,
+                    planetPath: planetPaths[planetPathsIndex].imagePath,
+                    planetSelection: planetPaths[planetPathsIndex++].currPlanet,
+                    loadData: loadData,
+                  )
+                : null, // Display null for cells without a planet
+          );
+        },
+      ),
     );
   }
 }
 
 enum CompletionStatus { complete, current, locked }
 
-class PlanetWidget extends StatelessWidget {
+class PlanetWidget extends StatefulWidget {
   final CompletionStatus completionStatus;
   final String planetPath;
+  final GameTheme planetSelection;
+  final VoidCallback loadData;
 
   const PlanetWidget({
     super.key,
     required this.completionStatus,
     required this.planetPath,
+    required this.planetSelection,
+    required this.loadData,
   });
 
   @override
+  State<PlanetWidget> createState() => _PlanetWidgetState();
+}
+
+class _PlanetWidgetState extends State<PlanetWidget> {
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          // FIXME Pass in 0-3 when clicking Earth-Neptune to scroll to that planet.
-          // Currently, this line makes all planets scroll to 0 (Earth).
-          // Scroll is implemented but needs a dynamic parameter here.
-          builder: (context) => const PlanetMapScreen(selectedPlanet: 0),
-        ),
-      ),
-      child: Stack(
-        children: [
-          SvgPicture.asset(
-            planetPath,
-            semanticsLabel: "A planet",
-            width: 80,
-          ),
-          // show green check mark if the planet is complete
-          completionStatus == CompletionStatus.complete
-              ? Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    width: 25,
-                    height: 25,
-                    decoration: const BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                    ),
-                    child:
-                        const Icon(Icons.check, color: Colors.white, size: 15),
-                  ),
-                )
-              // show the rocket if this is the current level
-              : completionStatus == CompletionStatus.current
-                  ? Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        width: 20,
-                        height: 20,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.rocket,
-                          color: Colors.white,
-                          size: 40,
-                        ),
-                      ),
-                    )
-                  // show a lock symbol if the level is locked
-                  : Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        width: 20,
-                        height: 20,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.lock,
-                          color: Colors.grey,
-                          size: 30,
-                        ),
-                      ),
-                    ),
-        ],
-      ),
+    final SvgPicture svg = SvgPicture.asset(
+      widget.planetPath,
+      semanticsLabel: "A planet",
+      width: 80,
     );
+
+    final Stack child = Stack(
+      clipBehavior: Clip.none,
+      children: [
+        widget.completionStatus == CompletionStatus.locked
+            ? Opacity(opacity: 0.5, child: svg)
+            : svg,
+        // show green check mark if the planet is complete
+        widget.completionStatus == CompletionStatus.complete
+            ? Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  width: 25,
+                  height: 25,
+                  decoration: const BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.check, color: Colors.white, size: 15),
+                ),
+              )
+            // show the rocket if this is the current level
+            : widget.completionStatus == CompletionStatus.current
+                ? Positioned(
+                    bottom: -16,
+                    right: -16,
+                    child: Transform.rotate(
+                      angle: 20 * 3.14 / 180,
+                      child:
+                          const SizedBox(height: 60, child: PMSRocketWidget()),
+                    ),
+                  )
+                // show a lock symbol if the level is locked
+                : Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.lock,
+                        color: Colors.grey,
+                        size: 30,
+                      ),
+                    ),
+                  ),
+      ],
+    );
+
+    return widget.completionStatus == CompletionStatus.locked
+        ? child
+        : GestureDetector(
+            onTap: () => {
+              // Button Sound
+              playClick(),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  // selectedPlanet will use planetselection to scroll to correct place
+                  builder: (context) => PlanetMapScreen(
+                    selectedPlanet: widget.planetSelection.index,
+                  ),
+                ),
+              ).then(
+                (_) => setState(() {
+                  // this will reload the data to properly show the current
+                  // score, planets unlocked, etc.
+                  // this only works if you finish one level, still need to be
+                  // fixed for more levels
+                  widget.loadData();
+                }),
+              ),
+            },
+            child: child,
+          );
   }
 }
 
@@ -379,12 +480,16 @@ class LeaderboardIconWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: GestureDetector(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const LeaderboardScreen(),
+        onTap: () => {
+          // Button Sound
+          playClick(),
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LeaderboardScreen(),
+            ),
           ),
-        ),
+        },
         child: Container(
           width: 150,
           height: 150,

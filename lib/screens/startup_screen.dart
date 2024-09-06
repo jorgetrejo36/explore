@@ -1,8 +1,24 @@
 import 'package:explore/screens/avatar_home_screen.dart';
+import 'package:explore/utils/user_controller.dart';
+import 'package:explore/widgets/sound_library.dart';
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class StartupScreen extends StatelessWidget {
+class StartupScreen extends StatefulWidget {
   const StartupScreen({super.key});
+
+  @override
+  State<StartupScreen> createState() => _StartupScreenState();
+}
+
+class _StartupScreenState extends State<StartupScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Get.put(UserController());
+    playTitleMusic();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,35 +43,51 @@ class StartupScreen extends StatelessWidget {
                     ),
                     child: Image.asset(
                       "assets/images/AppIcon.png",
-                      height: 180,
+                      height: MediaQuery.of(context).size.height * 0.25,
                     ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.70,
+                      child: FittedBox(
+                        child: Text(
+                          "Explore",
+                          style: TextStyle(
+                            color: Color(0xfff6f6f6),
+                            fontFamily: 'Fredoka',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(),
                   ),
                   Container(
-                    margin: EdgeInsets.only(bottom: 225),
-                    child: const Text(
-                      "Explore",
-                      style: TextStyle(
+                    margin: EdgeInsets.only(
+                        bottom: MediaQuery.sizeOf(context).height * 0.16),
+                    alignment: Alignment.bottomCenter,
+                    child: IconButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xff9173f4),
+                        minimumSize: Size(140, 40),
+                      ),
+                      onPressed: () => {
+                        playClick(),
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AvatarHomeScreen(),
+                          ),
+                        ),
+                      },
+                      icon: const Icon(
+                        Icons.play_arrow,
                         color: Color(0xfff6f6f6),
-                        fontSize: 70,
-                        fontFamily: 'Fredoka',
+                        size: 45,
                       ),
-                    ),
-                  ),
-                  IconButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xff9173f4),
-                      minimumSize: Size(140, 40),
-                    ),
-                    onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AvatarHomeScreen(),
-                      ),
-                    ),
-                    icon: const Icon(
-                      Icons.play_arrow,
-                      color: Color(0xfff6f6f6),
-                      size: 45,
                     ),
                   ),
                 ],

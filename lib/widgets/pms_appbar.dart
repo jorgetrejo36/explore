@@ -1,3 +1,4 @@
+import 'package:explore/screens/planet_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:explore/app_colors.dart';
@@ -5,7 +6,14 @@ import 'package:explore/app_colors.dart';
 // Displays a custom AppBar on the PMS Screen.
 
 class PMSAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
-  const PMSAppBarWidget({super.key});
+  final String name;
+  final String avatarPath;
+
+  const PMSAppBarWidget({
+    required this.name,
+    required this.avatarPath,
+    super.key,
+  });
 
   // Implement & set PreferredSizeWidget so we can use this as the AppBar.
   @override
@@ -15,7 +23,6 @@ class PMSAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     // Return only a fully-constructed AppBar for the PMS screen.
     return AppBar(
-
       // Size the AppBar, color, and center its content.
       // Change color based on theme player selects, or no?
       backgroundColor: const Color(0xB2A149F0),
@@ -29,7 +36,6 @@ class PMSAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       // All content on the AppBar is stored in a Row left to right.
       title: Row(
         children: [
-
           // Back button on the left side.
           Container(
             margin: const EdgeInsets.all(7),
@@ -38,7 +44,6 @@ class PMSAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               shape: BoxShape.rectangle,
               color: const Color(0xFF6B6B6B),
             ),
-
             child: IconButton(
               icon: const Icon(
                 Icons.arrow_back,
@@ -53,9 +58,9 @@ class PMSAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               alignment: Alignment.centerLeft,
-              child: const Text(
-                'Slevin',
-                style: TextStyle(
+              child: Text(
+                name,
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 44,
                   fontFamily: "Fredoka",
@@ -71,7 +76,6 @@ class PMSAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-
                 Container(
                   width: 56,
                   height: 56,
@@ -83,15 +87,13 @@ class PMSAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 Center(
                   // FIXME Load user avatar from DB.
                   child: SvgPicture.asset(
-                    'assets/images/alien.svg',
+                    avatarPath,
                     width: 48,
                   ),
                 ),
-
               ],
             ),
           ),
-
         ],
       ),
     );

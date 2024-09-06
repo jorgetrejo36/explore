@@ -8,36 +8,32 @@ class _ExploreUser {
   late final ObjectId id;
 
   late String name;
-  late String avatar;
-  late int rocketColor; // enum
+  late String avatarPath;
+  late String rocketPath;
   late int totalScore;
   late int totalItems;
-  late int currentLevel;
   late List<_Planet> planets;
 }
 
 @RealmModel()
 class _Planet {
   @PrimaryKey()
-  late final int id;
-
-  late String image;
+  late final ObjectId id;
+  late int identifyingEnum; // enum: GameTheme
   late String name;
-  late bool status;
-  late int collectedItems;
+  late int status; // enum: CompletionStatus
   late int totalItems;
+  late int collectedItems;
   late List<_Level> levels;
 }
 
 @RealmModel()
 class _Level {
   @PrimaryKey()
-  late final int id;
-
-  late int difficulty;
+  late final ObjectId id;
+  late int levelNumOnPlanet;
   late int questionAmount;
-  late bool status;
-  late double timeTaken;
+  late int status; // enum: CompletionStatus
   late int questionsCorrect;
   late int highscore;
 }

@@ -25,7 +25,10 @@ class LifeAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25 / 2.5),
+        padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width / 100,
+          vertical: MediaQuery.of(context).size.height / 100,
+        ),
         child: Stack(children: [
           Positioned.fill(
               child: Center(
@@ -35,25 +38,6 @@ class LifeAppBar extends StatelessWidget implements PreferredSizeWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              leading ??
-                  Transform.translate(
-                      offset: const Offset(-10, 0),
-                      child: IconButton(
-                        style: IconButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          iconSize: 50,
-                        ),
-                        icon: const Icon(
-                          Icons.arrow_left_rounded,
-                        ),
-                        // Navigate back when the back button is pressed
-                        onPressed: () => Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const GameScreen(),
-                          ),
-                        ),
-                      )),
               if (showItemCounter)
                 Transform.translate(
                   offset: const Offset(10, 0),

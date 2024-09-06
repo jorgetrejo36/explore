@@ -20,6 +20,7 @@ version: 1.0.0+1
 
 environment:
   sdk: ">=3.2.4 <4.0.0"
+  flutter: 3.19.5
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -32,12 +33,14 @@ dependencies:
   flutter_svg: ^2.0.5
   flutter:
     sdk: flutter
-
+  audioplayers: ^5.2.1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   realm: ^1.6.1
   path_provider: ^2.1.2
+  get: ^4.6.6
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +57,11 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/AppIcon.png"
+
 # The following section is specific to Flutter packages.
 flutter:
   # The following line ensures that the Material Icons font is
@@ -63,6 +71,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    # Images
     - assets/images/AppIcon.png
     - assets/images/StartupScreen.png
     - assets/images/StarsBackground.png
@@ -70,6 +79,7 @@ flutter:
     - assets/images/TestMonster2.png
     - assets/images/TestMonster3.png
     - assets/images/compass.svg
+    - assets/images/burning.svg
     - assets/images/right.svg
     - assets/images/wrong.svg
     - assets/images/locked.svg
@@ -89,6 +99,12 @@ flutter:
     - assets/images/pms_pin_neptune.svg
     - assets/images/shooting_earth_ground_art.png
     - assets/images/shooting_earth_sky_art.png
+    - assets/images/shooting_mars_ground_art.png
+    - assets/images/shooting_mars_sky_art.png
+    - assets/images/shooting_saturn_ground_art.png
+    - assets/images/shooting_saturn_sky_art.png
+    - assets/images/shooting_neptune_ground_art.png
+    - assets/images/shooting_neptune_sky_art.png
     - assets/images/shooting_player.png
     - assets/images/rocket_temp.svg
     - assets/images/mars-bg.svg
@@ -101,7 +117,6 @@ flutter:
     - assets/images/alien2.svg
     - assets/images/alien3.svg
     - assets/images/car.svg
-    - assets/images/diamond.svg
     - assets/images/star.svg
     - assets/images/Vector.png
     - assets/images/trophy.png
@@ -119,11 +134,63 @@ flutter:
     - assets/images/ruby.svg
     - assets/images/gem.svg
     - assets/images/crystals.svg
-    - assets/images/neptune-bg.svg
+    - assets/images/rocket1.svg
+    - assets/images/rocket2.svg
+    - assets/images/rocket3.svg
+    - assets/images/rocket4.svg
+    - assets/images/rocketFlame.svg
     - assets/images/neptune-geyser.svg
     - assets/images/GeyserBubbles.svg
     - assets/images/GeyserGround.svg
     - assets/images/EarthGeyser.png
+    - assets/images/ufo.svg
+    - assets/images/SaturnGeyser.png
+    - assets/images/MarsGeyser.png
+    - assets/images/astronaut.svg
+    - assets/images/astronaut2.svg
+    - assets/images/astronaut3.svg
+    - assets/images/astronaut4.svg
+    - assets/images/alien4.svg
+    - assets/images/rocket.png
+    - assets/images/sg_asteroid_earth.svg
+    - assets/images/sg_asteroid_destroyed_earth.svg
+    - assets/images/sg_asteroid_neptune.svg
+    - assets/images/ring.svg
+    - assets/images/ring-faded.svg
+    - assets/images/lollipop.svg
+    - assets/images/blue-fish.svg
+    - assets/images/trash-can.svg
+    - assets/images/garbage-bin.svg
+    - assets/images/rocket.svg
+    - assets/images/asteroids.svg
+    - assets/images/EarthRacing.png
+    - assets/images/MarsRacing.png
+    - assets/images/SaturnRacing.png
+    - assets/images/NeptuneRacing.png
+    - assets/images/EarthRacingStart.png
+    - assets/images/MarsRacingStart.png
+    - assets/images/SaturnRacingStart.png
+    - assets/images/NeptuneRacingStart.png
+    - assets/images/UFO1.svg
+    - assets/images/UFO2.svg
+    - assets/images/submarine.svg
+    - assets/images/ship.svg
+    - assets/images/rotate-smartphone.png
+    - assets/images/transparency.png
+    - assets/images/racingRocket.svg
+
+    # Sounds
+    - assets/sounds/correct.mp3
+    - assets/sounds/wrong.mp3
+    - assets/sounds/takeoff.mp3
+    - assets/sounds/shoot.mp3
+    - assets/sounds/levelComplete.wav
+    - assets/sounds/titleScreen.wav
+    - assets/sounds/buttonClick.wav
+    - assets/sounds/racingMusic.wav
+    - assets/sounds/miningMusic.wav
+    - assets/sounds/geyserMusic.wav
+    - assets/sounds/rocketMusic.wav
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

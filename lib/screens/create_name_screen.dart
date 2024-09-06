@@ -1,41 +1,33 @@
-import 'package:explore/schemas.dart';
+import 'package:explore/screens/avatar_home_screen.dart';
 import 'package:explore/screens/planet_home_screen.dart';
+import 'package:explore/utils/realm_utils.dart';
+import 'package:explore/utils/user_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:realm/realm.dart';
 import 'package:explore/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:explore/widgets/sound_library.dart';
 
 class CreateNameScreen extends StatelessWidget {
   final String selectedImage;
-  final int selectedRocket;
-
-
+  final String selectedRocketPath;
 
   const CreateNameScreen({
     Key? key,
     required this.selectedImage,
-    required this.selectedRocket,
+    required this.selectedRocketPath,
   }) : super(key: key);
 
-  void createNewUser({required BuildContext context, required String userName}) async {
-    // create the new avatar in the DB
-    // open local realm instance
-    ObjectId userId = ObjectId();
-
-    final realm = Realm(
-      Configuration.local([ExploreUser.schema, Planet.schema, Level.schema]),
-    );
-
-    final user = ExploreUser(userId, userName, selectedImage, selectedRocket, 0, 0, 1);
-    realm.write(() {
-      realm.add(user);
-    });
-
-    realm.close();
-    // finish DB operations
+  void createNewUser({
+    required BuildContext context,
+    required String userName,
+  }) async {
+    // create new user
+    RealmUtils().createNewUser(userName, selectedImage, selectedRocketPath);
 
     // pop the last 3 screens in the create avatar sequence
-    // ChooseRocketScreen, ChooseAvatarScreen, and CreateNameScreen (which is this screen)
+    // AvatarHomeScreen, ChooseRocketScreen, ChooseAvatarScreen, and CreateNameScreen (which is this screen)
     for (int i = 0; i < 3; i++) {
       Navigator.pop(context);
     }
@@ -43,7 +35,7 @@ class CreateNameScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PlanetHomeScreen(userId: userId),
+        builder: (context) => const PlanetHomeScreen(),
       ),
     );
   }
@@ -63,16 +55,18 @@ class CreateNameScreen extends StatelessWidget {
         leading: Container(
           decoration: BoxDecoration(
             color: AppColors.darkPurple,
-            borderRadius: BorderRadius.all(Radius.circular(20)),
+            borderRadius: BorderRadius.all(Radius.circular(50)),
           ),
           child: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColors.white,
-            ),
-            // Navigate back when the back button is pressed
-            onPressed: () => Navigator.pop(context),
-          ),
+              icon: const Icon(
+                Icons.arrow_back,
+                color: AppColors.white,
+              ),
+              // Navigate back when the back button is pressed
+              onPressed: () => {
+                    playClick(),
+                    Navigator.pop(context),
+                  }),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -103,7 +97,9 @@ class CreateNameScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: screenHeight * 0.03), // 3% of the screen height spacing
+              SizedBox(
+                  height:
+                      screenHeight * 0.03), // 3% of the screen height spacing
               Container(
                 width: textFieldWidth,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -116,25 +112,41 @@ class CreateNameScreen extends StatelessWidget {
                   ),
                 ),
                 child: TextFormField(
+                  maxLength: 35,
+                  onFieldSubmitted: (_) => {
+                    createNewUser(
+                      context: context,
+                      userName: _nameController.text,
+                    ),
+                  },
                   controller: _nameController,
                   style: TextStyle(color: Colors.black), // Text color
                   decoration: const InputDecoration(
+                      counterText: "",
                       filled: true,
-                      fillColor: AppColors.lightGrey, // Light gray background color
-                      border: InputBorder.none
-                  ),
+                      fillColor:
+                          AppColors.lightGrey, // Light gray background color
+                      border: InputBorder.none),
                 ),
               ),
-              SizedBox(height: screenHeight * 0.03), // 3% of the screen height spacing
+              SizedBox(
+                  height:
+                      screenHeight * 0.03), // 3% of the screen height spacing
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: AppColors.darkPurple,
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                 ),
                 child: IconButton(
                   icon: const Icon(Icons.check),
                   color: AppColors.white,
-                  onPressed: () => createNewUser(context: context, userName: _nameController.text),
+                  onPressed: () => {
+                    playClick(),
+                    createNewUser(
+                      context: context,
+                      userName: _nameController.text,
+                    ),
+                  },
                 ),
               ),
             ],

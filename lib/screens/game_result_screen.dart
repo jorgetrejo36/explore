@@ -1,87 +1,166 @@
 import 'package:explore/app_colors.dart';
+import 'package:explore/screens/planet_map_screen.dart';
+import 'package:explore/utils/realm_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:explore/widgets/score_calculator.dart';
+import 'package:explore/widgets/sound_library.dart';
 
-class GameResultScreen extends StatelessWidget {
-  const GameResultScreen({super.key});
+class GameResultScreen extends StatefulWidget {
+  final Game game;
+  final int currency;
+  final int level;
+  final GameTheme planet;
+  final int time;
+
+  GameResultScreen({
+    super.key,
+    required this.currency,
+    required this.game,
+    required this.level,
+    required this.planet,
+    required this.time,
+  });
+
+  late int score = calculateScore(game, currency, time);
+
+  @override
+  State<GameResultScreen> createState() => _GameResultScreenState();
+}
+
+class _GameResultScreenState extends State<GameResultScreen> {
+  late RocketAvatar rocketAvatar;
+
+  @override
+  void initState() {
+    super.initState();
+    stopMusic();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    playLevelComplete();
+    try {
+      rocketAvatar = RealmUtils().getRocketAvatar();
+    } catch (e) {
+      print('Error loading data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Image.asset(
-            'assets/images/StarsBackground.png',
-            fit: BoxFit.cover,
-            height: double.infinity,
-            width: double.infinity,
-          ),
-          SafeArea(
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    top:
-                        MediaQuery.of(context).size.height * 0.05, // 5% (5/100)
-                    bottom:
-                        MediaQuery.of(context).size.height * 0.05, // 5% (5/100)
-                  ),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height *
-                        0.35, // 35% of the screen (40/100)
-                    child: const Column(
-                      children: [
-                        Expanded(
-                          child: DataBoxWidget(
-                            imagePath: "assets/images/diamond.svg",
-                            score: 5,
-                          ),
-                        ),
-                        Expanded(
-                          child: DataBoxWidget(
-                            imagePath: "assets/images/star.svg",
-                            score: 123,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height *
-                      0.35, // 45% of the screen (85/100),
-                  child: const AvatarWithRocketWidget(),
-                ),
-                Expanded(
-                  child:
-                      Container(), // Empty container to take up remaining space
-                ),
-                Center(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle, // Shape of the container
-                      color: AppColors
-                          .lightPurple, // Background color of the button
-                    ),
-                    child: IconButton(
-                      padding: const EdgeInsets.all(15),
-                      icon: const Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white, // Icon color
-                        size: 40, // Icon size
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child:
-                      Container(), // Empty container to take up remaining space
-                ),
-              ],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Image.asset(
+              'assets/images/StarsBackground.png',
+              fit: BoxFit.cover,
+              height: double.infinity,
+              width: double.infinity,
             ),
-          ),
-        ],
+            SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height *
+                          0.05, // 5% (5/100)
+                      bottom: MediaQuery.of(context).size.height *
+                          0.05, // 5% (5/100)
+                    ),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height *
+                          0.35, // 35% of the screen (40/100)
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: DataBoxWidget(
+                              imagePath: "assets/images/diamond.svg",
+                              score: widget.currency,
+                            ),
+                          ),
+                          Expanded(
+                            child: DataBoxWidget(
+                              imagePath: "assets/images/burning.svg",
+                              score: widget.time,
+                            ),
+                          ),
+                          Expanded(
+                            child: DataBoxWidget(
+                              imagePath: "assets/images/star.svg",
+                              score: widget.score,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height *
+                        0.25, // 45% of the screen (85/100),
+                    child: AvatarWithRocketWidget(
+                      rocketAvatar: rocketAvatar,
+                    ),
+                  ),
+                  Expanded(
+                    child:
+                        Container(), // Empty container to take up remaining space
+                  ),
+                  Center(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle, // Shape of the container
+                        color: AppColors
+                            .lightPurple, // Background color of the button
+                      ),
+                      child: IconButton(
+                        padding: const EdgeInsets.all(15),
+                        icon: const Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white, // Icon color
+                          size: 40, // Icon size
+                        ),
+                        onPressed: () {
+                          playClick();
+                          playTitleMusic();
+                          // add the user score to the DB
+                          GameTheme planetToNavigateTo =
+                              RealmUtils().addUserScore(
+                            level: widget.level,
+                            planet: widget.planet,
+                            time: widget.time,
+                            currency: widget.currency,
+                            score: widget.score,
+                          );
+                          // pop the game result screen
+                          Navigator.pop(context);
+                          // push and replace with the game result screen in the
+                          // correct selected planet location
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PlanetMapScreen(
+                                selectedPlanet: planetToNavigateTo.index,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child:
+                        Container(), // Empty container to take up remaining space
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -100,7 +179,7 @@ class DataBoxWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
         color: AppColors.lightPurple,
         borderRadius: BorderRadius.circular(15),
@@ -117,7 +196,7 @@ class DataBoxWidget extends StatelessWidget {
             child: Container(
               alignment: Alignment.center,
               child: SvgPicture.asset(
-                imagePath, // Replace 'assets/your_image.svg' with your SVG file path/ Adjust height as needed
+                imagePath,
               ),
             ),
           ),
@@ -131,7 +210,7 @@ class DataBoxWidget extends StatelessWidget {
                 style: const TextStyle(
                   fontFamily: "Fredoka",
                   color: Colors.white,
-                  fontSize: 65,
+                  fontSize: 45,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -149,15 +228,45 @@ class DataBoxWidget extends StatelessWidget {
 }
 
 class AvatarWithRocketWidget extends StatelessWidget {
-  const AvatarWithRocketWidget({super.key});
+  final RocketAvatar rocketAvatar;
+
+  const AvatarWithRocketWidget({super.key, required this.rocketAvatar});
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SvgPicture.asset(
-        'assets/images/car.svg',
-        width: 200, // Set the width of the SvgPicture
-        height: 200, // Set the height of the SvgPicture
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return Stack(
+            children: [
+              // Rocket SVG
+              Transform.rotate(
+                angle: 1,
+                child: SvgPicture.asset(
+                  rocketAvatar.rocketPath,
+                  width: 100,
+                  fit: BoxFit.contain,
+                  // Path to your bottom SVG file Adjust the width as needed
+                ),
+              ),
+              // Top SVG
+              Positioned(
+                left: 53,
+                bottom: 85,
+                child: ClipOval(
+                  child: Transform.scale(
+                    scale: 1.5,
+                    child: SvgPicture.asset(
+                      rocketAvatar.avatarPath,
+                      width:
+                          37, // Path to your top SVG file Adjust the width as needed
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
